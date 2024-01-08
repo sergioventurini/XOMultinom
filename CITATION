@@ -1,0 +1,17 @@
+bibentry(bibtype = "Article",
+  title        = "Computing the Exact Distributions of Some Functions of the Ordered Multinomial Counts: The {XOMultinom} Package in {R}",
+  author       = c(person(given = "Sergio",
+                          family = "Venturini",
+                          email = "sergio.venturini@unicatt.it"),
+                   person(given = "Marco",
+                          family = "Bonetti",
+                          email = "marco.bonetti@unibocconi.it")),
+  journal      = "Journal of Statistical Software",
+  year         = "2024",
+  volume       = "XX",
+  number       = "XX",
+  pages        = "1--XX",
+  doi          = "(to appear)",
+  header       = "To cite XOMultinom in publications use:"
+)
+
