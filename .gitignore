@@ -52,3 +52,9 @@ inst/doc
 
 # Temp directories
 /tmp
+/TODO
+
+# System specific compiled libraries
+src/*.o
+src/*.so
+src/*.dll

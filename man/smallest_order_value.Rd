@@ -2,7 +2,7 @@
 % Please edit documentation in R/smallest_order_value.R
 \name{smallest_order_value}
 \alias{smallest_order_value}
-\title{Survival function of smallest order statistic for an equiprobable
+\title{Survival function of the smallest order statistic for an equiprobable
 multinomial distribution.}
 \usage{
 smallest_order_value(t, n, m)
