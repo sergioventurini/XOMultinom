@@ -2,8 +2,8 @@
 % Please edit documentation in R/max_for_min.R
 \name{max_for_min}
 \alias{max_for_min}
-\title{Survival function of smallest order statistic for a multinomial
-distribution.}
+\title{Utility function for computing the distribution of the smallest order
+statistic.}
 \usage{
 max_for_min(t_max, n, m, t)
 }
@@ -17,18 +17,14 @@ balls.}
 \item{m}{A length-one integer vector indicating the number of independent
 urns/cells.}
 
-\item{t}{A length-one numeric vector indicating the value to compute the
-survival function for.}
+\item{t}{A length-one numeric vector indicating the value to compute for.}
 }
 \value{
-A length-one numeric vector representing the probability of the
-smallest order statistic.
+A length-one numeric vector.
 }
 \description{
-This function calculates the survival function (i.e. the probability to be
-greater than or equal to a given value) for the smallest order statistic
-(i.e. the minimum) under an equiprobable multinomial distribution
-assumption.
+This is an auxiliary function to the distribution of the smallest order
+statistic.
 }
 \examples{
 smallest_order_value(1, 10, 5) # P(N_(1) <= 1; n = 10, m = 5)

@@ -2,8 +2,7 @@
 % Please edit documentation in R/max_for_range.R
 \name{max_for_range}
 \alias{max_for_range}
-\title{Survival function of smallest order statistic for a multinomial
-distribution.}
+\title{Utility function for computing the distribution of the range.}
 \usage{
 max_for_range(t_max, n, m, prev, t)
 }
@@ -17,21 +16,18 @@ balls.}
 \item{m}{A length-one integer vector indicating the number of independent
 urns/cells.}
 
-\item{t}{A length-one numeric vector indicating the value to compute the
-survival function for.}
+\item{prev}{Integer vector containing the previous iteration values.}
+
+\item{t}{A length-one numeric vector indicating the value to compute for.}
 }
 \value{
-A length-one numeric vector representing the probability of the
-smallest order statistic.
+A length-one numeric vector.
 }
 \description{
-This function calculates the survival function (i.e. the probability to be
-greater than or equal to a given value) for the smallest order statistic
-(i.e. the minimum) under an equiprobable multinomial distribution
-assumption.
+This is an auxiliary function to the distribution of the range.
 }
 \examples{
-smallest_order_value(3, 10, 5) # P(N_(1) <= 3; n = 10, m = 5)
+range_probability(1, 7, 10)
 
 }
 \references{
