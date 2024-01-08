@@ -1,10 +1,8 @@
-#' Survival function of smallest order statistic for a multinomial
-#' distribution.
+#' Utility function for computing the distribution of the smallest order
+#' statistic.
 #'
-#' This function calculates the survival function (i.e. the probability to be
-#' greater than or equal to a given value) for the smallest order statistic
-#' (i.e. the minimum) under an equiprobable multinomial distribution
-#' assumption.
+#' This is an auxiliary function to the distribution of the smallest order
+#' statistic.
 #'
 #' @param t_max A length-one numeric vector indicating the value to compute the
 #'   survival function for.
@@ -12,10 +10,8 @@
 #'   balls.
 #' @param m A length-one integer vector indicating the number of independent
 #'   urns/cells.
-#' @param t A length-one numeric vector indicating the value to compute the
-#'   survival function for.
-#' @return A length-one numeric vector representing the probability of the
-#'   smallest order statistic.
+#' @param t A length-one numeric vector indicating the value to compute for.
+#' @return A length-one numeric vector.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{highest_order_statistics}} for computing the
 #'   CDF of the sum of the first \eqn{J} largest order statistics.
