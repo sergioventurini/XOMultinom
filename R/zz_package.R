@@ -17,7 +17,7 @@
 #' * \code{\link{range_probability}()}
 #' * \code{\link{smallest_order_value}()}
 #'
-#' @useDynLib XOMultinom
+#' @useDynLib XOMultinom, .registration = TRUE
 #' @import stats
 #' @import utils
 #' 

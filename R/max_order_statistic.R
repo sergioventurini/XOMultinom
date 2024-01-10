@@ -26,10 +26,11 @@
 #'   maximum, minimum, range and sums of order statistics", Royal Society
 #'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
 #' @examples
-#' max_order_statistic(3, 10, 5) # P(N_(1) <= 3; n = 10, m = 5)
+#' max_order_statistic(3, 10, 5) # P(N_(m) <= 3; n = 10, m = 5)
 #'
 #' @export
 max_order_statistic <- function(t, n, m) {
+  t <- floor(t)
   P <- 0
 
   if ((t == 0) & (n != 0)) {

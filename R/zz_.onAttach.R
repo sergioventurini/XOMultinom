@@ -1,3 +1,6 @@
+#' @exportPattern "^[[:alpha:]]+"
+#'
+#' @importFrom Rcpp evalCpp
 #' @importFrom utils globalVariables
 .onLoad <- function(lib, pkg){
   # quiets concerns of R CMD check re: the .'s that appear in pipelines

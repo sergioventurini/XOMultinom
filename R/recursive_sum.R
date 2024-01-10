@@ -13,7 +13,7 @@
 #' @param sum_depth A length-one integer vector indicating the summation depth.
 #' @param cur_depth A length-one integer vector indicating the current
 #'   summation depth.
-#' @param rangeArg Integer vector indicating the range of the summation
+#' @param rangeArg Integer vector indicating the range of the summation.
 #' @return A length-one numeric vector representing the summation value.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{highest_order_statistics}} for computing the CDF
