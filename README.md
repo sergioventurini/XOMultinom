@@ -33,4 +33,5 @@ devtools::install_github("sergioventurini/XOMultinom")
 ```
 
 See the main help page of the package by executing `?XOMultinom` or run any of
-the demos available in the package.
+the demos available in the package by executing the code
+`demo(demo_name, package = "XOMultinom")`.
