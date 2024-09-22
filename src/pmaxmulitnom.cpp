@@ -82,6 +82,7 @@ void dynamic_nested_loops_max(int levels,
   create_loops_max(one, null, x, size, prob, envir, levels, action);
 }
 
+// [[Rcpp::export]]
 Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size,const Rcpp::NumericVector& prob,
   const bool& logd, const bool& verbose) {
   int k = prob.size();
@@ -111,7 +112,7 @@ Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size
   Rcpp::NumericVector r(xlen);
   for (int m = 0; m < xlen; m++) {
     if (verbose) Rprintf("computing P(max(X1,..., Xk) <= x) for x = %.0f...\n", x[m]);
-    if (x[m] >= 0 && x[m] <= size) {
+    if (x[m] >= 0 && x[m] < size) {
       int prmax_idx = 1;
       this_env["prmax_idx"] = prmax_idx;
       Rcpp::NumericMatrix prmax(std::pow(x[m] + 1, km2), (k - 1));

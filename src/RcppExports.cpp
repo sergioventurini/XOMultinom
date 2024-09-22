@@ -68,6 +68,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pmaxmultinom_C
+Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_pmaxmultinom_C(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(pmaxmultinom_C(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pminmultinom_C
+Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_pminmultinom_C(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(pminmultinom_C(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 // range_probability_C
 double range_probability_C(const double& td, int n, int m);
 RcppExport SEXP _XOMultinom_range_probability_C(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
@@ -219,6 +249,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_XOMultinom_max_for_min_C", (DL_FUNC) &_XOMultinom_max_for_min_C, 4},
     {"_XOMultinom_max_for_range_C", (DL_FUNC) &_XOMultinom_max_for_range_C, 5},
     {"_XOMultinom_max_order_statistic_C", (DL_FUNC) &_XOMultinom_max_order_statistic_C, 3},
+    {"_XOMultinom_pmaxmultinom_C", (DL_FUNC) &_XOMultinom_pmaxmultinom_C, 5},
+    {"_XOMultinom_pminmultinom_C", (DL_FUNC) &_XOMultinom_pminmultinom_C, 5},
     {"_XOMultinom_range_probability_C", (DL_FUNC) &_XOMultinom_range_probability_C, 3},
     {"_XOMultinom_recursive_sum_C", (DL_FUNC) &_XOMultinom_recursive_sum_C, 7},
     {"_XOMultinom_smallest_order_value_C", (DL_FUNC) &_XOMultinom_smallest_order_value_C, 3},

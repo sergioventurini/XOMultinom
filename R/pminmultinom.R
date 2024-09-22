@@ -146,9 +146,9 @@ pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
         }
         r[m] <- red[1, 2]
       } else if (x[m] < 0) {
-        r[m] <- 0
-      } else {
         r[m] <- 1
+      } else {
+        r[m] <- 0
       }
       gc()
     }

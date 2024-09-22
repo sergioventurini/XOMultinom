@@ -136,6 +136,14 @@ max_order_statistic_C <- function(td, n, m) {
     .Call(`_XOMultinom_max_order_statistic_C`, td, n, m)
 }
 
+pmaxmultinom_C <- function(x, size, prob, logd, verbose) {
+    .Call(`_XOMultinom_pmaxmultinom_C`, x, size, prob, logd, verbose)
+}
+
+pminmultinom_C <- function(x, size, prob, logd, verbose) {
+    .Call(`_XOMultinom_pminmultinom_C`, x, size, prob, logd, verbose)
+}
+
 #' CDF of the range for an equiprobable multinomial distribution.
 #'
 #' This function calculates the cumulative distribution function (CDF)

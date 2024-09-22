@@ -99,6 +99,7 @@ void dynamic_nested_loops_min(int levels,
   create_loops_min(one, null, x, size, prob, envir, levels, action);
 }
 
+// [[Rcpp::export]]
 Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size,const Rcpp::NumericVector& prob,
   const bool& logd, const bool& verbose) {
   int k = prob.size();
@@ -129,7 +130,7 @@ Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size
   Rcpp::NumericVector r(xlen);
   for (int m = 0; m < xlen; m++) {
     if (verbose) Rprintf("computing P(min(X1,..., Xk) <= x) for x = %.0f...\n", x[m]);
-    if (x[m] >= 0 && x[m] <= size) {
+    if (x[m] >= 0 && x[m] < size) {
       int prmin_idx = 1;
       this_env["prmin_idx"] = prmin_idx;
       int prmin_size = std::pow(size - x[m], km2);
@@ -177,9 +178,9 @@ Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size
 
       R_CheckUserInterrupt();
     } else if (x[m] < 0) {
-      r(m) = 0;
-    } else {
       r(m) = 1;
+    } else {
+      r(m) = 0;
     }
   }
   r = 1 - r;
