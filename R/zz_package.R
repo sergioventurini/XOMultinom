@@ -1,6 +1,6 @@
 #' XOMultinom: a package 
 #'
-#' @docType package
+#' _PACKAGE
 #'
 #' @name XOMultinom-package
 #' @aliases XOMultinom-pkg
@@ -16,6 +16,10 @@
 #' * \code{\link{max_order_statistic}()}
 #' * \code{\link{range_probability}()}
 #' * \code{\link{smallest_order_value}()}
+#' * \code{\link{dmaxmultinom}()}
+#' * \code{\link{dminmultinom}()}
+#' * \code{\link{pmaxmultinom}()}
+#' * \code{\link{pminmultinom}()}
 #'
 #' @useDynLib XOMultinom, .registration = TRUE
 #' @import stats

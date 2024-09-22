@@ -237,3 +237,39 @@ smallest_order_value_C <- function(td, n, m) {
     .Call(`_XOMultinom_smallest_order_value_C`, td, n, m)
 }
 
+any_sug <- function(x) {
+    .Call(`_XOMultinom_any_sug`, x)
+}
+
+cumsum_rcpp <- function(x) {
+    .Call(`_XOMultinom_cumsum_rcpp`, x)
+}
+
+matelmult_rcpp <- function(v1, v2) {
+    .Call(`_XOMultinom_matelmult_rcpp`, v1, v2)
+}
+
+rev_rcpp <- function(x) {
+    .Call(`_XOMultinom_rev_rcpp`, x)
+}
+
+aggregate_rcpp <- function(x, by) {
+    .Call(`_XOMultinom_aggregate_rcpp`, x, by)
+}
+
+list_resize_rcpp <- function(x, newsize) {
+    .Call(`_XOMultinom_list_resize_rcpp`, x, newsize)
+}
+
+nm2df_rcpp <- function(x) {
+    .Call(`_XOMultinom_nm2df_rcpp`, x)
+}
+
+df2nm_rcpp <- function(x) {
+    .Call(`_XOMultinom_df2nm_rcpp`, x)
+}
+
+flipcols_rcpp <- function(x) {
+    .Call(`_XOMultinom_flipcols_rcpp`, x)
+}
+

@@ -14,6 +14,8 @@
 #include <climits>
 #include <string>
 #include <algorithm>
+#include <stdio.h>
+#include <stdlib.h>
 
 static const double machine_eps = 2.220446049250313080847e-16;
 static const double log_pi = std::log(M_PI);
@@ -27,5 +29,38 @@ double max_for_min_C(const double & t_max, int n, int m, int t);
 double smallest_order_value_C(const double & td, int n, int m);
 double max_for_range_C(const double & t_max, int n, int m, arma::vec prev, int t);
 double range_probability_C(const double & td, int n, int m);
+
+void pmax_cond(Rcpp::IntegerVector indices, double x, int size, Rcpp::NumericVector prob,
+  Rcpp::Environment envir);
+double px_cond(double x, int size, double prob);
+void create_loops_max(int current_level, Rcpp::IntegerVector indices, double xa, int sz,
+  Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
+  double (*act)(Rcpp::IntegerVector, double, int, Rcpp::NumericVector, Rcpp::Environment));
+void dynamic_nested_loops_max(int levels,
+  double (*action)(Rcpp::IntegerVector, double, int, Rcpp::NumericVector, Rcpp::Environment),
+  double x, int size, Rcpp::NumericVector prob, Rcpp::Environment envir);
+Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose);
+
+void pmin_cond(Rcpp::IntegerVector indices, double x, int size, Rcpp::NumericVector prob,
+  Rcpp::Environment envir);
+double px_cond_min(double x, int size, double prob);
+void create_loops_min(int current_level, Rcpp::IntegerVector indices, double xa, int sz,
+  Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
+  double (*act)(Rcpp::IntegerVector, double, int, Rcpp::NumericVector, Rcpp::Environment));
+void dynamic_nested_loops_min(int levels,
+  double (*action)(Rcpp::IntegerVector, double, int, Rcpp::NumericVector, Rcpp::Environment),
+  double x, int size, Rcpp::NumericVector prob, Rcpp::Environment envir);
+Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose);
+
+// UTILITY FUNCTIONS ----------------------------------------------------------
+bool any_sug(Rcpp::LogicalVector x);
+Rcpp::NumericVector cumsum_rcpp(Rcpp::NumericVector x);
+Rcpp::NumericVector matelmult_rcpp(Rcpp::NumericVector v1, Rcpp::NumericVector v2);
+Rcpp::NumericVector rev_rcpp(Rcpp::NumericVector x);
+Rcpp::DataFrame aggregate_rcpp(Rcpp::DataFrame x, Rcpp::List by);
+Rcpp::List list_resize_rcpp(const Rcpp::List& x, int newsize);
+Rcpp::DataFrame nm2df_rcpp(Rcpp::NumericMatrix x);
+Rcpp::NumericMatrix df2nm_rcpp(Rcpp::DataFrame x);
+Rcpp::NumericMatrix flipcols_rcpp(Rcpp::NumericMatrix x);
 
 #endif

@@ -111,6 +111,108 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// any_sug
+bool any_sug(Rcpp::LogicalVector x);
+RcppExport SEXP _XOMultinom_any_sug(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(any_sug(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cumsum_rcpp
+Rcpp::NumericVector cumsum_rcpp(Rcpp::NumericVector x);
+RcppExport SEXP _XOMultinom_cumsum_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(cumsum_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// matelmult_rcpp
+Rcpp::NumericVector matelmult_rcpp(Rcpp::NumericVector v1, Rcpp::NumericVector v2);
+RcppExport SEXP _XOMultinom_matelmult_rcpp(SEXP v1SEXP, SEXP v2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type v1(v1SEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type v2(v2SEXP);
+    rcpp_result_gen = Rcpp::wrap(matelmult_rcpp(v1, v2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rev_rcpp
+Rcpp::NumericVector rev_rcpp(Rcpp::NumericVector x);
+RcppExport SEXP _XOMultinom_rev_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(rev_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// aggregate_rcpp
+Rcpp::DataFrame aggregate_rcpp(Rcpp::DataFrame x, Rcpp::List by);
+RcppExport SEXP _XOMultinom_aggregate_rcpp(SEXP xSEXP, SEXP bySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::DataFrame >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type by(bySEXP);
+    rcpp_result_gen = Rcpp::wrap(aggregate_rcpp(x, by));
+    return rcpp_result_gen;
+END_RCPP
+}
+// list_resize_rcpp
+Rcpp::List list_resize_rcpp(const Rcpp::List& x, int newsize);
+RcppExport SEXP _XOMultinom_list_resize_rcpp(SEXP xSEXP, SEXP newsizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type newsize(newsizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(list_resize_rcpp(x, newsize));
+    return rcpp_result_gen;
+END_RCPP
+}
+// nm2df_rcpp
+Rcpp::DataFrame nm2df_rcpp(Rcpp::NumericMatrix x);
+RcppExport SEXP _XOMultinom_nm2df_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(nm2df_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// df2nm_rcpp
+Rcpp::NumericMatrix df2nm_rcpp(Rcpp::DataFrame x);
+RcppExport SEXP _XOMultinom_df2nm_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::DataFrame >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(df2nm_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// flipcols_rcpp
+Rcpp::NumericMatrix flipcols_rcpp(Rcpp::NumericMatrix x);
+RcppExport SEXP _XOMultinom_flipcols_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(flipcols_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_XOMultinom_highest_order_statistics_C", (DL_FUNC) &_XOMultinom_highest_order_statistics_C, 4},
@@ -120,6 +222,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"_XOMultinom_range_probability_C", (DL_FUNC) &_XOMultinom_range_probability_C, 3},
     {"_XOMultinom_recursive_sum_C", (DL_FUNC) &_XOMultinom_recursive_sum_C, 7},
     {"_XOMultinom_smallest_order_value_C", (DL_FUNC) &_XOMultinom_smallest_order_value_C, 3},
+    {"_XOMultinom_any_sug", (DL_FUNC) &_XOMultinom_any_sug, 1},
+    {"_XOMultinom_cumsum_rcpp", (DL_FUNC) &_XOMultinom_cumsum_rcpp, 1},
+    {"_XOMultinom_matelmult_rcpp", (DL_FUNC) &_XOMultinom_matelmult_rcpp, 2},
+    {"_XOMultinom_rev_rcpp", (DL_FUNC) &_XOMultinom_rev_rcpp, 1},
+    {"_XOMultinom_aggregate_rcpp", (DL_FUNC) &_XOMultinom_aggregate_rcpp, 2},
+    {"_XOMultinom_list_resize_rcpp", (DL_FUNC) &_XOMultinom_list_resize_rcpp, 2},
+    {"_XOMultinom_nm2df_rcpp", (DL_FUNC) &_XOMultinom_nm2df_rcpp, 1},
+    {"_XOMultinom_df2nm_rcpp", (DL_FUNC) &_XOMultinom_df2nm_rcpp, 1},
+    {"_XOMultinom_flipcols_rcpp", (DL_FUNC) &_XOMultinom_flipcols_rcpp, 1},
     {NULL, NULL, 0}
 };
 
