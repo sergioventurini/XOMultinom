@@ -121,7 +121,7 @@ pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
     for (m in 1:xlen) {
     	if (verbose)
         print(paste0("computing P(max(X1,..., Xk) <= x) for x = ", x[m], "..."), quote = FALSE)
-      if (x[m] >= 0 & x[m] <= size) {
+      if (x[m] >= 0 & x[m] < size) {
         prmax_idx <- 1
         prmax <- data.frame(matrix(NA, nrow = (x[m] + 1)^(k - 2), ncol = (k - 1)))
         # prmax <- data.frame()  # old implementation that took too much time

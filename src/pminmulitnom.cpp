@@ -56,36 +56,19 @@ void create_loops_min(int current_level, Rcpp::IntegerVector indices, double xa,
     Rcpp::NumericVector prb_c = cumsum_rcpp(prb);
     int k = prb.size();
     int idx = k - current_level + 1;
-    if (xa <= sz) {
-      for (int i = xa; i <= sz; i++) {
-        double px = px_cond_min(i, sz - Rcpp::sum(indices), prb[idx - 1]/prb_c[idx - 1]);
-        Rcpp::List prx = env["prx"];
-        Rcpp::NumericVector prx_tmp;
-        if (prx[current_level - 1] != R_NilValue) {
-          prx_tmp = prx[current_level - 1];
-        }
-        prx_tmp.push_back(px);
-        prx[current_level - 1] = prx_tmp;
-        env["prx"] = prx;
-        Rcpp::IntegerVector indices_next = indices;
-        indices_next.push_back(i);
-        create_loops_min(current_level + 1, indices_next, xa, sz, prb, env, levels, act);
+    for (int i = xa; i <= sz; i++) {
+      double px = px_cond_min(i, sz - Rcpp::sum(indices), prb[idx - 1]/prb_c[idx - 1]);
+      Rcpp::List prx = env["prx"];
+      Rcpp::NumericVector prx_tmp;
+      if (prx[current_level - 1] != R_NilValue) {
+        prx_tmp = prx[current_level - 1];
       }
-    } else {
-      for (int i = xa; i >= sz; --i) {
-        double px = px_cond_min(i, sz - Rcpp::sum(indices), prb[idx - 1]/prb_c[idx - 1]);
-        Rcpp::List prx = env["prx"];
-        Rcpp::NumericVector prx_tmp;
-        if (prx[current_level - 1] != R_NilValue) {
-          prx_tmp = prx[current_level - 1];
-        }
-        prx_tmp.push_back(px);
-        prx[current_level - 1] = prx_tmp;
-        env["prx"] = prx;
-        Rcpp::IntegerVector indices_next = indices;
-        indices_next.push_back(i);
-        create_loops_min(current_level + 1, indices_next, xa, sz, prb, env, levels, act);
-      }
+      prx_tmp.push_back(px);
+      prx[current_level - 1] = prx_tmp;
+      env["prx"] = prx;
+      Rcpp::IntegerVector indices_next = indices;
+      indices_next.push_back(i);
+      create_loops_min(current_level + 1, indices_next, xa, sz, prb, env, levels, act);
     }
   }
 }

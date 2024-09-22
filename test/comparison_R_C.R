@@ -61,9 +61,6 @@ n <- 30
 probs <- rep(1/k, k)
 xseq <- 0:n
 
-pminmultinom(x = n, size = n, prob = probs, log = FALSE, verbose = TRUE, method = "Rcpp")
-pminmultinom(x = n, size = n, prob = probs, log = FALSE, verbose = TRUE, method = "R")
-
 # CDF
 cdfmin <- pminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
                        verbose = TRUE, method = "Rcpp")
