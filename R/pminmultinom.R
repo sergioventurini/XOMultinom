@@ -57,6 +57,61 @@ px_cond_min <- function(x, size, prob) {
   tmp
 }
 
+#' @export
+pminmultinom_R_one <- function(x, size, prob, env) {
+  k <- length(prob)
+  if (x >= 0 & x < size) {
+    x_tmp <- x + 1  # needed to convert P(min >= x) to P(min <= x)
+    prmin_idx <- 1
+    assign("prmin_idx", prmin_idx, envir = env)
+    prmin <- data.frame(matrix(NA, nrow = (size - x)^(k - 2), ncol = (k - 1)))
+    assign("prmin", prmin, envir = env)
+    # prmin <- data.frame()  # old implementation that took too much time
+    prx <- vector(mode = "list", length = k - 2)
+    assign("prx", prx, envir = env)
+    dynamic_nested_loops_min(k - 2, pmin_cond, x_tmp, size, prob, envir = env)
+
+    prmin <- get("prmin", envir = env)
+    prx <- get("prx", envir = env)
+    red <- prmin
+    idx <- k - 2
+    while (idx > 0) {
+      red[, ncol(red)] <- red[, ncol(red)] * prx[[idx]]
+      if (idx > 1) {
+        which_cols <- 1:(ncol(red) - 2)
+        by_cols <- red[which_cols]
+      } else {
+        by_cols <- list(rep(0, nrow(red)))
+      }
+      red <- aggregate(red[, ncol(red)], by_cols, sum)
+      red[1:(ncol(red) - 1)] <- red[rev(1:(ncol(red) - 1))]
+      idx <- idx - 1
+    }
+
+    1 - red[1, 2]
+  } else if (x < 0) {
+    0
+  } else {
+    1
+  }
+}
+
+#' @export
+pminmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env) {
+  xlen <- length(x)
+
+  r <- numeric(xlen)
+  for (m in 1:xlen) {
+    if (verbose) print(paste0("computing P(min(X1,..., Xk) <= x) for x = ", x[m], "..."), quote = FALSE)
+    r[m] <- pminmultinom_R_one(x[m], size, prob, env)
+    gc()
+  }
+
+  if (!log)
+    r
+  else log(r)
+}
+
 #' Distribution function (CDF) of the minimum for a generic multinomial random
 #' vector.
 #'
@@ -74,6 +129,18 @@ px_cond_min <- function(x, size, prob) {
 #'   computed.
 #' @param verbose A length-one logical vector; if TRUE, details are printed
 #'   during the calculation.
+#' @param parallel A length-one character vector indicating the type of parallel
+#'   operation to be used (if any). Possible values are \code{multicore}
+#'   (which worksonly on Unix/mcOS), \code{snow} and \code{no} (i.e. serial
+#'   instead of parallel computing).
+#' @param threads A length-one numeric vector for the number of chains to run.
+#'   If greater than 1, package \pkg{\link{parallel}} is used to take advantage of any
+#'   multiprocessing or distributed computing capabilities that may be available.
+#' @param cl An optional \pkg{parallel} or \pkg{snow} cluster for use if
+#'   \code{parallel = "snow"}. If not supplied, a cluster on the local machine
+#'   is created for the duration of the \code{dmbc()} call.
+#' @param env An optional \code{\link{environment}} . If not supplied, one is created
+#'   inside the function.
 #' @return A numeric vector providing the probabilities of the minimum.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{pminmulitnom_C}} for computing the
@@ -96,68 +163,106 @@ px_cond_min <- function(x, size, prob) {
 #' probs <- rdirichlet(1, rep(1/k, k))  # or rep(1/k, k) 
 #' xseq <- 0:n
 #' 
-#' cdfmin <- pminmultinom_C(x = xseq, size = n, prob = probs, log = FALSE,
-#'                        verbose = TRUE)
+#' cdfmin <- pminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
+#'                        verbose = TRUE, method = "Rcpp")
 #' plot(xseq, cdfmin, type = "s", xlab = "x", ylab = "CDF")
 #'
 #' @export
-pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "Rcpp") {
-  if (method == "Rcpp") {
-    pminmultinom_C(x, size, prob, log, verbose)
-  } else if (method == "R") {
-    k <- length(prob)
-    xlen <- length(x)
-    if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0) 
-      stop("probabilities must be finite, non-negative and not all 0")
-    prob <- prob/s
-    # x <- as.integer(x + 0.5)
-    x_tmp <- x + 1  # needed to convert P(min >= x) to P(min <= x)
-    i0 <- prob == 0
-    if (any(i0)) {
-      prob <- prob[!i0]
-      k <- length(prob)
-    }
-
-    this_env <- environment()
-    r <- numeric(xlen)
-    for (m in 1:xlen) {
-    	if (verbose)
-        print(paste0("computing P(min(X1,..., Xk) <= x) for x = ", x[m], "..."), quote = FALSE)
-      if (x[m] >= 0 & x[m] < size) {
-        prmin_idx <- 1
-        prmin <- data.frame(matrix(NA, nrow = (size - x[m])^(k - 2), ncol = (k - 1)))
-        # prmin <- data.frame()  # old implementation that took too much time
-        prx <- vector(mode = "list", length = k - 2)
-        dynamic_nested_loops_min(k - 2, pmin_cond, x_tmp[m], size, prob, envir = this_env)
-
-        red <- prmin
-        idx <- k - 2
-        while (idx > 0) {
-          red[, ncol(red)] <- red[, ncol(red)] * prx[[idx]]
-          if (idx > 1) {
-            which_cols <- 1:(ncol(red) - 2)
-            by_cols <- red[which_cols]
-          } else {
-            by_cols <- list(rep(0, nrow(red)))
-          }
-          red <- aggregate(red[, ncol(red)], by_cols, sum)
-          red[1:(ncol(red) - 1)] <- red[rev(1:(ncol(red) - 1))]
-          idx <- idx - 1
-        }
-        r[m] <- red[1, 2]
-      } else if (x[m] < 0) {
-        r[m] <- 1
-      } else {
-        r[m] <- 0
+pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "Rcpp",
+  parallel = "no", threads = 1, cl = NULL, env = NULL) {
+  have_mc <- have_snow <- FALSE
+  if (parallel != "no" && threads > 1L) {
+    if (parallel == "multicore") have_mc <- .Platform$OS.type != "windows"
+    else if (parallel == "snow") have_snow <- TRUE
+    if (!have_mc && !have_snow) {
+      warning("number of cores forced to 1 (i.e. no parallel computing used).")
+      threads <- 1L
+    } else {
+      nc <- parallel::detectCores()
+      if (threads > nc) {
+        warning(
+          paste0("number of threads specified is larger than the number of available cores; threads set to ", nc, "."))
+        threads <- nc
       }
-      gc()
     }
-    r <- 1 - r
-
-    if (!log)
-      r
-    else log(r)
-  } else {
-    stop("method not available")
+    loadNamespace("parallel") # get this out of the way before recording seed
   }
+  if (!method == "R" && !method == "Rcpp") {
+    stop("method not available.")
+  }
+
+  k <- length(prob)
+  xlen <- length(x)
+  if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0) 
+    stop("probabilities must be finite, non-negative and not all 0")
+  prob <- prob/s
+  # x <- as.integer(x + 0.5)
+  i0 <- prob == 0
+  if (any(i0)) {
+    prob <- prob[!i0]
+    k <- length(prob)
+  }
+  if (is.null(env)) {
+    env <- environment()
+  }
+
+  if (have_mc || have_snow) {
+    pminmultinom_parallel <- function(x.c, size.c, prob.c, env.c, method.c) {
+      if (method.c == "Rcpp") {
+        pminmultinom_C_one(x = x.c, size = size.c, prob = prob.c, this_env = env.c)
+      } else if (method.c == "R") {
+        pminmultinom_R_one(x = x.c, size = size.c, prob = prob.c, env = env.c)
+      }
+    }
+
+    if (verbose) {
+      devout <- ""
+      if (.Platform$OS.type != "windows" && !have_mc) {
+        message("--- STARTING PARALLEL CALCULATION OF ", xlen, " VALUES ---")
+      } else {
+        message("Performing parallel calculation of ", xlen, " values...")
+      }
+    } else {
+      if (.Platform$OS.type != "windows") {
+        devout <- '/dev/null'
+      } else {
+        devout <- 'nul:'
+      }
+    }
+
+    res <- if (have_mc) {
+             parallel::mclapply(x, function(xi) pminmultinom_parallel(x.c = xi,
+               size.c = size, prob.c = prob, env.c = env, method.c = method),
+               mc.cores = threads)
+           } else if (have_snow) {
+             if (is.null(cl)) {
+               # outfile doesn't work on Windows
+               cl <- parallel::makePSOCKcluster(rep("localhost", threads), outfile = devout)
+             }
+             parallel::setDefaultCluster(cl)
+             parallel::clusterEvalQ(NULL, suppressMessages(require(XOMultinom)))
+             parallel::clusterExport(NULL, c("size", "prob", "env", "method"), envir = env)
+             res <- parallel::parLapply(NULL, x, function(xi) pminmultinom_parallel(x.c = xi,
+               size.c = size, prob.c = prob, env.c = env, method.c = method))
+             parallel::stopCluster(cl)
+             res
+           }
+    res <- unlist(res)
+
+    if (verbose) {
+      if (.Platform$OS.type != "windows" && !have_mc){
+        message("--- END OF PARALLEL CALCULATION OF ", xlen, " VALUES ---\n")
+      } else {
+        # message("done!")
+      }
+    }
+  } else {
+    if (method == "Rcpp") {
+      res <- pminmultinom_C(x, size, prob, log, verbose, env)
+    } else if (method == "R") {
+      res <- pminmultinom_R(x, size, prob, log, verbose, env)
+    }
+  }
+
+  return(res)
 }

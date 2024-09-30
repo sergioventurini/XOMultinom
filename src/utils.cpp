@@ -26,7 +26,7 @@ Rcpp::NumericVector cumsum_rcpp(Rcpp::NumericVector x) {
 Rcpp::NumericVector matelmult_rcpp(Rcpp::NumericVector v1, Rcpp::NumericVector v2) {
   int n = v1.size();
   Rcpp::NumericVector res(n);
-  for (unsigned int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     res(i) = v1(i) * v2(i);
   }
   return res;
@@ -51,7 +51,7 @@ Rcpp::List list_resize_rcpp(const Rcpp::List& x, int newsize) {
   int oldsize = x.size();
   Rcpp::List y(newsize);
 
-  for (unsigned int i = 0; i < oldsize; i++) {
+  for (int i = 0; i < oldsize; i++) {
     y[i] = x[i];
   }
 
@@ -62,7 +62,7 @@ Rcpp::List list_resize_rcpp(const Rcpp::List& x, int newsize) {
 Rcpp::DataFrame nm2df_rcpp(Rcpp::NumericMatrix x) {
   Rcpp::List y_tmp(x.ncol());
   
-  for (unsigned int j = 0; j < x.ncol(); j++) {
+  for (int j = 0; j < x.ncol(); j++) {
     Rcpp::NumericVector v = x(Rcpp::_, j);
     // y_tmp[j] = v;
     y_tmp[j] = Rcpp::List::create(Rcpp::Named("V") = v);
@@ -79,7 +79,7 @@ Rcpp::NumericMatrix df2nm_rcpp(Rcpp::DataFrame x) {
   int p = x.size();
   Rcpp::NumericMatrix y(n, p);
   
-  for (unsigned int j = 0; j < p; j++) {
+  for (int j = 0; j < p; j++) {
     Rcpp::NumericVector v = x[j];
     y(Rcpp::_, j) = v;
   }
@@ -93,7 +93,7 @@ Rcpp::NumericMatrix flipcols_rcpp(Rcpp::NumericMatrix x) {
   int p = x.ncol();
   Rcpp::NumericMatrix y(n, p);
   
-  for (unsigned int j = 0; j < p; j++) {
+  for (int j = 0; j < p; j++) {
     Rcpp::NumericVector v = x(Rcpp::_, j);
     y(Rcpp::_, p - j - 1) = v;
   }

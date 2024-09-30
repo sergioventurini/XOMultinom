@@ -33,12 +33,10 @@ void pmax_cond(Rcpp::IntegerVector indices, double x, int size, Rcpp::NumericVec
 }
 
 double px_cond_max(double x, int size, double prob) {
-  double tmp;
+  double tmp = 0;
 
   if (size >= 0) {
     tmp = R::dbinom(x, size, prob, 0);
-  } else {
-    tmp = 0;
   }
 
   return tmp;
@@ -83,83 +81,89 @@ void dynamic_nested_loops_max(int levels,
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size,const Rcpp::NumericVector& prob,
-  const bool& logd, const bool& verbose) {
+double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+  Rcpp::Environment& this_env) {
   int k = prob.size();
   int km2 = k - 2;
-  int xlen = x.size();
-  double s = Rcpp::sum(prob);
 
-  if (Rcpp::any(!Rcpp::is_finite(prob))) {
-    Rcpp::stop("probabilities must be finite");
-  }
-  if (any_sug(prob < 0)) {
-    Rcpp::stop("probabilities must be non-negative");
-  }
-  if (s == 0) {
-    Rcpp::stop("probabilities must be not all 0");
-  }
+  if (x >= 0 && x < size) {
+    int prmax_idx = 1;
+    this_env["prmax_idx"] = prmax_idx;
+    Rcpp::NumericMatrix prmax(std::pow(x + 1, km2), (k - 1));
+    this_env["prmax"] = prmax;
+    Rcpp::List prx(km2);
+    this_env["prx"] = prx;
+    dynamic_nested_loops_max(km2, pmax_cond, x, size, prob, this_env);
 
-  Rcpp::NumericVector prob_new = prob/s;
-  Rcpp::LogicalVector i0 = (prob_new == 0);
-  if (any_sug(i0)) {
-    prob_new = prob[!i0];
-    k = prob_new.size();
-  }
-
-  Rcpp::Environment glob_env = Rcpp::Environment::global_env();
-  Rcpp::Environment this_env = glob_env.new_child(FALSE);
-  Rcpp::NumericVector r(xlen);
-  for (int m = 0; m < xlen; m++) {
-    if (verbose) Rprintf("computing P(max(X1,..., Xk) <= x) for x = %.0f...\n", x[m]);
-    if (x[m] >= 0 && x[m] < size) {
-      int prmax_idx = 1;
-      this_env["prmax_idx"] = prmax_idx;
-      Rcpp::NumericMatrix prmax(std::pow(x[m] + 1, km2), (k - 1));
-      this_env["prmax"] = prmax;
-      Rcpp::List prx(km2);
-      this_env["prx"] = prx;
-      dynamic_nested_loops_max(km2, pmax_cond, x[m], size, prob, this_env);
-
-      Rcpp::NumericMatrix red = prmax;
-      int idx = k - 2;
-      while (idx > 0) {
-        // prx = this_env["prx"];
-        Rcpp::NumericVector red_tmp = red(Rcpp::_, red.ncol() - 1);
-        red(Rcpp::_, red.ncol() - 1) = matelmult_rcpp(red_tmp, prx[idx - 1]);
-        Rcpp::List by_cols;
-        if (idx > 1) {
-          by_cols = list_resize_rcpp(by_cols, red.ncol() - 2);
-          for (int p = 0; p < (red.ncol() - 2); p++) {
-            Rcpp::NumericVector by_col_tmp = red(Rcpp::_, p);
-            by_cols[p] = Rcpp::List::create(Rcpp::Named("X") = by_col_tmp);;
-          }
-        } else {
-          by_cols = list_resize_rcpp(by_cols, 1);
-          Rcpp::IntegerVector zero_col(red.nrow());
-          by_cols[0] = zero_col;
+    Rcpp::NumericMatrix red = prmax;
+    int idx = k - 2;
+    while (idx > 0) {
+      // prx = this_env["prx"];
+      Rcpp::NumericVector red_tmp = red(Rcpp::_, red.ncol() - 1);
+      red(Rcpp::_, red.ncol() - 1) = matelmult_rcpp(red_tmp, prx[idx - 1]);
+      Rcpp::List by_cols;
+      if (idx > 1) {
+        by_cols = list_resize_rcpp(by_cols, red.ncol() - 2);
+        for (int p = 0; p < (red.ncol() - 2); p++) {
+          Rcpp::NumericVector by_col_tmp = red(Rcpp::_, p);
+          by_cols[p] = Rcpp::List::create(Rcpp::Named("X") = by_col_tmp);;
         }
-        Rcpp::DataFrame by_cols_df = Rcpp::as<Rcpp::DataFrame>(by_cols);
-        Rcpp::DataFrame red_df = nm2df_rcpp(red(Rcpp::_, Rcpp::Range(red.ncol() - 1, red.ncol() - 1)));
-        red_df = aggregate_rcpp(red_df, by_cols_df);
-        red = df2nm_rcpp(red_df);
-        Rcpp::NumericMatrix red_rev = flipcols_rcpp(red(Rcpp::_, Rcpp::Range(0, red.ncol() - 2)));
-        for (int j = 0; j <= (red.ncol() - 2); j++) {
-          Rcpp::NumericVector v = red_rev(Rcpp::_, j);
-          red(Rcpp::_, j) = v;
-        }
-        idx--;
-
-        R_CheckUserInterrupt();
+      } else {
+        by_cols = list_resize_rcpp(by_cols, 1);
+        Rcpp::IntegerVector zero_col(red.nrow());
+        by_cols[0] = zero_col;
       }
-      r(m) = red(0, 1);
+      Rcpp::DataFrame by_cols_df = Rcpp::as<Rcpp::DataFrame>(by_cols);
+      Rcpp::DataFrame red_df = nm2df_rcpp(red(Rcpp::_, Rcpp::Range(red.ncol() - 1, red.ncol() - 1)));
+      red_df = aggregate_rcpp(red_df, by_cols_df);
+      red = df2nm_rcpp(red_df);
+      Rcpp::NumericMatrix red_rev = flipcols_rcpp(red(Rcpp::_, Rcpp::Range(0, red.ncol() - 2)));
+      for (int j = 0; j <= (red.ncol() - 2); j++) {
+        Rcpp::NumericVector v = red_rev(Rcpp::_, j);
+        red(Rcpp::_, j) = v;
+      }
+      idx--;
 
       R_CheckUserInterrupt();
-    } else if (x[m] < 0) {
-      r(m) = 0;
-    } else {
-      r(m) = 1;
     }
+
+    return red(0, 1);
+  } else if (x < 0) {
+    return 0;
+  } else {
+    return 1;
+  }
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob,
+  const bool& logd, const bool& verbose, Rcpp::Environment& this_env) {
+  int xlen = x.size();
+  // double s = Rcpp::sum(prob);
+
+  // if (Rcpp::any(!Rcpp::is_finite(prob))) {
+  //   Rcpp::stop("probabilities must be finite");
+  // }
+  // if (any_sug(prob < 0)) {
+  //   Rcpp::stop("probabilities must be non-negative");
+  // }
+  // if (s == 0) {
+  //   Rcpp::stop("probabilities must be not all 0");
+  // }
+
+  // Rcpp::NumericVector prob_new = prob/s;
+  // Rcpp::LogicalVector i0 = (prob_new == 0);
+  // if (any_sug(i0)) {
+  //   prob_new = prob[!i0];
+  //   k = prob_new.size();
+  // }
+
+  Rcpp::NumericVector r(xlen);
+  for (int m = 0; m < xlen; m++) {
+    if (verbose) Rprintf("computing P(max(X1,..., Xk) <= x) for x = %.0f...\n", x(m));
+    r(m) = pmaxmultinom_C_one(x(m), size, prob, this_env);
+
+    R_CheckUserInterrupt();
   }
 
   if (!logd) {

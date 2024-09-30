@@ -39,7 +39,9 @@ void create_loops_max(int current_level, Rcpp::IntegerVector indices, double xa,
 void dynamic_nested_loops_max(int levels,
   double (*action)(Rcpp::IntegerVector, double, int, Rcpp::NumericVector, Rcpp::Environment),
   double x, int size, Rcpp::NumericVector prob, Rcpp::Environment envir);
-Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose);
+double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+  Rcpp::Environment& this_env);
+Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, Rcpp::Environment& this_env);
 
 void pmin_cond(Rcpp::IntegerVector indices, double x, int size, Rcpp::NumericVector prob,
   Rcpp::Environment envir);
@@ -50,7 +52,9 @@ void create_loops_min(int current_level, Rcpp::IntegerVector indices, double xa,
 void dynamic_nested_loops_min(int levels,
   double (*action)(Rcpp::IntegerVector, double, int, Rcpp::NumericVector, Rcpp::Environment),
   double x, int size, Rcpp::NumericVector prob, Rcpp::Environment envir);
-Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose);
+double pminmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+  Rcpp::Environment& this_env);
+Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, Rcpp::Environment& this_env);
 
 // UTILITY FUNCTIONS ----------------------------------------------------------
 bool any_sug(Rcpp::LogicalVector x);

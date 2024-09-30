@@ -5,7 +5,18 @@
 \title{Distribution function (CDF) of the maximum for a generic multinomial random
 vector.}
 \usage{
-pmaxmultinom(x, size, prob, log = FALSE, verbose = FALSE, method = "Rcpp")
+pmaxmultinom(
+  x,
+  size,
+  prob,
+  log = FALSE,
+  verbose = FALSE,
+  method = "Rcpp",
+  parallel = "no",
+  threads = 1,
+  cl = NULL,
+  env = NULL
+)
 }
 \arguments{
 \item{x}{A numeric vector indicating the values of the maximum to compute
@@ -19,6 +30,22 @@ probability for the \emph{K} classes; is internally normalized to sum 1.}
 
 \item{verbose}{A length-one logical vector; if TRUE, details are printed
 during the calculation.}
+
+\item{parallel}{A length-one character vector indicating the type of parallel
+operation to be used (if any). Possible values are \code{multicore}
+(which worksonly on Unix/mcOS), \code{snow} and \code{no} (i.e. serial
+instead of parallel computing).}
+
+\item{threads}{A length-one numeric vector for the number of chains to run.
+If greater than 1, package \pkg{\link{parallel}} is used to take advantage of any
+multiprocessing or distributed computing capabilities that may be available.}
+
+\item{cl}{An optional \pkg{parallel} or \pkg{snow} cluster for use if
+\code{parallel = "snow"}. If not supplied, a cluster on the local machine
+is created for the duration of the call.}
+
+\item{env}{An optional \code{\link{environment}} . If not supplied, one is created
+inside the function.}
 
 \item{logd}{A length-one logical vector; if TRUE, log probabilities are
 computed.}
@@ -38,8 +65,8 @@ set.seed(101)
 probs <- rdirichlet(1, rep(1/k, k))  # or rep(1/k, k) 
 xseq <- 0:n
 
-cdfmax <- pmaxmultinom_C(x = xseq, size = n, prob = probs, log = FALSE,
-                       verbose = TRUE)
+cdfmax <- pmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
+                       verbose = TRUE, method = "Rcpp")
 plot(xseq, cdfmax, type = "s", xlab = "x", ylab = "CDF")
 
 }
