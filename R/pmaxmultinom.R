@@ -7,13 +7,12 @@ dynamic_nested_loops_max <- function(levels, action, x, size, prob, envir = .Glo
       action(indices, xa, sz, prb, env)
     } else {
       # Recursive case: Create the current loop and recurse
-      prb_c <- cumsum(prb)
-      k <- length(prb)
-      idx <- k - current_level + 1
+      indices_sum <- sum(indices)
+      prx_sum <- get("prx_sum", envir = env)
+      prx_mat <- prx_sum[[current_level]]
       for (i in 0:xa) {
-      	px <- px_cond_max(i, sz - sum(indices), prb[idx]/prb_c[idx])
         prx <- get("prx", envir = env)
-        prx[[current_level]] <- c(prx[[current_level]], px)
+        prx[[current_level]] <- c(prx[[current_level]], prx_mat[i + 1, indices_sum + 1])
         assign("prx", prx, envir = env)
         create_loops(current_level + 1, c(indices, i), xa, sz, prb, env)
       }
@@ -26,22 +25,11 @@ dynamic_nested_loops_max <- function(levels, action, x, size, prob, envir = .Glo
 
 # Define the action to be performed inside the innermost loop
 pmax_cond <- function(indices, x, size, prob, envir = .GlobalEnv) {
-  prob_c <- cumsum(prob)
-  if ((x <= (size - sum(indices))) & (x >= (size - sum(indices))/2)) {
-    tmp <- 
-      pbinom(x, size - sum(indices), prob[2]/prob_c[2]) -
-      pbinom(size - sum(indices) - x - 1, size - sum(indices), prob[2]/prob_c[2])
-  }
-  else if (x > (size - sum(indices))) {
-    tmp <- 1
-  }
-  else if (x < (size - sum(indices))/2) {
-    tmp <- 0
-  }
   prmax <- get("prmax", envir = envir)
-  # prmax <- rbind(prmax, c(indices, tmp))  # old implementation that took too much time
+  prmax_sum <- get("prmax_sum", envir = envir)
   prmax_idx <- get("prmax_idx", envir = envir)
-  prmax[prmax_idx, ] <- c(indices, tmp)
+  indices_sum <- sum(indices)
+  prmax[prmax_idx, ] <- c(indices, prmax_sum[indices_sum + 1])
   prmax_idx <- prmax_idx + 1
   assign("prmax", prmax, envir = envir)
   assign("prmax_idx", prmax_idx, envir = envir)
@@ -59,20 +47,52 @@ px_cond_max <- function(x, size, prob) {
 #' @export
 pmaxmultinom_R_one <- function(x, size, prob, env) {
   k <- length(prob)
+  km2 <- k - 2
+  prob_c <- cumsum(prob)
+
   if (x >= 0 & x < size) {
     prmax_idx <- 1
     assign("prmax_idx", prmax_idx, envir = env)
-    prmax <- data.frame(matrix(NA, nrow = (x + 1)^(k - 2), ncol = (k - 1)))
+    prmax <- data.frame(matrix(NA, nrow = (x + 1)^km2, ncol = (k - 1)))
     assign("prmax", prmax, envir = env)
-    # prmax <- data.frame()  # old implementation that took too much time
-    prx <- vector(mode = "list", length = k - 2)
+
+    prmax_sum <- numeric(km2*x + 1)
+    for (i in 0:(km2*x)) {
+      if ((x <= (size - i)) & (x >= (size - i)/2)) {
+        tmp <- 
+          pbinom(x, size - i, prob[2]/prob_c[2]) -
+          pbinom(size - i - x - 1, size - i, prob[2]/prob_c[2])
+      }
+      else if (x > (size - i)) {
+        tmp <- 1
+      }
+      else if (x < (size - i)/2) {
+        tmp <- 0
+      }
+      prmax_sum[i + 1] <- tmp
+    }
+    assign("prmax_sum", prmax_sum, envir = env)
+
+    prx_sum <- vector(mode = "list", length = km2)
+    for (p in 1:km2) {
+      prx_mat <- matrix(0, nrow = (x + 1), ncol = ((p - 1)*x + 1))
+      for (i in 0:x) {
+        for (j in 1:((p - 1)*x + 1)) {
+          prx_mat[i + 1, j] <- px_cond_max(i, size - j + 1, prob[k - p + 1]/prob_c[k - p + 1])
+        }
+      }
+      prx_sum[[p]] = prx_mat
+    }
+    assign("prx_sum", prx_sum, envir = env)
+
+    prx <- vector(mode = "list", length = km2)
     assign("prx", prx, envir = env)
-    dynamic_nested_loops_max(k - 2, pmax_cond, x, size, prob, envir = env)
+    dynamic_nested_loops_max(km2, pmax_cond, x, size, prob, envir = env)
 
     prmax <- get("prmax", envir = env)
     prx <- get("prx", envir = env)
     red <- prmax
-    idx <- k - 2
+    idx <- km2
     while (idx > 0) {
       red[, ncol(red)] <- red[, ncol(red)] * prx[[idx]]
       if (idx > 1) {
@@ -81,7 +101,7 @@ pmaxmultinom_R_one <- function(x, size, prob, env) {
       } else {
         by_cols <- list(rep(0, nrow(red)))
       }
-      red <- aggregate(red[, ncol(red)], by_cols, sum)
+      red <- aggregate_sum_df(red[, ncol(red)], by_cols)
       red[1:(ncol(red) - 1)] <- red[rev(1:(ncol(red) - 1))]
       idx <- idx - 1
     }
@@ -95,14 +115,17 @@ pmaxmultinom_R_one <- function(x, size, prob, env) {
 }
 
 #' @export
-pmaxmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env) {
+pmaxmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env, tol) {
   xlen <- length(x)
 
   r <- numeric(xlen)
   for (m in 1:xlen) {
     if (verbose) print(paste0("computing P(max(X1,..., Xk) <= x) for x = ", x[m], "..."), quote = FALSE)
-    r[m] <- pmaxmultinom_R_one(x[m], size, prob, env)
-    gc()
+    if (xlen > 1 && all(diff(x) == 1) && abs(1 - r[m - 1]) < tol && m > 1) {
+      r[m] <- 1
+    } else {
+      r[m] <- pmaxmultinom_R_one(x[m], size, prob, env)
+    }
   }
 
   if (!log) 
@@ -132,13 +155,15 @@ pmaxmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env) {
 #'   (which worksonly on Unix/mcOS), \code{snow} and \code{no} (i.e. serial
 #'   instead of parallel computing).
 #' @param threads A length-one numeric vector for the number of chains to run.
-#'   If greater than 1, package \pkg{\link{parallel}} is used to take advantage of any
-#'   multiprocessing or distributed computing capabilities that may be available.
+#'   If greater than 1, package \pkg{\link{parallel}} is used to take advantage of
+#'   any multiprocessing or distributed computing capabilities that may be available.
 #' @param cl An optional \pkg{parallel} or \pkg{snow} cluster for use if
 #'   \code{parallel = "snow"}. If not supplied, a cluster on the local machine
 #'   is created for the duration of the call.
-#' @param env An optional \code{\link{environment}} . If not supplied, one is created
-#'   inside the function.
+#' @param env An optional \code{\link{environment}}. If not supplied, one is
+#'   created inside the function.
+#' @param tol An optional length-one non-negative value used to round the CDF
+#'   values when it is close to 1.
 #' @return A numeric vector providing the probabilities of the maximum.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{pminmulitnom_C}} for computing the
@@ -167,7 +192,7 @@ pmaxmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env) {
 #'
 #' @export
 pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "Rcpp",
-  parallel = "no", threads = 1, cl = NULL, env = NULL) {
+  parallel = "no", threads = 1, cl = NULL, env = NULL, tol = 1e-10) {
   have_mc <- have_snow <- FALSE
   if (parallel != "no" && threads > 1L) {
     if (parallel == "multicore") have_mc <- .Platform$OS.type != "windows"
@@ -256,9 +281,9 @@ pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
     }
   } else {
     if (method == "Rcpp") {
-      res <- pmaxmultinom_C(x, size, prob, log, verbose, env)
+      res <- pmaxmultinom_C(x, size, prob, log, verbose, env, tol)
     } else if (method == "R") {
-      res <- pmaxmultinom_R(x, size, prob, log, verbose, env)
+      res <- pmaxmultinom_R(x, size, prob, log, verbose, env, tol)
     }
   }
 

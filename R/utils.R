@@ -50,3 +50,44 @@ row_match <- function(x, table, nomatch = NA) {
   ct <- do.call("paste", c(table[, , drop = FALSE], sep = "\r"))
   match(cx, ct, nomatch = nomatch)
 }
+
+aggregate_sum_df <- function(x, by) {
+  x <- as.data.frame(x)
+  y <- as.data.frame(by, stringsAsFactors = FALSE)
+  ident <- function(x) {
+    y <- as.factor(x)
+    l <- length(levels(y))
+    s <- as.character(seq_len(l))
+    n <- nchar(s)
+    levels(y) <- paste0(strrep("0", n[l] - n), s)
+    y
+  }
+  grp <- lapply(y, ident)
+  grp <- if (ncol(y)) {
+    names(grp) <- NULL
+    do.call(paste, c(rev(grp), list(sep = ".")))
+  }
+  else integer(NROW(x))
+  y <- y[match(sort(unique(grp)), grp, 0L), , drop = FALSE]
+  z <- lapply(x, function(e) {
+    ans <- lapply(X = unname(split(e, grp)), FUN = "sum")
+    if (length(len <- unique(lengths(ans))) == 1L) {
+      if (len == 1L) {
+        cl <- lapply(ans, oldClass)
+        cl1 <- cl[[1L]]
+        ans <- if (!is.null(cl1) && all(vapply(cl, identical, NA, y = cl1)))
+          do.call(c, ans)
+        else unlist(ans, recursive = FALSE, use.names = FALSE)
+      }
+      else if (len > 1L)
+        ans <- matrix(unlist(ans, recursive = FALSE, 
+          use.names = FALSE), ncol = len, byrow = TRUE, 
+          dimnames = if (!is.null(nms <- names(ans[[1L]]))) 
+            list(NULL, nms))
+    }
+    ans
+  })
+  len <- length(y)
+  for (i in seq_along(z)) y[[len + i]] <- z[[i]]
+  y
+}

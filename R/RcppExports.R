@@ -140,16 +140,16 @@ pmaxmultinom_C_one <- function(x, size, prob, this_env) {
     .Call(`_XOMultinom_pmaxmultinom_C_one`, x, size, prob, this_env)
 }
 
-pmaxmultinom_C <- function(x, size, prob, logd, verbose, this_env) {
-    .Call(`_XOMultinom_pmaxmultinom_C`, x, size, prob, logd, verbose, this_env)
+pmaxmultinom_C <- function(x, size, prob, logd, verbose, this_env, tol) {
+    .Call(`_XOMultinom_pmaxmultinom_C`, x, size, prob, logd, verbose, this_env, tol)
 }
 
 pminmultinom_C_one <- function(x, size, prob, this_env) {
     .Call(`_XOMultinom_pminmultinom_C_one`, x, size, prob, this_env)
 }
 
-pminmultinom_C <- function(x, size, prob, logd, verbose, this_env) {
-    .Call(`_XOMultinom_pminmultinom_C`, x, size, prob, logd, verbose, this_env)
+pminmultinom_C <- function(x, size, prob, logd, verbose, this_env, tol) {
+    .Call(`_XOMultinom_pminmultinom_C`, x, size, prob, logd, verbose, this_env, tol)
 }
 
 #' CDF of the range for an equiprobable multinomial distribution.
@@ -269,8 +269,8 @@ rev_rcpp <- function(x) {
     .Call(`_XOMultinom_rev_rcpp`, x)
 }
 
-aggregate_rcpp <- function(x, by) {
-    .Call(`_XOMultinom_aggregate_rcpp`, x, by)
+aggregate_sum_rcpp <- function(x, by) {
+    .Call(`_XOMultinom_aggregate_sum_rcpp`, x, by)
 }
 
 list_resize_rcpp <- function(x, newsize) {

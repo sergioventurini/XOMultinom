@@ -15,7 +15,8 @@ pmaxmultinom(
   parallel = "no",
   threads = 1,
   cl = NULL,
-  env = NULL
+  env = NULL,
+  tol = 1e-10
 )
 }
 \arguments{
@@ -37,15 +38,18 @@ operation to be used (if any). Possible values are \code{multicore}
 instead of parallel computing).}
 
 \item{threads}{A length-one numeric vector for the number of chains to run.
-If greater than 1, package \pkg{\link{parallel}} is used to take advantage of any
-multiprocessing or distributed computing capabilities that may be available.}
+If greater than 1, package \pkg{\link{parallel}} is used to take advantage of
+any multiprocessing or distributed computing capabilities that may be available.}
 
 \item{cl}{An optional \pkg{parallel} or \pkg{snow} cluster for use if
 \code{parallel = "snow"}. If not supplied, a cluster on the local machine
 is created for the duration of the call.}
 
-\item{env}{An optional \code{\link{environment}} . If not supplied, one is created
-inside the function.}
+\item{env}{An optional \code{\link{environment}}. If not supplied, one is
+created inside the function.}
+
+\item{tol}{An optional length-one non-negative value used to round the CDF
+values when it is close to 1.}
 
 \item{logd}{A length-one logical vector; if TRUE, log probabilities are
 computed.}

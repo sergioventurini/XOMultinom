@@ -15,7 +15,8 @@ pminmultinom(
   parallel = "no",
   threads = 1,
   cl = NULL,
-  env = NULL
+  env = NULL,
+  tol = 1e-10
 )
 }
 \arguments{
@@ -46,6 +47,9 @@ is created for the duration of the \code{dmbc()} call.}
 
 \item{env}{An optional \code{\link{environment}} . If not supplied, one is created
 inside the function.}
+
+\item{tol}{An optional length-one non-negative value used to round the CDF
+values when it is close to 1.}
 
 \item{logd}{A length-one logical vector; if TRUE, log probabilities are
 computed.}

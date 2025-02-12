@@ -40,10 +40,10 @@ Rcpp::NumericVector rev_rcpp(Rcpp::NumericVector x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::DataFrame aggregate_rcpp(Rcpp::DataFrame x, Rcpp::List by) {
-  Rcpp::Function f("aggregate.data.frame");
+Rcpp::DataFrame aggregate_sum_rcpp(Rcpp::DataFrame x, Rcpp::List by) {
+  Rcpp::Function f("aggregate_sum_df");
 
-  return f(Rcpp::Named("x") = x, Rcpp::Named("by") = by, Rcpp::Named("FUN") = "sum");
+  return f(Rcpp::Named("x") = x, Rcpp::Named("by") = by);
 }
 
 // [[Rcpp::export]]
@@ -99,4 +99,11 @@ Rcpp::NumericMatrix flipcols_rcpp(Rcpp::NumericMatrix x) {
   }
 
   return y;
+}
+
+void print_umap(std::unordered_map<int, double> myMap) {
+  // Iterating through the hash table
+  for (const auto& pair : myMap) {
+    std::cout << pair.first << " -> " << pair.second << "\n";
+  }
 }

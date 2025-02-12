@@ -7,13 +7,12 @@ dynamic_nested_loops_min <- function(levels, action, x, size, prob, envir = .Glo
       action(indices, xa, sz, prb, env)
     } else {
       # Recursive case: Create the current loop and recurse
-      prb_c <- cumsum(prb)
-      k <- length(prb)
-      idx <- k - current_level + 1
+      indices_sum <- sum(indices)
+      prx_sum <- get("prx_sum", envir = env)
+      prx_mat <- prx_sum[[current_level]]
       for (i in xa:sz) {
-      	px <- px_cond_min(i, sz - sum(indices), prb[idx]/prb_c[idx])
         prx <- get("prx", envir = env)
-        prx[[current_level]] <- c(prx[[current_level]], px)
+        prx[[current_level]] <- c(prx[[current_level]], prx_mat[i - xa + 1, indices_sum - (current_level - 1)*xa + 1])
         assign("prx", prx, envir = env)
         create_loops(current_level + 1, c(indices, i), xa, sz, prb, env)
       }
@@ -26,23 +25,11 @@ dynamic_nested_loops_min <- function(levels, action, x, size, prob, envir = .Glo
 
 # Define the action to be performed inside the innermost loop
 pmin_cond <- function(indices, x, size, prob, envir = .GlobalEnv) {
-  prob_c <- cumsum(prob)
-  if ((x <= (size - sum(indices))/2) & (x >= 0)) {
-    tmp <- 
-      pbinom(size - sum(indices) - x, size - sum(indices), prob[2]/prob_c[2]) -
-      pbinom(x - 1, size - sum(indices), prob[2]/prob_c[2])
-  }
-  else if (x > (size - sum(indices))/2) {
-    tmp <- 0
-  }
-  else if (x < 0) {
-    tmp <- 1
-  }
   prmin <- get("prmin", envir = envir)
-  # prmin <- rbind(prmin, c(indices, tmp))  # old implementation that took too much time
+  prmin_sum <- get("prmin_sum", envir = envir)
   prmin_idx <- get("prmin_idx", envir = envir)
-
-  prmin[prmin_idx, ] <- c(indices, tmp)
+  indices_sum <- sum(indices)
+  prmin[prmin_idx, ] <- c(indices, prmin_sum[indices_sum - (length(prob) - 2)*x + 1])
   prmin_idx <- prmin_idx + 1
   assign("prmin", prmin, envir = envir)
   assign("prmin_idx", prmin_idx, envir = envir)
@@ -60,21 +47,59 @@ px_cond_min <- function(x, size, prob) {
 #' @export
 pminmultinom_R_one <- function(x, size, prob, env) {
   k <- length(prob)
+  km2 <- k - 2
+  prob_c <- cumsum(prob)
+
   if (x >= 0 & x < size) {
     x_tmp <- x + 1  # needed to convert P(min >= x) to P(min <= x)
     prmin_idx <- 1
     assign("prmin_idx", prmin_idx, envir = env)
-    prmin <- data.frame(matrix(NA, nrow = (size - x)^(k - 2), ncol = (k - 1)))
+    prmin_size <- (size - x)^km2
+    if (prmin_size == 0) {
+      prmin_size = 4
+    }
+    prmin <- data.frame(matrix(NA, nrow = prmin_size, ncol = (k - 1)))
     assign("prmin", prmin, envir = env)
-    # prmin <- data.frame()  # old implementation that took too much time
-    prx <- vector(mode = "list", length = k - 2)
+
+    prmin_sum <- numeric(km2*(size - x_tmp) + 1)
+    for (i in (km2*x_tmp):(km2*size)) {
+      if ((x_tmp <= (size - i)/2) & (x_tmp >= 0)) {
+        tmp <-
+          pbinom(size - i - x_tmp, size - i, prob[2]/prob_c[2]) -
+          pbinom(x_tmp - 1, size - i, prob[2]/prob_c[2])
+      } else if (x_tmp > (size - i)/2) {
+        tmp <- 0
+      } else if (x_tmp < 0) {
+        tmp <- 1
+      }
+      prmin_sum[i - km2*x_tmp + 1] <- tmp
+    }
+    assign("prmin_sum", prmin_sum, envir = env)
+    # print(prmin_sum) # [[DEBUG]]
+
+    prx_sum <- vector(mode = "list", length = km2)
+    for (p in 1:km2) {
+      prx_mat <- matrix(0, nrow = (size - x_tmp + 1), ncol = ((p - 1)*(size - x_tmp) + 1))
+      for (i in x_tmp:size) {
+        for (j in ((p - 1)*x_tmp):((p - 1)*size)) {
+          prx_mat[i - x_tmp + 1, j - (p - 1)*x_tmp + 1] <-
+            px_cond_min(i, size - j, prob[k - p + 1]/prob_c[k - p + 1])
+        }
+      }
+      prx_sum[[p]] = prx_mat
+    }
+    assign("prx_sum", prx_sum, envir = env)
+    # print(prx_sum) # [[DEBUG]]
+
+    prx <- vector(mode = "list", length = km2)
     assign("prx", prx, envir = env)
-    dynamic_nested_loops_min(k - 2, pmin_cond, x_tmp, size, prob, envir = env)
+    dynamic_nested_loops_min(km2, pmin_cond, x_tmp, size, prob, envir = env)
 
     prmin <- get("prmin", envir = env)
     prx <- get("prx", envir = env)
+    # print(prx) # [[DEBUG]]
     red <- prmin
-    idx <- k - 2
+    idx <- km2
     while (idx > 0) {
       red[, ncol(red)] <- red[, ncol(red)] * prx[[idx]]
       if (idx > 1) {
@@ -97,14 +122,17 @@ pminmultinom_R_one <- function(x, size, prob, env) {
 }
 
 #' @export
-pminmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env) {
+pminmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env, tol) {
   xlen <- length(x)
 
   r <- numeric(xlen)
   for (m in 1:xlen) {
     if (verbose) print(paste0("computing P(min(X1,..., Xk) <= x) for x = ", x[m], "..."), quote = FALSE)
-    r[m] <- pminmultinom_R_one(x[m], size, prob, env)
-    gc()
+    if (xlen > 1 && all(diff(x) == 1) && abs(1 - r[m - 1]) < tol && m > 1) {
+      r[m] <- 1
+    } else {
+      r[m] <- pminmultinom_R_one(x[m], size, prob, env)
+    }
   }
 
   if (!log)
@@ -141,6 +169,8 @@ pminmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env) {
 #'   is created for the duration of the \code{dmbc()} call.
 #' @param env An optional \code{\link{environment}} . If not supplied, one is created
 #'   inside the function.
+#' @param tol An optional length-one non-negative value used to round the CDF
+#'   values when it is close to 1.
 #' @return A numeric vector providing the probabilities of the minimum.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{pminmulitnom_C}} for computing the
@@ -169,7 +199,7 @@ pminmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env) {
 #'
 #' @export
 pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "Rcpp",
-  parallel = "no", threads = 1, cl = NULL, env = NULL) {
+  parallel = "no", threads = 1, cl = NULL, env = NULL, tol = 1e-10) {
   have_mc <- have_snow <- FALSE
   if (parallel != "no" && threads > 1L) {
     if (parallel == "multicore") have_mc <- .Platform$OS.type != "windows"
@@ -194,7 +224,7 @@ pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
   k <- length(prob)
   xlen <- length(x)
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0) 
-    stop("probabilities must be finite, non-negative and not all 0")
+    stop("probabilities must be finite, non-negative and not all 0.")
   prob <- prob/s
   # x <- as.integer(x + 0.5)
   i0 <- prob == 0
@@ -258,9 +288,9 @@ pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
     }
   } else {
     if (method == "Rcpp") {
-      res <- pminmultinom_C(x, size, prob, log, verbose, env)
+      res <- pminmultinom_C(x, size, prob, log, verbose, env, tol)
     } else if (method == "R") {
-      res <- pminmultinom_R(x, size, prob, log, verbose, env)
+      res <- pminmultinom_R(x, size, prob, log, verbose, env, tol)
     }
   }
 

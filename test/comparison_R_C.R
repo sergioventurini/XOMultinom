@@ -2,8 +2,8 @@ library(XOMultinom)
 
 ### MAXIMUM ###
 
-k <- 4 # dimension of the multinomial random vector
-n <- 100
+k <- 5 # dimension of the multinomial random vector
+n <- 50
 # set.seed(101)
 probs <- rdirichlet(1, rep(1/k, k))
 # probs <- rep(1/k, k)
@@ -12,14 +12,14 @@ xseq <- 0:n
 # CDF
 cdfmax <- pmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
                        verbose = TRUE, method = "Rcpp",
-                       parallel = "multicore", threads = 10)
+                       parallel = "multicore", threads = 10, tol = 1e-5)
 par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
 plot(xseq, cdfmax, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
 
 # PMF
 pmfmax <- dmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
                        verbose = TRUE, method = "Rcpp",
-                       parallel = "multicore", threads = 10)
+                       parallel = "multicore", threads = 10, tol = 1e-5)
 plot(xseq, pmfmax, type = "h", xlab = "x", ylab = "PMF", ylim = c(0, 1))
 points(xseq, pmfmax, pch = 20)
 
@@ -56,8 +56,8 @@ lines(lowess(xseq[xidx], dff, f = 2/3), col = 2)
 
 library(XOMultinom)
 
-k <- 4 # dimension of the multinomial random vector
-n <- 100
+k <- 5 # dimension of the multinomial random vector
+n <- 50
 # set.seed(101)
 probs <- rdirichlet(1, rep(1/k, k))
 # probs <- rep(1/k, k)
@@ -66,14 +66,14 @@ xseq <- 0:n
 # CDF
 cdfmin <- pminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
                        verbose = TRUE, method = "Rcpp",
-                       parallel = "multicore", threads = 10)
+                       parallel = "multicore", threads = 10, tol = 1e-5)
 par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
 plot(xseq, cdfmin, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
 
 # PMF
 pmfmin <- dminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
                        verbose = TRUE, method = "Rcpp",
-                       parallel = "multicore", threads = 10)
+                       parallel = "multicore", threads = 10, tol = 1e-5)
 plot(xseq, pmfmin, type = "h", xlab = "x", ylab = "PMF",
      ylim = c(0, 1))
 points(xseq, pmfmin, pch = 20)
