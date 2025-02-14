@@ -219,7 +219,7 @@ pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
   if (have_mc || have_snow) {
     pminmultinom_parallel <- function(x.c, size.c, prob.c, env.c, method.c) {
       if (method.c == "Rcpp") {
-        pminmultinom_C_one(x = x.c, size = size.c, prob = prob.c, this_env = env.c)
+        pminmultinom_C_one(x = x.c, size = size.c, prob = prob.c, this_env = env.c, verbose = FALSE)
       } else if (method.c == "R") {
         pminmultinom_R_one(x = x.c, size = size.c, prob = prob.c, env = env.c)
       }
