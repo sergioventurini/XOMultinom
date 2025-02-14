@@ -32,28 +32,26 @@ double smallest_order_value_C(const double & td, int n, int m);
 double max_for_range_C(const double & t_max, int n, int m, arma::vec prev, int t);
 double range_probability_C(const double & td, int n, int m);
 
-void pmax_cond(Rcpp::NumericVector indices, double x, int size, Rcpp::NumericVector prob,
-  Rcpp::Environment envir);
+void pmax_cond(Rcpp::NumericVector indices, Rcpp::Environment envir);
 double px_cond(double x, int size, double prob);
 void create_loops_max(int current_level, Rcpp::NumericVector indices, double xa, int sz,
   Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
-  double (*act)(Rcpp::NumericVector, double, int, Rcpp::NumericVector, Rcpp::Environment));
+  double (*act)(Rcpp::NumericVector, Rcpp::Environment));
 void dynamic_nested_loops_max(int levels,
-  double (*action)(Rcpp::NumericVector, double, int, Rcpp::NumericVector, Rcpp::Environment),
-  double x, int size, Rcpp::NumericVector prob, Rcpp::Environment envir);
+  double (*action)(Rcpp::NumericVector, Rcpp::Environment), double x, int size,
+  Rcpp::NumericVector prob, Rcpp::Environment envir);
 double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
   Rcpp::Environment& this_env);
 Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, Rcpp::Environment& this_env, const double& tol);
 
-void pmin_cond(Rcpp::NumericVector indices, double x, int size, Rcpp::NumericVector prob,
-  Rcpp::Environment envir);
+void pmin_cond(Rcpp::NumericVector indices, double x, Rcpp::Environment envir);
 double px_cond_min(double x, int size, double prob);
 void create_loops_min(int current_level, Rcpp::NumericVector indices, double xa, int sz,
   Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
-  double (*act)(Rcpp::NumericVector, double, int, Rcpp::NumericVector, Rcpp::Environment));
+  double (*act)(Rcpp::NumericVector, double, Rcpp::Environment));
 void dynamic_nested_loops_min(int levels,
-  double (*action)(Rcpp::NumericVector, double, int, Rcpp::NumericVector, Rcpp::Environment),
-  double x, int size, Rcpp::NumericVector prob, Rcpp::Environment envir);
+  double (*action)(Rcpp::NumericVector, double, Rcpp::Environment), double x, int size,
+  Rcpp::NumericVector prob, Rcpp::Environment envir);
 double pminmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
   Rcpp::Environment& this_env);
 Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, Rcpp::Environment& this_env, const double& tol);

@@ -4,16 +4,10 @@ dynamic_nested_loops_min <- function(levels, action, x, size, prob, envir = .Glo
   create_loops <- function(current_level, indices, xa, sz, prb, env) {
     if (current_level > levels) {
       # Base case: All loops are complete, perform the action
-      action(indices, xa, sz, prb, env)
+      action(indices, xa, env)
     } else {
       # Recursive case: Create the current loop and recurse
-      indices_sum <- sum(indices)
-      prx_sum <- get("prx_sum", envir = env)
-      prx_mat <- prx_sum[[current_level]]
       for (i in xa:sz) {
-        prx <- get("prx", envir = env)
-        prx[[current_level]] <- c(prx[[current_level]], prx_mat[i - xa + 1, indices_sum - (current_level - 1)*xa + 1])
-        assign("prx", prx, envir = env)
         create_loops(current_level + 1, c(indices, i), xa, sz, prb, env)
       }
     }
@@ -24,15 +18,24 @@ dynamic_nested_loops_min <- function(levels, action, x, size, prob, envir = .Glo
 }
 
 # Define the action to be performed inside the innermost loop
-pmin_cond <- function(indices, x, size, prob, envir = .GlobalEnv) {
-  prmin <- get("prmin", envir = envir)
+pmin_cond <- function(indices, x, envir = .GlobalEnv) {
+  prx_sum <- get("prx_sum", envir = envir)
   prmin_sum <- get("prmin_sum", envir = envir)
-  prmin_idx <- get("prmin_idx", envir = envir)
+  res <- get("res", envir = envir)
+
+  km2 <- length(indices)
   indices_sum <- sum(indices)
-  prmin[prmin_idx, ] <- c(indices, prmin_sum[indices_sum - (length(prob) - 2)*x + 1])
-  prmin_idx <- prmin_idx + 1
-  assign("prmin", prmin, envir = envir)
-  assign("prmin_idx", prmin_idx, envir = envir)
+  tmp <- prmin_sum[indices_sum - km2*x + 1]
+  ix <- indices_sum_sub <- 0
+  for (j in 1:km2) {
+    prx_mat <- prx_sum[[j]]
+    ix <- indices[j]
+    indices_sum_sub <- ifelse(j == 1, 0, sum(indices[1:(j - 1)]))
+    tmp <- tmp*prx_mat[ix - x + 1, indices_sum_sub - (j - 1)*x + 1]
+  }
+  res <- res + tmp
+
+  assign("res", res, envir = envir)
 }
 
 px_cond_min <- function(x, size, prob) {
@@ -48,19 +51,13 @@ px_cond_min <- function(x, size, prob) {
 pminmultinom_R_one <- function(x, size, prob, env) {
   k <- length(prob)
   km2 <- k - 2
+  x_tmp <- x + 1  # needed to convert P(min >= x) to P(min <= x)
   prob_c <- cumsum(prob)
 
-  if (x >= 0 & x < size) {
-    x_tmp <- x + 1  # needed to convert P(min >= x) to P(min <= x)
-    prmin_idx <- 1
-    assign("prmin_idx", prmin_idx, envir = env)
-    prmin_size <- (size - x)^km2
-    if (prmin_size == 0) {
-      prmin_size = 4
-    }
-    prmin <- data.frame(matrix(NA, nrow = prmin_size, ncol = (k - 1)))
-    assign("prmin", prmin, envir = env)
+  res <- 0
+  assign("res", res, envir = env)
 
+  if (x >= 0 & x < size) {
     prmin_sum <- numeric(km2*(size - x_tmp) + 1)
     for (i in (km2*x_tmp):(km2*size)) {
       if ((x_tmp <= (size - i)/2) & (x_tmp >= 0)) {
@@ -75,7 +72,6 @@ pminmultinom_R_one <- function(x, size, prob, env) {
       prmin_sum[i - km2*x_tmp + 1] <- tmp
     }
     assign("prmin_sum", prmin_sum, envir = env)
-    # print(prmin_sum) # [[DEBUG]]
 
     prx_sum <- vector(mode = "list", length = km2)
     for (p in 1:km2) {
@@ -89,31 +85,10 @@ pminmultinom_R_one <- function(x, size, prob, env) {
       prx_sum[[p]] = prx_mat
     }
     assign("prx_sum", prx_sum, envir = env)
-    # print(prx_sum) # [[DEBUG]]
 
-    prx <- vector(mode = "list", length = km2)
-    assign("prx", prx, envir = env)
     dynamic_nested_loops_min(km2, pmin_cond, x_tmp, size, prob, envir = env)
 
-    prmin <- get("prmin", envir = env)
-    prx <- get("prx", envir = env)
-    # print(prx) # [[DEBUG]]
-    red <- prmin
-    idx <- km2
-    while (idx > 0) {
-      red[, ncol(red)] <- red[, ncol(red)] * prx[[idx]]
-      if (idx > 1) {
-        which_cols <- 1:(ncol(red) - 2)
-        by_cols <- red[which_cols]
-      } else {
-        by_cols <- list(rep(0, nrow(red)))
-      }
-      red <- aggregate(red[, ncol(red)], by_cols, sum)
-      red[1:(ncol(red) - 1)] <- red[rev(1:(ncol(red) - 1))]
-      idx <- idx - 1
-    }
-
-    1 - red[1, 2]
+    1 - get("res", envir = env)
   } else if (x < 0) {
     0
   } else {
@@ -128,7 +103,7 @@ pminmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env, tol
   r <- numeric(xlen)
   for (m in 1:xlen) {
     if (verbose) print(paste0("computing P(min(X1,..., Xk) <= x) for x = ", x[m], "..."), quote = FALSE)
-    if (xlen > 1 && all(diff(x) == 1) && abs(1 - r[m - 1]) < tol && m > 1) {
+    if (xlen > 1 && all(diff(x) == 1) && m > 1 && abs(1 - r[m - 1]) < tol) {
       r[m] <- 1
     } else {
       r[m] <- pminmultinom_R_one(x[m], size, prob, env)

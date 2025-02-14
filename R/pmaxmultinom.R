@@ -4,16 +4,10 @@ dynamic_nested_loops_max <- function(levels, action, x, size, prob, envir = .Glo
   create_loops <- function(current_level, indices, xa, sz, prb, env) {
     if (current_level > levels) {
       # Base case: All loops are complete, perform the action
-      action(indices, xa, sz, prb, env)
+      action(indices, env)
     } else {
       # Recursive case: Create the current loop and recurse
-      indices_sum <- sum(indices)
-      prx_sum <- get("prx_sum", envir = env)
-      prx_mat <- prx_sum[[current_level]]
       for (i in 0:xa) {
-        prx <- get("prx", envir = env)
-        prx[[current_level]] <- c(prx[[current_level]], prx_mat[i + 1, indices_sum + 1])
-        assign("prx", prx, envir = env)
         create_loops(current_level + 1, c(indices, i), xa, sz, prb, env)
       }
     }
@@ -24,15 +18,24 @@ dynamic_nested_loops_max <- function(levels, action, x, size, prob, envir = .Glo
 }
 
 # Define the action to be performed inside the innermost loop
-pmax_cond <- function(indices, x, size, prob, envir = .GlobalEnv) {
-  prmax <- get("prmax", envir = envir)
+pmax_cond <- function(indices, envir = .GlobalEnv) {
+  prx_sum <- get("prx_sum", envir = envir)
   prmax_sum <- get("prmax_sum", envir = envir)
-  prmax_idx <- get("prmax_idx", envir = envir)
+  res <- get("res", envir = envir)
+
+  km2 <- length(indices)
   indices_sum <- sum(indices)
-  prmax[prmax_idx, ] <- c(indices, prmax_sum[indices_sum + 1])
-  prmax_idx <- prmax_idx + 1
-  assign("prmax", prmax, envir = envir)
-  assign("prmax_idx", prmax_idx, envir = envir)
+  tmp <- prmax_sum[indices_sum + 1]
+  ix <- indices_sum_sub <- 0
+  for (j in 1:km2) {
+    prx_mat <- prx_sum[[j]]
+    ix <- indices[j]
+    indices_sum_sub <- ifelse(j == 1, 0, sum(indices[1:(j - 1)]))
+    tmp <- tmp*prx_mat[ix + 1, indices_sum_sub + 1]
+  }
+  res <- res + tmp
+
+  assign("res", res, envir = envir)
 }
 
 px_cond_max <- function(x, size, prob) {
@@ -50,12 +53,10 @@ pmaxmultinom_R_one <- function(x, size, prob, env) {
   km2 <- k - 2
   prob_c <- cumsum(prob)
 
-  if (x >= 0 & x < size) {
-    prmax_idx <- 1
-    assign("prmax_idx", prmax_idx, envir = env)
-    prmax <- data.frame(matrix(NA, nrow = (x + 1)^km2, ncol = (k - 1)))
-    assign("prmax", prmax, envir = env)
+  res <- 0
+  assign("res", res, envir = env)
 
+  if (x >= 0 & x < size) {
     prmax_sum <- numeric(km2*x + 1)
     for (i in 0:(km2*x)) {
       if ((x <= (size - i)) & (x >= (size - i)/2)) {
@@ -85,28 +86,9 @@ pmaxmultinom_R_one <- function(x, size, prob, env) {
     }
     assign("prx_sum", prx_sum, envir = env)
 
-    prx <- vector(mode = "list", length = km2)
-    assign("prx", prx, envir = env)
     dynamic_nested_loops_max(km2, pmax_cond, x, size, prob, envir = env)
 
-    prmax <- get("prmax", envir = env)
-    prx <- get("prx", envir = env)
-    red <- prmax
-    idx <- km2
-    while (idx > 0) {
-      red[, ncol(red)] <- red[, ncol(red)] * prx[[idx]]
-      if (idx > 1) {
-        which_cols <- 1:(ncol(red) - 2)
-        by_cols <- red[which_cols]
-      } else {
-        by_cols <- list(rep(0, nrow(red)))
-      }
-      red <- aggregate_sum_df(red[, ncol(red)], by_cols)
-      red[1:(ncol(red) - 1)] <- red[rev(1:(ncol(red) - 1))]
-      idx <- idx - 1
-    }
-
-    red[1, 2]
+    get("res", envir = env)
   } else if (x < 0) {
     0
   } else {
@@ -121,7 +103,7 @@ pmaxmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env, tol
   r <- numeric(xlen)
   for (m in 1:xlen) {
     if (verbose) print(paste0("computing P(max(X1,..., Xk) <= x) for x = ", x[m], "..."), quote = FALSE)
-    if (xlen > 1 && all(diff(x) == 1) && abs(1 - r[m - 1]) < tol && m > 1) {
+    if (xlen > 1 && all(diff(x) == 1) && m > 1 && abs(1 - r[m - 1]) < tol) {
       r[m] <- 1
     } else {
       r[m] <- pmaxmultinom_R_one(x[m], size, prob, env)

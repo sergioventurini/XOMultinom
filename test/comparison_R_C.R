@@ -3,9 +3,10 @@ library(XOMultinom)
 ### MAXIMUM ###
 
 k <- 5 # dimension of the multinomial random vector
-n <- 50
+n <- 100
 # set.seed(101)
-probs <- rdirichlet(1, rep(1/k, k))
+# probs <- rdirichlet(1, rep(1/k, k))
+probs <- rdirichlet(1, rep(1, k))
 # probs <- rep(1/k, k)
 xseq <- 0:n
 
@@ -57,9 +58,10 @@ lines(lowess(xseq[xidx], dff, f = 2/3), col = 2)
 library(XOMultinom)
 
 k <- 5 # dimension of the multinomial random vector
-n <- 50
+n <- 100
 # set.seed(101)
-probs <- rdirichlet(1, rep(1/k, k))
+# probs <- rdirichlet(1, rep(1/k, k))
+probs <- rdirichlet(1, rep(1, k))
 # probs <- rep(1/k, k)
 xseq <- 0:n
 

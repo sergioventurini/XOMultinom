@@ -7,18 +7,24 @@
 
 // Note: RcppExport is an alias for extern "C"
 
-void pmax_cond(Rcpp::NumericVector indices, double x, int size, Rcpp::NumericVector prob,
-  Rcpp::Environment envir) {
-  Rcpp::NumericMatrix prmax = envir["prmax"];
+void pmax_cond(Rcpp::NumericVector indices, Rcpp::Environment envir) {
+  Rcpp::List prx_sum = envir["prx_sum"];
   Rcpp::NumericVector prmax_sum = envir["prmax_sum"];
-  int prmax_idx = envir["prmax_idx"];
-  int indices_sum = std::accumulate(indices.begin(), indices.end(), 0.0);
-  Rcpp::NumericVector indices_tmp = indices;
-  indices_tmp.push_back(prmax_sum[indices_sum]);
-  prmax(prmax_idx - 1, Rcpp::_) = indices_tmp;
-  prmax_idx++;
-  envir["prmax"] = prmax;
-  envir["prmax_idx"] = prmax_idx;
+  double res = envir["res"];
+
+  int km2 = indices.size();
+  int indices_sum = std::accumulate(indices.begin(), indices.end(), 0);
+  double tmp = prmax_sum[indices_sum];
+  int ix, indices_sum_sub = 0;
+  for (int j = 0; j < km2; j++) {
+    Rcpp::NumericMatrix prx_mat = prx_sum[j];
+    ix = static_cast<int>(indices[j]);
+    indices_sum_sub = (j == 0 ? 0 : std::accumulate(indices.begin(), indices.begin() + j, 0));
+    tmp *= prx_mat(ix, indices_sum_sub);
+  }
+  res += tmp;
+
+  envir["res"] = res;
 }
 
 double px_cond_max(double x, int size, double prob) {
@@ -34,24 +40,13 @@ double px_cond_max(double x, int size, double prob) {
 // Recursive function to create loops
 void create_loops_max(int current_level, Rcpp::NumericVector indices, double xa, int sz,
   Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
-  void (*act)(Rcpp::NumericVector, double, int, Rcpp::NumericVector, Rcpp::Environment)) {
+  void (*act)(Rcpp::NumericVector, Rcpp::Environment)) {
   if (current_level > levels) {
     // Base case: All loops are complete, perform the action
-    act(indices, xa, sz, prb, env);
+    act(indices, env);
   } else {
     // Recursive case: Create the current loop and recurse
-    int indices_sum = std::accumulate(indices.begin(), indices.end(), 0.0);
-    Rcpp::List prx_sum = env["prx_sum"];
-    Rcpp::NumericMatrix prx_mat = prx_sum[current_level - 1];
-    Rcpp::NumericVector prx_tmp;
     for (int i = 0; i <= xa; i++) {
-      Rcpp::List prx = env["prx"];
-      if (prx[current_level - 1] != R_NilValue) {
-        prx_tmp = prx[current_level - 1];
-      }
-      prx_tmp.push_back(prx_mat(i, indices_sum));
-      prx[current_level - 1] = prx_tmp;
-      env["prx"] = prx;
       Rcpp::NumericVector indices_next = indices;
       indices_next.push_back(i);
       create_loops_max(current_level + 1, indices_next, xa, sz, prb, env, levels, act);
@@ -61,8 +56,8 @@ void create_loops_max(int current_level, Rcpp::NumericVector indices, double xa,
 
 // Define a function to dynamically create and execute nested loops
 void dynamic_nested_loops_max(int levels,
-  void (*action)(Rcpp::NumericVector, double, int, Rcpp::NumericVector, Rcpp::Environment),
-  double x, int size, Rcpp::NumericVector prob, Rcpp::Environment envir) {
+  void (*action)(Rcpp::NumericVector, Rcpp::Environment), double x, int size,
+  Rcpp::NumericVector prob, Rcpp::Environment envir) {
   int one = 1;
   Rcpp::NumericVector null;
   create_loops_max(one, null, x, size, prob, envir, levels, action);
@@ -75,14 +70,12 @@ double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericV
   int km2 = k - 2;
   Rcpp::NumericVector prob_c = cumsum_rcpp(prob);
 
-  if (x >= 0 && x < size) {
-    int prmax_idx = 1;
-    this_env["prmax_idx"] = prmax_idx;
-    Rcpp::NumericMatrix prmax(std::pow(x + 1, km2), (k - 1));
-    this_env["prmax"] = prmax;
+  double res = 0;
+  this_env["res"] = res;
 
+  if (x >= 0 && x < size) {
     Rcpp::NumericVector prmax_sum(km2*x + 1);
-    double tmp;
+    double tmp = 0;
     for (int i = 0; i <= km2*x; i++) {
       if ((x <= (size - i)) && (x >= (size - i)/2)) {
         tmp =
@@ -109,44 +102,10 @@ double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericV
     }
     this_env["prx_sum"] = prx_sum;
 
-    Rcpp::List prx(km2);
-    this_env["prx"] = prx;
     dynamic_nested_loops_max(km2, pmax_cond, x, size, prob, this_env);
+    res = this_env["res"];
 
-    // Rcpp::print(prx); // [[DEBUG]]
-    Rcpp::NumericMatrix red(Rcpp::clone(prmax));
-    int idx = km2;
-    while (idx > 0) {
-      // prx = this_env["prx"];
-      Rcpp::NumericVector red_tmp = red(Rcpp::_, red.ncol() - 1);
-      red(Rcpp::_, red.ncol() - 1) = matelmult_rcpp(red_tmp, prx[idx - 1]);
-      Rcpp::List by_cols;
-      if (idx > 1) {
-        by_cols = list_resize_rcpp(by_cols, red.ncol() - 2);
-        for (int p = 0; p < (red.ncol() - 2); p++) {
-          Rcpp::NumericVector by_col_tmp = red(Rcpp::_, p);
-          by_cols[p] = Rcpp::List::create(Rcpp::Named("X") = by_col_tmp);;
-        }
-      } else {
-        by_cols = list_resize_rcpp(by_cols, 1);
-        Rcpp::IntegerVector zero_col(red.nrow());
-        by_cols[0] = zero_col;
-      }
-      Rcpp::DataFrame by_cols_df = Rcpp::as<Rcpp::DataFrame>(by_cols);
-      Rcpp::DataFrame red_df = nm2df_rcpp(red(Rcpp::_, Rcpp::Range(red.ncol() - 1, red.ncol() - 1)));
-      red_df = aggregate_sum_rcpp(red_df, by_cols_df);
-      red = df2nm_rcpp(red_df);
-      Rcpp::NumericMatrix red_rev = flipcols_rcpp(red(Rcpp::_, Rcpp::Range(0, red.ncol() - 2)));
-      for (int j = 0; j <= (red.ncol() - 2); j++) {
-        Rcpp::NumericVector v = red_rev(Rcpp::_, j);
-        red(Rcpp::_, j) = v;
-      }
-      idx--;
-
-      R_CheckUserInterrupt();
-    }
-
-    return red(0, 1);
+    return res;
   } else if (x < 0) {
     return 0;
   } else {
