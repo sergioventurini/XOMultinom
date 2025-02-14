@@ -1,13 +1,18 @@
 # Define a function to dynamically create and execute nested loops
 dynamic_nested_loops_max <- function(levels, action, x, size, prob, envir = .GlobalEnv) {
+  # pb <- txtProgressBar(min = 0, max = (x + 1)^(length(prob) - 2), style = 3)
+  # pb_idx <<- 1
+
   # Recursive function to create loops
   create_loops <- function(current_level, indices, xa, sz, prb, env) {
     if (current_level > levels) {
       # Base case: All loops are complete, perform the action
+      # setTxtProgressBar(pb, pb_idx)
       action(indices, env)
     } else {
       # Recursive case: Create the current loop and recurse
       for (i in 0:xa) {
+        # pb_idx <<- pb_idx + 1
         create_loops(current_level + 1, c(indices, i), xa, sz, prb, env)
       }
     }
@@ -102,7 +107,7 @@ pmaxmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env, tol
 
   r <- numeric(xlen)
   for (m in 1:xlen) {
-    if (verbose) print(paste0("computing P(max(X1,..., Xk) <= x) for x = ", x[m], "..."), quote = FALSE)
+    if (verbose) print(paste0("computing P(max(X1,..., Xk) <= ", x[m], ")..."), quote = FALSE)
     if (xlen > 1 && all(diff(x) == 1) && m > 1 && abs(1 - r[m - 1]) < tol) {
       r[m] <- 1
     } else {

@@ -40,8 +40,8 @@ class ETAProgressBar: public ProgressBar{
     public: // ===== main methods =====
       
       void display() {
-        REprintf("     0%%   10   20   30   40   50   60   70   80   90   100%%\n");
-        REprintf("     [----|----|----|----|----|----|----|----|----|----]\n");
+        REprintf("0%%   10   20   30   40   50   60   70   80   90   100%%\n");
+        REprintf("[----|----|----|----|----|----|----|----|----|----]\n");
         flush_console();
       }
       
@@ -77,8 +77,8 @@ class ETAProgressBar: public ProgressBar{
           
           // merge progress bar and time string
           std::stringstream strs;
-          // strs << "     |" << progress_bar_string << "| " << time_string << empty_space;
-          strs << "     |" << progress_bar_string << "| " << empty_space;
+          // strs << "|" << progress_bar_string << "| " << time_string << empty_space;
+          strs << "|" << progress_bar_string << "| " << empty_space;
           std::string temp_str = strs.str();
           char const* char_type = temp_str.c_str();
           

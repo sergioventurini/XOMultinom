@@ -40,16 +40,19 @@ double px_cond_max(double x, int size, double prob) {
 // Recursive function to create loops
 void create_loops_max(int current_level, Rcpp::NumericVector indices, double xa, int sz,
   Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
-  void (*act)(Rcpp::NumericVector, Rcpp::Environment)) {
+  void (*act)(Rcpp::NumericVector, Rcpp::Environment), Progress& prg) {
   if (current_level > levels) {
     // Base case: All loops are complete, perform the action
-    act(indices, env);
+    if (!Progress::check_abort()) {
+      prg.increment(); // update progress
+      act(indices, env);
+    }
   } else {
     // Recursive case: Create the current loop and recurse
     for (int i = 0; i <= xa; i++) {
       Rcpp::NumericVector indices_next = indices;
       indices_next.push_back(i);
-      create_loops_max(current_level + 1, indices_next, xa, sz, prb, env, levels, act);
+      create_loops_max(current_level + 1, indices_next, xa, sz, prb, env, levels, act, prg);
     }
   }
 }
@@ -57,15 +60,17 @@ void create_loops_max(int current_level, Rcpp::NumericVector indices, double xa,
 // Define a function to dynamically create and execute nested loops
 void dynamic_nested_loops_max(int levels,
   void (*action)(Rcpp::NumericVector, Rcpp::Environment), double x, int size,
-  Rcpp::NumericVector prob, Rcpp::Environment envir) {
+  Rcpp::NumericVector prob, Rcpp::Environment envir, bool verbose) {
   int one = 1;
   Rcpp::NumericVector null;
-  create_loops_max(one, null, x, size, prob, envir, levels, action);
+  ETAProgressBar pb;
+  Progress prg(std::pow((x + 1), (prob.size() - 2)), verbose, pb); // create the progress monitor
+  create_loops_max(one, null, x, size, prob, envir, levels, action, prg);
 }
 
 // [[Rcpp::export]]
 double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
-  Rcpp::Environment& this_env) {
+  Rcpp::Environment& this_env, const bool& verbose) {
   int k = prob.size();
   int km2 = k - 2;
   Rcpp::NumericVector prob_c = cumsum_rcpp(prob);
@@ -102,7 +107,7 @@ double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericV
     }
     this_env["prx_sum"] = prx_sum;
 
-    dynamic_nested_loops_max(km2, pmax_cond, x, size, prob, this_env);
+    dynamic_nested_loops_max(km2, pmax_cond, x, size, prob, this_env, verbose);
     res = this_env["res"];
 
     return res;
@@ -138,11 +143,11 @@ Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size
 
   Rcpp::NumericVector r(xlen);
   for (int m = 0; m < xlen; m++) {
-    if (verbose) Rprintf("computing P(max(X1,..., Xk) <= x) for x = %.0f...\n", x(m));
+    if (verbose) Rprintf("computing P(max(X1,..., Xk) <= %.2f)...\n", x(m));
     if (xlen > 1 && Rcpp::is_true(all(diff(x) == 1)) && m > 0 && abs(1 - r(m - 1)) < tol) {
       r(m) = 1;
     } else {
-      r(m) = pmaxmultinom_C_one(x(m), size, prob, this_env);
+      r(m) = pmaxmultinom_C_one(x(m), size, prob, this_env, verbose);
     }
 
     R_CheckUserInterrupt();

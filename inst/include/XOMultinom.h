@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <iostream>
 #include <unordered_set>
+#include "progress.hpp"
+#include "progbar.h"
 
 static const double machine_eps = 2.220446049250313080847e-16;
 static const double log_pi = std::log(M_PI);
@@ -36,24 +38,24 @@ void pmax_cond(Rcpp::NumericVector indices, Rcpp::Environment envir);
 double px_cond(double x, int size, double prob);
 void create_loops_max(int current_level, Rcpp::NumericVector indices, double xa, int sz,
   Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
-  double (*act)(Rcpp::NumericVector, Rcpp::Environment));
+  double (*act)(Rcpp::NumericVector, Rcpp::Environment), Progress& prg);
 void dynamic_nested_loops_max(int levels,
   double (*action)(Rcpp::NumericVector, Rcpp::Environment), double x, int size,
-  Rcpp::NumericVector prob, Rcpp::Environment envir);
+  Rcpp::NumericVector prob, Rcpp::Environment envir, bool verbose);
 double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
-  Rcpp::Environment& this_env);
+  Rcpp::Environment& this_env, const bool& verbose);
 Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, Rcpp::Environment& this_env, const double& tol);
 
 void pmin_cond(Rcpp::NumericVector indices, double x, Rcpp::Environment envir);
 double px_cond_min(double x, int size, double prob);
 void create_loops_min(int current_level, Rcpp::NumericVector indices, double xa, int sz,
   Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
-  double (*act)(Rcpp::NumericVector, double, Rcpp::Environment));
+  double (*act)(Rcpp::NumericVector, double, Rcpp::Environment), Progress& prg);
 void dynamic_nested_loops_min(int levels,
   double (*action)(Rcpp::NumericVector, double, Rcpp::Environment), double x, int size,
-  Rcpp::NumericVector prob, Rcpp::Environment envir);
+  Rcpp::NumericVector prob, Rcpp::Environment envir, bool verbose);
 double pminmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
-  Rcpp::Environment& this_env);
+  Rcpp::Environment& this_env, const bool& verbose);
 Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, Rcpp::Environment& this_env, const double& tol);
 
 // UTILITY FUNCTIONS ----------------------------------------------------------
