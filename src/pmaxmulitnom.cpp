@@ -53,6 +53,8 @@ void create_loops_max(int current_level, Rcpp::NumericVector indices, double xa,
       Rcpp::NumericVector indices_next = indices;
       indices_next.push_back(i);
       create_loops_max(current_level + 1, indices_next, xa, sz, prb, env, levels, act, prg);
+
+      R_CheckUserInterrupt();
     }
   }
 }
