@@ -136,20 +136,20 @@ max_order_statistic_C <- function(td, n, m) {
     .Call(`_XOMultinom_max_order_statistic_C`, td, n, m)
 }
 
-pmaxmultinom_C_one <- function(x, size, prob, this_env, verbose) {
-    .Call(`_XOMultinom_pmaxmultinom_C_one`, x, size, prob, this_env, verbose)
+pmaxmultinom_C_one <- function(x, size, prob, verbose, tol) {
+    .Call(`_XOMultinom_pmaxmultinom_C_one`, x, size, prob, verbose, tol)
 }
 
-pmaxmultinom_C <- function(x, size, prob, logd, verbose, this_env, tol) {
-    .Call(`_XOMultinom_pmaxmultinom_C`, x, size, prob, logd, verbose, this_env, tol)
+pmaxmultinom_C <- function(x, size, prob, logd, verbose, tol) {
+    .Call(`_XOMultinom_pmaxmultinom_C`, x, size, prob, logd, verbose, tol)
 }
 
-pminmultinom_C_one <- function(x, size, prob, this_env, verbose) {
-    .Call(`_XOMultinom_pminmultinom_C_one`, x, size, prob, this_env, verbose)
+pminmultinom_C_one <- function(x, size, prob, verbose, tol) {
+    .Call(`_XOMultinom_pminmultinom_C_one`, x, size, prob, verbose, tol)
 }
 
-pminmultinom_C <- function(x, size, prob, logd, verbose, this_env, tol) {
-    .Call(`_XOMultinom_pminmultinom_C`, x, size, prob, logd, verbose, this_env, tol)
+pminmultinom_C <- function(x, size, prob, logd, verbose, tol) {
+    .Call(`_XOMultinom_pminmultinom_C`, x, size, prob, logd, verbose, tol)
 }
 
 #' CDF of the range for an equiprobable multinomial distribution.

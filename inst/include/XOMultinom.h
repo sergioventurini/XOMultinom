@@ -17,7 +17,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <unordered_set>
 #include "progress.hpp"
 #include "progbar.h"
 
@@ -34,29 +33,53 @@ double smallest_order_value_C(const double & td, int n, int m);
 double max_for_range_C(const double & t_max, int n, int m, arma::vec prev, int t);
 double range_probability_C(const double & td, int n, int m);
 
-void pmax_cond(Rcpp::NumericVector indices, Rcpp::Environment envir);
+void pmax_cond(std::vector<double> indices, std::unique_ptr<double>& res,
+  std::unique_ptr<std::vector<double>>& prmax_sum,
+  std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& prx_sum);
 double px_cond(double x, int size, double prob);
-void create_loops_max(int current_level, Rcpp::NumericVector indices, double xa, int sz,
-  Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
-  double (*act)(Rcpp::NumericVector, Rcpp::Environment), Progress& prg);
+void create_loops_max(int current_level, std::vector<double> indices, double xa, int sz,
+  Rcpp::NumericVector prb, int levels,
+  double (*act)(std::vector<double>, std::unique_ptr<double>&,
+    std::unique_ptr<std::vector<double>>&,
+    std::vector<std::unique_ptr<std::vector<std::vector<double>>>>&),
+  Progress& prg, std::unique_ptr<double>& res, std::unique_ptr<std::vector<double>>& prmax_sum,
+  std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& prx_sum,
+  const double& tol);
 void dynamic_nested_loops_max(int levels,
-  double (*action)(Rcpp::NumericVector, Rcpp::Environment), double x, int size,
-  Rcpp::NumericVector prob, Rcpp::Environment envir, bool verbose);
+  double (*action)(std::vector<double>, std::unique_ptr<double>&,
+    std::unique_ptr<std::vector<double>>&,
+    std::vector<std::unique_ptr<std::vector<std::vector<double>>>>&), double x, int size,
+  Rcpp::NumericVector prob, bool verbose, std::unique_ptr<double>& res,
+  std::unique_ptr<std::vector<double>>& prmax_sum,
+  std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& prx_sum,
+  const double& tol);
 double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
-  Rcpp::Environment& this_env, const bool& verbose);
-Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, Rcpp::Environment& this_env, const double& tol);
+  const bool& verbose, const double& tol);
+Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, const double& tol);
 
-void pmin_cond(Rcpp::NumericVector indices, double x, Rcpp::Environment envir);
+void pmin_cond(std::vector<double> indices, double x, std::unique_ptr<double>& res,
+  std::unique_ptr<std::vector<double>>& prmin_sum,
+  std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& prx_sum);
 double px_cond_min(double x, int size, double prob);
-void create_loops_min(int current_level, Rcpp::NumericVector indices, double xa, int sz,
-  Rcpp::NumericVector prb, Rcpp::Environment env, int levels,
-  double (*act)(Rcpp::NumericVector, double, Rcpp::Environment), Progress& prg);
+void create_loops_min(int current_level, std::vector<double> indices, double xa, int sz,
+  Rcpp::NumericVector prb, int levels,
+  double (*act)(std::vector<double>, double, std::unique_ptr<double>&,
+    std::unique_ptr<std::vector<double>>&,
+    std::vector<std::unique_ptr<std::vector<std::vector<double>>>>&),
+  Progress& prg, std::unique_ptr<double>& res, std::unique_ptr<std::vector<double>>& prmin_sum,
+  std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& prx_sum,
+  const double& tol);
 void dynamic_nested_loops_min(int levels,
-  double (*action)(Rcpp::NumericVector, double, Rcpp::Environment), double x, int size,
-  Rcpp::NumericVector prob, Rcpp::Environment envir, bool verbose);
+  double (*action)(std::vector<double>, double, std::unique_ptr<double>&,
+    std::unique_ptr<std::vector<double>>&,
+    std::vector<std::unique_ptr<std::vector<std::vector<double>>>>&), double x, int size,
+  Rcpp::NumericVector prob, bool verbose, std::unique_ptr<double>& res,
+  std::unique_ptr<std::vector<double>>& prmin_sum,
+  std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& prx_sum,
+  const double& tol);
 double pminmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
-  Rcpp::Environment& this_env, const bool& verbose);
-Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, Rcpp::Environment& this_env, const double& tol);
+  const bool& verbose, const double& tol);
+Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& probs, const bool& logd, const bool& verbose, const double& tol);
 
 // UTILITY FUNCTIONS ----------------------------------------------------------
 bool any_sug(Rcpp::LogicalVector x);

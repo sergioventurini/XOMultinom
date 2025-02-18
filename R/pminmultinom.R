@@ -1,25 +1,32 @@
 # Define a function to dynamically create and execute nested loops
-dynamic_nested_loops_min <- function(levels, action, x, size, prob, envir = .GlobalEnv) {
+dynamic_nested_loops_min <- function(levels, action, x, size, prob, envir = .GlobalEnv, tol) {
   # pb <- txtProgressBar(min = 0, max = (size - x + 1)^(length(prob) - 2), style = 3)
   # pb_idx <<- 1
 
   # Recursive function to create loops
-  create_loops <- function(current_level, indices, xa, sz, prb, env) {
+  create_loops_min <- function(current_level, indices, xa, sz, prb, env, tol) {
     if (current_level > levels) {
       # Base case: All loops are complete, perform the action
       # setTxtProgressBar(pb, pb_idx)
-      action(indices, xa, env)
+      # res <- get("res", envir = env)
+      # if (res > 1 - tol) {
+      #   res <- 1
+      #   assign("res", res, envir = env)
+      #   return(invisible(NULL))
+      # } else {
+        action(indices, xa, env)
+      # }
     } else {
       # Recursive case: Create the current loop and recurse
       for (i in xa:sz) {
         # pb_idx <<- pb_idx + 1
-        create_loops(current_level + 1, c(indices, i), xa, sz, prb, env)
+        create_loops_min(current_level + 1, c(indices, i), xa, sz, prb, env, tol)
       }
     }
   }
   
   # Start the recursive loop creation with level 1 and an empty index vector
-  create_loops(1, integer(0), x, size, prob, envir)
+  create_loops_min(1, integer(0), x, size, prob, envir, tol)
 }
 
 # Define the action to be performed inside the innermost loop
@@ -53,7 +60,7 @@ px_cond_min <- function(x, size, prob) {
 }
 
 #' @export
-pminmultinom_R_one <- function(x, size, prob, env) {
+pminmultinom_R_one <- function(x, size, prob, env, tol) {
   k <- length(prob)
   km2 <- k - 2
   x_tmp <- x + 1  # needed to convert P(min >= x) to P(min <= x)
@@ -91,7 +98,7 @@ pminmultinom_R_one <- function(x, size, prob, env) {
     }
     assign("prx_sum", prx_sum, envir = env)
 
-    dynamic_nested_loops_min(km2, pmin_cond, x_tmp, size, prob, envir = env)
+    dynamic_nested_loops_min(km2, pmin_cond, x_tmp, size, prob, envir = env, tol)
 
     1 - get("res", envir = env)
   } else if (x < 0) {
@@ -111,7 +118,7 @@ pminmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env, tol
     if (xlen > 1 && all(diff(x) == 1) && m > 1 && abs(1 - r[m - 1]) < tol) {
       r[m] <- 1
     } else {
-      r[m] <- pminmultinom_R_one(x[m], size, prob, env)
+      r[m] <- pminmultinom_R_one(x[m], size, prob, env, tol)
     }
   }
 
@@ -219,9 +226,9 @@ pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
   if (have_mc || have_snow) {
     pminmultinom_parallel <- function(x.c, size.c, prob.c, env.c, method.c) {
       if (method.c == "Rcpp") {
-        pminmultinom_C_one(x = x.c, size = size.c, prob = prob.c, this_env = env.c, verbose = FALSE)
+        pminmultinom_C_one(x = x.c, size = size.c, prob = prob.c, verbose = FALSE, tol = tol)
       } else if (method.c == "R") {
-        pminmultinom_R_one(x = x.c, size = size.c, prob = prob.c, env = env.c)
+        pminmultinom_R_one(x = x.c, size = size.c, prob = prob.c, env = env.c, tol = tol)
       }
     }
 
@@ -268,7 +275,7 @@ pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
     }
   } else {
     if (method == "Rcpp") {
-      res <- pminmultinom_C(x, size, prob, log, verbose, env, tol)
+      res <- pminmultinom_C(x, size, prob, log, verbose, tol)
     } else if (method == "R") {
       res <- pminmultinom_R(x, size, prob, log, verbose, env, tol)
     }
