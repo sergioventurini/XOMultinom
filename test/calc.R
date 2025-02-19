@@ -1,3 +1,5 @@
+library(XOMultinom)
+
 t <- 1
 n <- 7
 m <- 10
