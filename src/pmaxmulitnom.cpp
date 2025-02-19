@@ -41,17 +41,17 @@ void create_loops_max(int current_level, std::vector<double> indices, double xa,
   std::unique_ptr<double>& res, std::unique_ptr<std::vector<double>>& prmax_sum,
   std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& prx_sum,
   const double& tol) {
+  if (*res == 1.0) return;
   if (current_level > levels) {
     // base case: all loops are complete, perform the action
     if (!Progress::check_abort()) {
       prg.increment(); // update progress
-      // if (*res > 1.0 - tol) {
-      //   *res = 1;
-      //   return;
-      // } else {
-        act(indices, res, prmax_sum, prx_sum);
+      act(indices, res, prmax_sum, prx_sum);
+      if (*res > 1.0 - tol) {
+        *res = 1.0;
+        return;
       }
-    // }
+    }
   } else {
     // recursive case: create the current loop and recurse
     for (int i = 0; i <= xa; i++) {

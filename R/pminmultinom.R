@@ -5,17 +5,18 @@ dynamic_nested_loops_min <- function(levels, action, x, size, prob, envir = .Glo
 
   # Recursive function to create loops
   create_loops_min <- function(current_level, indices, xa, sz, prb, env, tol) {
+    res <- get("res", envir = env)
+    if (res == 1) return(invisible(NULL))
     if (current_level > levels) {
       # Base case: All loops are complete, perform the action
       # setTxtProgressBar(pb, pb_idx)
-      # res <- get("res", envir = env)
-      # if (res > 1 - tol) {
-      #   res <- 1
-      #   assign("res", res, envir = env)
-      #   return(invisible(NULL))
-      # } else {
-        action(indices, xa, env)
-      # }
+      action(indices, xa, env)
+      res <- get("res", envir = env)
+      if (res > 1 - tol) {
+        res <- 1
+        assign("res", res, envir = env)
+        return(invisible(NULL))
+      }
     } else {
       # Recursive case: Create the current loop and recurse
       for (i in xa:sz) {

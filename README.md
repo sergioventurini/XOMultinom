@@ -11,7 +11,7 @@ status](https://www.r-pkg.org/badges/version/XOMultinom)](https://cran.r-project
 
 ## Overview
 
-###### Current release: 0.5.3
+###### Current release: 0.6.0
 ###### R version required: at least 3.6.0
 `R` package for computing the exact distributions of some functions of the
 ordered multinomial counts.
