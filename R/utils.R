@@ -91,3 +91,10 @@ aggregate_sum_df <- function(x, by) {
   for (i in seq_along(z)) y[[len + i]] <- z[[i]]
   y
 }
+
+list_2_matrix <- function(my_list) {
+  if (!is.list(my_list))
+    stop("a list is required in input.")
+
+  do.call(rbind, my_list)
+}

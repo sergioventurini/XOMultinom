@@ -11,7 +11,7 @@
 #include <R_ext/Utils.h>
 #include <RcppArmadillo.h>
 #include <cmath>
-#include <climits>
+#include <limits>
 #include <string>
 #include <numeric>
 #include <iostream>
@@ -34,18 +34,31 @@ double max_for_range_C(const double & t_max, int n, int m, arma::vec prev, int t
 double range_probability_C(const double & td, int n, int m);
 
 // FUNCTIONS FROM CORRADO (2011) ----------------------------------------------
+std::vector<std::vector<double>> computeQk_full(const int& k, const int& size,
+  const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
+std::vector<std::vector<double>> computeQk(const double& a, const double& b, const int& k,
+  const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
+std::vector<std::vector<double>> computeQk_culled(std::vector<std::vector<double>> Qk,
+  const double& a, const double& b, const int& k, const int& size,
+  const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
 std::vector<std::vector<double>> computeQk_max(const double& x, const int& k, const int& size,
   const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
+std::vector<std::vector<double>> computeQk_min(const double& x, const int& k, const int& size,
+  const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
+
 double pmaxmultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
   const bool& verbose, const double& tol);
 Rcpp::NumericVector pmaxmultinom_corrado(const Rcpp::NumericVector& x, const int& size,
   const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
 
-std::vector<std::vector<double>> computeQk_min(const double& x, const int& k, const int& size,
-  const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
 double pminmultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
   const bool& verbose, const double& tol);
 Rcpp::NumericVector pminmultinom_corrado(const Rcpp::NumericVector& x, const int& size,
+  const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
+
+double prangemultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+  const bool& verbose, const double& tol);
+Rcpp::NumericVector prangemultinom_corrado(const Rcpp::NumericVector& x, const int& size,
   const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
 
 // NEW FUNCTIONS BY BONETTI/VENTURINI -----------------------------------------
@@ -108,10 +121,13 @@ Rcpp::DataFrame nm2df_rcpp(Rcpp::NumericMatrix x);
 Rcpp::NumericMatrix df2nm_rcpp(Rcpp::DataFrame x);
 Rcpp::NumericMatrix flipcols_rcpp(Rcpp::NumericMatrix x);
 void print_umap(std::unordered_map<int, double> myMap);
+std::vector<std::vector<double>> addMatrix(const std::vector<std::vector<double>>& A,
+  const std::vector<std::vector<double>>& B);
 std::vector<std::vector<double>> multiplyMatrix(const std::vector<std::vector<double>>& A,
   const std::vector<std::vector<double>>& B);
 std::vector<std::vector<double>> multiplyUpperTriangular(const std::vector<std::vector<double>>& A,
   const std::vector<std::vector<double>>& B);
 void printMatrix(const std::vector<std::vector<double>>& matrix);
+Rcpp::NumericMatrix vector2D_2_NM(std::vector<std::vector<double>> mat);
 
 #endif

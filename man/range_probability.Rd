@@ -8,7 +8,7 @@ range_probability(t, n, m)
 }
 \arguments{
 \item{t}{A length-one numeric vector indicating the value to compute the
-survival function for.}
+cumulative distribution function for.}
 
 \item{n}{A length-one integer vector indicating the number of independent
 balls.}

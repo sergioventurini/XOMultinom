@@ -107,6 +107,34 @@ void print_umap(std::unordered_map<int, double> myMap) {
   }
 }
 
+std::vector<std::vector<double>> addMatrix(const std::vector<std::vector<double>>& A,
+  const std::vector<std::vector<double>>& B) {
+  int rowsA = A.size();
+  int colsA = A[0].size();
+  int rowsB = B.size();
+  int colsB = B[0].size();
+
+  // ensure matrix addition is valid
+  if (rowsA != rowsB) {
+    throw std::invalid_argument("number of rows of A must match number of rows of B.");
+  }
+  if (colsA != colsB) {
+    throw std::invalid_argument("number of columns of A must match number of columns of B.");
+  }
+
+  // initialize C matrix with zeroes
+  std::vector<std::vector<double>> C(rowsA, std::vector<double>(colsA, 0.0));
+
+  // perform matrix multiplication
+  for (int i = 0; i < rowsA; i++) {
+    for (int j = 0; j < colsA; j++) {
+      C[i][j] = A[i][j] + B[i][j];
+    }
+  }
+
+  return C;
+}
+
 std::vector<std::vector<double>> multiplyMatrix(const std::vector<std::vector<double>>& A,
   const std::vector<std::vector<double>>& B) {
   int rowsA = A.size();
@@ -175,4 +203,30 @@ void printMatrix(const std::vector<std::vector<double>>& matrix) {
     }
     std::cout << std::endl;
   }
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix vector2D_2_NM(std::vector<std::vector<double>> mat) {
+  int rows = mat.size();
+  if (rows == 0) {
+    Rcpp::stop("input matrix has no rows.");
+  }
+  
+  int cols = mat[0].size();
+  for (const auto& row : mat) {
+    if (row.size() != cols) {
+      Rcpp::stop("all rows must have the same number of columns.");
+    }
+  }
+
+  Rcpp::NumericMatrix result(rows, cols);  // create an empty Rcpp::NumericMatrix
+
+  // fill NumericMatrix by converting from row-major to column-major format
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      result(i, j) = mat[i][j];  // direct assignment
+    }
+  }
+
+  return result;
 }

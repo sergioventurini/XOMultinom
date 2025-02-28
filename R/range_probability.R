@@ -5,7 +5,7 @@
 #' distribution.
 #'
 #' @param t A length-one numeric vector indicating the value to compute the
-#'   survival function for.
+#'   cumulative distribution function for.
 #' @param n A length-one integer vector indicating the number of independent
 #'   balls.
 #' @param m A length-one integer vector indicating the number of independent

@@ -107,3 +107,55 @@ dff <- as.numeric(pmfmin_emp) - pmfmin[xidx]
 summary(dff)
 plot(xseq[xidx], dff, pch = 20, xlab = "x", ylab = "PMF difference")
 lines(lowess(xseq[xidx], dff, f = 2/3), col = 2)
+
+### RANGE ###
+
+library(XOMultinom)
+
+k <- 8 # dimension of the multinomial random vector
+n <- 50
+# set.seed(101)
+# probs <- rdirichlet(1, rep(1/k, k))
+# probs <- rdirichlet(1, rep(1, k))
+probs <- rep(1/k, k)
+xseq <- 0:n
+
+# CDF
+cdfrange <- prangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
+                           verbose = TRUE, method = "Corrado",
+                           parallel = "multicore", threads = 10, tol = 1e-30)
+par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
+plot(xseq, cdfrange, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
+
+# PMF
+pmfrange <- drangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
+                           verbose = TRUE, method = "Corrado",
+                           parallel = "multicore", threads = 10, tol = 1e-5)
+plot(xseq, pmfrange, type = "h", xlab = "x", ylab = "PMF")
+points(xseq, pmfrange, pch = 20)
+
+### Comparison with simulated data ###
+set.seed(1406)
+Nsim <- 1e6
+simdata <- rmultinom(Nsim, n, probs)
+dat_emp <- apply(simdata, 2, function(x) diff(range(x)))
+res_emp <- ecdf(dat_emp)
+par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
+plot(res_emp, xlim = c(0, n), main = "", xlab = "x",
+     ylab = "CDF of range", ylim = c(0, 1), pch = 20)
+lines(xseq, cdfrange, type = "s", col = "green")
+dff <- res_emp(xseq) - cdfrange
+summary(dff)
+plot(xseq, dff, pch = 20, xlab = "x", ylab = "CDF Difference")
+lines(lowess(xseq, dff, f = 2/3), col = 2)
+
+pmfrange_emp <- prop.table(table(dat_emp))
+xidx <- match(as.integer(names(pmfrange_emp)), xseq)
+par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
+plot(xseq[xidx], pmfrange_emp, pch = 20, , type = "h", xlab = "x",
+     ylab = "PMF of range")
+lines(xseq[xidx], pmfrange[xidx], pch = 20, , type = "h", col = "green")
+dff <- as.numeric(pmfrange_emp) - pmfrange[xidx]
+summary(dff)
+plot(xseq[xidx], dff, pch = 20, xlab = "x", ylab = "PMF difference")
+lines(lowess(xseq[xidx], dff, f = 2/3), col = 2)
