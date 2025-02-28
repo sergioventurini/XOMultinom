@@ -144,12 +144,36 @@ pmaxmultinom_C <- function(x, size, prob, logd, verbose, tol) {
     .Call(`_XOMultinom_pmaxmultinom_C`, x, size, prob, logd, verbose, tol)
 }
 
+computeQk_max <- function(x, k, size, prob, verbose, tol) {
+    .Call(`_XOMultinom_computeQk_max`, x, k, size, prob, verbose, tol)
+}
+
+pmaxmultinom_corrado_one <- function(x, size, prob, verbose, tol) {
+    .Call(`_XOMultinom_pmaxmultinom_corrado_one`, x, size, prob, verbose, tol)
+}
+
+pmaxmultinom_corrado <- function(x, size, prob, logd, verbose, tol) {
+    .Call(`_XOMultinom_pmaxmultinom_corrado`, x, size, prob, logd, verbose, tol)
+}
+
 pminmultinom_C_one <- function(x, size, prob, verbose, tol) {
     .Call(`_XOMultinom_pminmultinom_C_one`, x, size, prob, verbose, tol)
 }
 
 pminmultinom_C <- function(x, size, prob, logd, verbose, tol) {
     .Call(`_XOMultinom_pminmultinom_C`, x, size, prob, logd, verbose, tol)
+}
+
+computeQk_min <- function(x, k, size, prob, verbose, tol) {
+    .Call(`_XOMultinom_computeQk_min`, x, k, size, prob, verbose, tol)
+}
+
+pminmultinom_corrado_one <- function(x, size, prob, verbose, tol) {
+    .Call(`_XOMultinom_pminmultinom_corrado_one`, x, size, prob, verbose, tol)
+}
+
+pminmultinom_corrado <- function(x, size, prob, logd, verbose, tol) {
+    .Call(`_XOMultinom_pminmultinom_corrado`, x, size, prob, logd, verbose, tol)
 }
 
 #' CDF of the range for an equiprobable multinomial distribution.

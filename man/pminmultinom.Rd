@@ -29,12 +29,18 @@ that are put into \emph{K} boxes in the typical multinomial experiment.}
 \item{prob}{A numeric non-negative of length \emph{K} specifying the
 probability for the \emph{K} classes; is internally normalized to sum 1.}
 
+\item{log}{A length-one logical vector; if TRUE, log probabilities are
+computed.}
+
 \item{verbose}{A length-one logical vector; if TRUE, details are printed
 during the calculation.}
 
+\item{method}{A length-one character vector indicating the method to use.
+Possible values are \code{"R"}, \code{"Rcpp"} and \code{"Corrado"}.}
+
 \item{parallel}{A length-one character vector indicating the type of parallel
-operation to be used (if any). Possible values are \code{multicore}
-(which worksonly on Unix/mcOS), \code{snow} and \code{no} (i.e. serial
+operation to be used (if any). Possible values are \code{"multicore"}
+(which worksonly on Unix/mcOS), \code{"snow"} and \code{"no"} (i.e. serial
 instead of parallel computing).}
 
 \item{threads}{A length-one numeric vector for the number of chains to run.
@@ -50,9 +56,6 @@ inside the function.}
 
 \item{tol}{An optional length-one non-negative value used to round the CDF
 values when it is close to 1.}
-
-\item{logd}{A length-one logical vector; if TRUE, log probabilities are
-computed.}
 }
 \value{
 A numeric vector providing the probabilities of the minimum.

@@ -13,10 +13,9 @@
 #include <cmath>
 #include <climits>
 #include <string>
-#include <algorithm>
-#include <stdio.h>
-#include <stdlib.h>
+#include <numeric>
 #include <iostream>
+#include <vector>
 #include "progress.hpp"
 #include "progbar.h"
 
@@ -25,6 +24,7 @@ static const double log_pi = std::log(M_PI);
 static const double log_2pi = std::log(2.0 * M_PI);
 static const double log_two = std::log(2.0);
 
+// FUNCTIONS FROM BONETTI ET AL. (2109) ---------------------------------------
 double max_order_statistic_C(const double & td, int n, int m);
 double recursive_sum_C(const double & td, int n, int m, int J, int sum_depth, int cur_depth, arma::vec rangeArg);
 double highest_order_statistics_C(const double & td, int n, int m, int J);
@@ -33,6 +33,22 @@ double smallest_order_value_C(const double & td, int n, int m);
 double max_for_range_C(const double & t_max, int n, int m, arma::vec prev, int t);
 double range_probability_C(const double & td, int n, int m);
 
+// FUNCTIONS FROM CORRADO (2011) ----------------------------------------------
+std::vector<std::vector<double>> computeQk_max(const double& x, const int& k, const int& size,
+  const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
+double pmaxmultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+  const bool& verbose, const double& tol);
+Rcpp::NumericVector pmaxmultinom_corrado(const Rcpp::NumericVector& x, const int& size,
+  const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
+
+std::vector<std::vector<double>> computeQk_min(const double& x, const int& k, const int& size,
+  const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
+double pminmultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+  const bool& verbose, const double& tol);
+Rcpp::NumericVector pminmultinom_corrado(const Rcpp::NumericVector& x, const int& size,
+  const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
+
+// NEW FUNCTIONS BY BONETTI/VENTURINI -----------------------------------------
 void pmax_cond(std::vector<double> indices, std::unique_ptr<double>& res,
   std::unique_ptr<std::vector<double>>& prmax_sum,
   std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& prx_sum);
@@ -92,5 +108,10 @@ Rcpp::DataFrame nm2df_rcpp(Rcpp::NumericMatrix x);
 Rcpp::NumericMatrix df2nm_rcpp(Rcpp::DataFrame x);
 Rcpp::NumericMatrix flipcols_rcpp(Rcpp::NumericMatrix x);
 void print_umap(std::unordered_map<int, double> myMap);
+std::vector<std::vector<double>> multiplyMatrix(const std::vector<std::vector<double>>& A,
+  const std::vector<std::vector<double>>& B);
+std::vector<std::vector<double>> multiplyUpperTriangular(const std::vector<std::vector<double>>& A,
+  const std::vector<std::vector<double>>& B);
+void printMatrix(const std::vector<std::vector<double>>& matrix);
 
 #endif

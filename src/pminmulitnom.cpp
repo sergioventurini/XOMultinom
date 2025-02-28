@@ -23,11 +23,11 @@ void pmin_cond(std::vector<double> indices, double x,
 }
 
 double px_cond_min(double x, int size, double prob) {
-  double tmp = 0;
+  double tmp = (size >= 0) ? R::dbinom(x, size, prob, 0) : 0;
 
-  if (size >= 0) {
-    tmp = R::dbinom(x, size, prob, 0);
-  }
+  // if (size >= 0) {
+  //   tmp = R::dbinom(x, size, prob, 0);
+  // }
 
   return tmp;
 }
@@ -119,9 +119,9 @@ double pminmultinom_C_one(const double& x, const int& size, const Rcpp::NumericV
 
     return (1.0 - *res);
   } else if (x < 0) {
-    return 0;
+    return 0.0;
   } else {
-    return 1;
+    return 1.0;
   }
 }
 

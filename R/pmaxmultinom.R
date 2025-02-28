@@ -141,13 +141,15 @@ pmaxmultinom_R <- function(x, size, prob, log = FALSE, verbose = FALSE, env, tol
 #'   that are put into \emph{K} boxes in the typical multinomial experiment.
 #' @param prob A numeric non-negative of length \emph{K} specifying the
 #'   probability for the \emph{K} classes; is internally normalized to sum 1.
-#' @param logd A length-one logical vector; if TRUE, log probabilities are
+#' @param log A length-one logical vector; if TRUE, log probabilities are
 #'   computed.
 #' @param verbose A length-one logical vector; if TRUE, details are printed
 #'   during the calculation.
+#' @param method A length-one character vector indicating the method to use.
+#'   Possible values are \code{"R"}, \code{"Rcpp"} and \code{"Corrado"}.
 #' @param parallel A length-one character vector indicating the type of parallel
-#'   operation to be used (if any). Possible values are \code{multicore}
-#'   (which worksonly on Unix/mcOS), \code{snow} and \code{no} (i.e. serial
+#'   operation to be used (if any). Possible values are \code{"multicore"}
+#'   (which worksonly on Unix/mcOS), \code{"snow"} and \code{"no"} (i.e. serial
 #'   instead of parallel computing).
 #' @param threads A length-one numeric vector for the number of chains to run.
 #'   If greater than 1, package \pkg{\link{parallel}} is used to take advantage of
@@ -205,7 +207,7 @@ pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
     }
     loadNamespace("parallel") # get this out of the way before recording seed
   }
-  if (!method == "R" && !method == "Rcpp") {
+  if (!method == "R" && !method == "Rcpp" && !method == "Corrado") {
     stop("method not available.")
   }
 
@@ -230,6 +232,8 @@ pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
         pmaxmultinom_C_one(x = x.c, size = size.c, prob = prob.c, verbose = FALSE, tol = tol)
       } else if (method.c == "R") {
         pmaxmultinom_R_one(x = x.c, size = size.c, prob = prob.c, env = env.c, tol = tol)
+      } else if (method.c == "Corrado") {
+        pmaxmultinom_corrado_one(x = x.c, size = size.c, prob = prob.c, verbose = FALSE, tol = tol)
       }
     }
 
@@ -279,6 +283,8 @@ pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
       res <- pmaxmultinom_C(x, size, prob, log, verbose, tol)
     } else if (method == "R") {
       res <- pmaxmultinom_R(x, size, prob, log, verbose, env, tol)
+    } else if (method == "Corrado") {
+      res <- pmaxmultinom_corrado(x, size, prob, log, verbose, tol)
     }
   }
 
