@@ -88,7 +88,7 @@ std::vector<std::vector<double>> computeQk_culled(std::vector<std::vector<double
 std::vector<std::vector<double>> computeQk(const double& a, const double& b, const int& k,
   const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol) {
   int a_int = static_cast<int>(a);
-  int b_int = static_cast<int>(b + 1);
+  int b_int = static_cast<int>(b);
   int m = prob.size();
   if (k < 1 || k > m) {
     std::printf("k must be between 1 and %d.\n", static_cast<int>(m));
@@ -132,6 +132,7 @@ std::vector<std::vector<double>> computeQk(const double& a, const double& b, con
   return Qk;
 }
 
+// The following functions are not needed any more (to delete in future)
 // [[Rcpp::export]]
 std::vector<std::vector<double>> computeQk_max(const double& x, const int& k, const int& size,
   const Rcpp::NumericVector& prob, const bool& verbose, const double& tol) {

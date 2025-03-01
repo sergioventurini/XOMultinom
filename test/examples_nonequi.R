@@ -13,7 +13,7 @@ xseq <- 0:n
 # CDF
 cdfmax <- pmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
                        verbose = TRUE, method = "Rcpp",
-                       parallel = "multicore", threads = 10, tol = 1e-5)
+                       parallel = "multicore", threads = 10, tol = 1e-20)
 par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
 plot(xseq, cdfmax, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
 

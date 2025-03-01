@@ -46,12 +46,16 @@ std::vector<std::vector<double>> computeQk_max(const double& x, const int& k, co
 std::vector<std::vector<double>> computeQk_min(const double& x, const int& k, const int& size,
   const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
 
-double pmaxmultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+double pmaxmultinom_corrado_one(const std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& Qk,
+  const double& x, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
+double pmaxmultinom_corrado_one_parallel(const double& x, const int& size, const Rcpp::NumericVector& prob,
   const bool& verbose, const double& tol);
 Rcpp::NumericVector pmaxmultinom_corrado(const Rcpp::NumericVector& x, const int& size,
   const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
 
-double pminmultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+double pminmultinom_corrado_one(const std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& Qk,
+  const double& x, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
+double pminmultinom_corrado_one_parallel(const double& x, const int& size, const Rcpp::NumericVector& prob,
   const bool& verbose, const double& tol);
 Rcpp::NumericVector pminmultinom_corrado(const Rcpp::NumericVector& x, const int& size,
   const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);

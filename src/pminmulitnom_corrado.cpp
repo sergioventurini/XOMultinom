@@ -7,8 +7,9 @@
 
 // Note: RcppExport is an alias for extern "C"
 
-// [[Rcpp::export]]
-double pminmultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
+double pminmultinom_corrado_one(
+  const std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& Qk,
+  const double& x, const int& size, const Rcpp::NumericVector& prob,
   const bool& verbose, const double& tol) {
   if (x < 0) {
     return 0.0;
@@ -17,15 +18,40 @@ double pminmultinom_corrado_one(const double& x, const int& size, const Rcpp::Nu
     return 1.0;
   }
   else {
+    double x_tmp = x + 1.0;  // needed to convert P(min >= x) to P(min <= x)
     int m = prob.size();
     std::vector<std::vector<double>> Qk_tmp = {};
-    std::vector<std::vector<double>> res = computeQk(size, x, 2, size, prob, verbose, tol);
+    std::vector<std::vector<double>> res = computeQk_culled(*Qk[1], size, x_tmp, 2, size, prob, verbose, tol);
     for (int k = 3; k < m; k++) {
-      Qk_tmp = computeQk(size, x, k, size, prob, verbose, tol);
+      Qk_tmp = computeQk_culled(*Qk[k - 1], size, x_tmp, k, size, prob, verbose, tol);
       res = multiplyUpperTriangular(res, Qk_tmp);
     }
-    res = multiplyMatrix(computeQk(size, x, 1, size, prob, verbose, tol), res);
-    res = multiplyMatrix(res, computeQk(size, x, m, size, prob, verbose, tol));
+    res = multiplyMatrix(computeQk_culled(*Qk[0], size, x_tmp, 1, size, prob, verbose, tol), res);
+    res = multiplyMatrix(res, computeQk_culled(*Qk[m - 1], size, x_tmp, m, size, prob, verbose, tol));
+    return (1.0 - res[0][0]);
+  }
+}
+
+// [[Rcpp::export]]
+double pminmultinom_corrado_one_parallel(const double& x, const int& size, const Rcpp::NumericVector& prob,
+  const bool& verbose, const double& tol) {
+  if (x < 0) {
+    return 0.0;
+  }
+  else if (x >= size) {
+    return 1.0;
+  }
+  else {
+    double x_tmp = x + 1.0;  // needed to convert P(min >= x) to P(min <= x)
+    int m = prob.size();
+    std::vector<std::vector<double>> Qk_tmp = {};
+    std::vector<std::vector<double>> res = computeQk(size, x_tmp, 2, size, prob, verbose, tol);
+    for (int k = 3; k < m; k++) {
+      Qk_tmp = computeQk(size, x_tmp, k, size, prob, verbose, tol);
+      res = multiplyUpperTriangular(res, Qk_tmp);
+    }
+    res = multiplyMatrix(computeQk(size, x_tmp, 1, size, prob, verbose, tol), res);
+    res = multiplyMatrix(res, computeQk(size, x_tmp, m, size, prob, verbose, tol));
     return (1.0 - res[0][0]);
   }
 }
@@ -53,13 +79,21 @@ Rcpp::NumericVector pminmultinom_corrado(const Rcpp::NumericVector& x, const int
   //   k = prob_new.size();
   // }
 
+  int m = prob.size();
+
+  std::vector<std::unique_ptr<std::vector<std::vector<double>>>> Qk(m);
+  for (int k = 1; k <= m; k++) {
+    Qk[k - 1] = std::make_unique<std::vector<std::vector<double>>>(size + 1, std::vector<double>(size + 1));
+    *Qk[k - 1] = computeQk_full(k, size, prob, verbose, tol);
+  }
+
   Rcpp::NumericVector r(xlen);
-  for (int m = 0; m < xlen; m++) {
-    if (verbose) std::printf("computing P(min(X1,..., Xk) <= %.2f)...\n", x(m));
-    if (xlen > 1 && Rcpp::is_true(all(diff(x) == 1)) && m > 0 && abs(1 - r(m - 1)) < tol) {
-      r(m) = 1;
+  for (int k = 0; k < xlen; k++) {
+    if (verbose) std::printf("computing P(min(X1,..., Xk) <= %.2f)...\n", x(k));
+    if (xlen > 1 && Rcpp::is_true(all(diff(x) == 1)) && k > 0 && abs(1 - r(k - 1)) < tol) {
+      r(k) = 1;
     } else {
-      r(m) = pminmultinom_corrado_one(x(m), size, prob, verbose, tol);
+      r(k) = pminmultinom_corrado_one(Qk, x(k), size, prob, verbose, tol);
     }
 
     R_CheckUserInterrupt();

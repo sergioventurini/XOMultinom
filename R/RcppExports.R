@@ -164,8 +164,8 @@ pmaxmultinom_C <- function(x, size, prob, logd, verbose, tol) {
     .Call(`_XOMultinom_pmaxmultinom_C`, x, size, prob, logd, verbose, tol)
 }
 
-pmaxmultinom_corrado_one <- function(x, size, prob, verbose, tol) {
-    .Call(`_XOMultinom_pmaxmultinom_corrado_one`, x, size, prob, verbose, tol)
+pmaxmultinom_corrado_one_parallel <- function(x, size, prob, verbose, tol) {
+    .Call(`_XOMultinom_pmaxmultinom_corrado_one_parallel`, x, size, prob, verbose, tol)
 }
 
 pmaxmultinom_corrado <- function(x, size, prob, logd, verbose, tol) {
@@ -180,8 +180,8 @@ pminmultinom_C <- function(x, size, prob, logd, verbose, tol) {
     .Call(`_XOMultinom_pminmultinom_C`, x, size, prob, logd, verbose, tol)
 }
 
-pminmultinom_corrado_one <- function(x, size, prob, verbose, tol) {
-    .Call(`_XOMultinom_pminmultinom_corrado_one`, x, size, prob, verbose, tol)
+pminmultinom_corrado_one_parallel <- function(x, size, prob, verbose, tol) {
+    .Call(`_XOMultinom_pminmultinom_corrado_one_parallel`, x, size, prob, verbose, tol)
 }
 
 pminmultinom_corrado <- function(x, size, prob, logd, verbose, tol) {

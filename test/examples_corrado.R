@@ -116,8 +116,8 @@ k <- 8 # dimension of the multinomial random vector
 n <- 50
 # set.seed(101)
 # probs <- rdirichlet(1, rep(1/k, k))
-# probs <- rdirichlet(1, rep(1, k))
-probs <- rep(1/k, k)
+probs <- rdirichlet(1, rep(1, k))
+# probs <- rep(1/k, k)
 xseq <- 0:n
 
 # CDF

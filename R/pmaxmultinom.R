@@ -233,7 +233,7 @@ pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
       } else if (method.c == "R") {
         pmaxmultinom_R_one(x = x.c, size = size.c, prob = prob.c, env = env.c, tol = tol)
       } else if (method.c == "Corrado") {
-        pmaxmultinom_corrado_one(x = x.c, size = size.c, prob = prob.c, verbose = FALSE, tol = tol)
+        pmaxmultinom_corrado_one_parallel(x = x.c, size = size.c, prob = prob.c, verbose = FALSE, tol = tol)
       }
     }
 

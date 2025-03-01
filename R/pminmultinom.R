@@ -233,7 +233,7 @@ pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
       } else if (method.c == "R") {
         pminmultinom_R_one(x = x.c, size = size.c, prob = prob.c, env = env.c, tol = tol)
       } else if (method.c == "Corrado") {
-        pminmultinom_corrado_one(x = x.c, size = size.c, prob = prob.c, verbose = FALSE, tol = tol)
+        pminmultinom_corrado_one_parallel(x = x.c, size = size.c, prob = prob.c, verbose = FALSE, tol = tol)
       }
     }
 

@@ -10,7 +10,6 @@
 // [[Rcpp::export]]
 double prangemultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob,
   const bool& verbose, const double& tol) {
-  // int x_int = static_cast<int>(x);
   int x_tmp = static_cast<int>(x + 1);
   if (x < 0) {
     return 0.0;
