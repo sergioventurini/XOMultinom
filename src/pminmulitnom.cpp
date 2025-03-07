@@ -17,7 +17,13 @@ void pmin_cond(std::vector<double> indices, double x,
   for (int j = 0; j < km2; j++) {
     ix = static_cast<int>(indices[j]);
     indices_sum_sub = (j == 0 ? 0 : std::accumulate(indices.begin(), indices.begin() + j, 0));
-    tmp *= (*prx_sum[j])[ix - x][indices_sum_sub - j*x];
+    if (tmp > 0.0) {
+      tmp *= (*prx_sum[j])[ix - x][indices_sum_sub - j*x];
+    }
+    else {
+      tmp = 0.0;
+      break;
+    }
   }
   *res += tmp;
 }

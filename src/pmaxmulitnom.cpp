@@ -17,7 +17,13 @@ void pmax_cond(std::vector<double> indices,
   for (int j = 0; j < km2; j++) {
     ix = static_cast<int>(indices[j]);
     indices_sum_sub = (j == 0 ? 0 : std::accumulate(indices.begin(), indices.begin() + j, 0));
-    tmp *= (*prx_sum[j])[ix][indices_sum_sub];
+    if (tmp > 0.0) {
+      tmp *= (*prx_sum[j])[ix][indices_sum_sub];
+    }
+    else {
+      tmp = 0.0;
+      break;
+    }
   }
   *res += tmp;
 }
