@@ -21,7 +21,7 @@ plot(xseq, cdfmax, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
 pmfmax <- dmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
                        verbose = TRUE, method = "Rcpp",
                        parallel = "multicore", threads = 10, tol = 1e-5)
-plot(xseq, pmfmax, type = "h", xlab = "x", ylab = "PMF", ylim = c(0, 1))
+plot(xseq, pmfmax, type = "h", xlab = "x", ylab = "PMF")
 points(xseq, pmfmax, pch = 20)
 
 # dmaxmultinom(x = c(3, 10, 2, 15), size = n, prob = probs, log = FALSE,
@@ -46,7 +46,7 @@ pmfmax_emp <- prop.table(table(dat_emp))
 xidx <- match(as.integer(names(pmfmax_emp)), xseq)
 par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
 plot(xseq[xidx], pmfmax_emp, pch = 20, , type = "h", xlab = "x",
-     ylab = "PMF of max", ylim = c(0, 1))
+     ylab = "PMF of max")
 lines(xseq[xidx], pmfmax[xidx], pch = 20, , type = "h", col = "green")
 dff <- as.numeric(pmfmax_emp) - pmfmax[xidx]
 summary(dff)
@@ -76,8 +76,7 @@ plot(xseq, cdfmin, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
 pmfmin <- dminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
                        verbose = TRUE, method = "Rcpp",
                        parallel = "multicore", threads = 10, tol = 1e-5)
-plot(xseq, pmfmin, type = "h", xlab = "x", ylab = "PMF",
-     ylim = c(0, 1))
+plot(xseq, pmfmin, type = "h", xlab = "x", ylab = "PMF")
 points(xseq, pmfmin, pch = 20)
 
 # dminmultinom(x = c(3, 10, 2, 15), size = n, prob = probs, log = FALSE,
@@ -102,7 +101,7 @@ pmfmin_emp <- prop.table(table(dat_emp))
 xidx <- match(as.integer(names(pmfmin_emp)), xseq)
 par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
 plot(xseq[xidx], pmfmin_emp, pch = 20, , type = "h", xlab = "x",
-     ylab = "PMF of min", ylim = c(0, 1))
+     ylab = "PMF of min")
 lines(xseq[xidx], pmfmin[xidx], pch = 20, , type = "h", col = "green")
 dff <- as.numeric(pmfmin_emp) - pmfmin[xidx]
 summary(dff)
