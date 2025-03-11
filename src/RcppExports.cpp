@@ -348,6 +348,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// twoloops
+void twoloops(const int& d, const int& n);
+RcppExport SEXP _XOMultinom_twoloops(SEXP dSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int& >::type d(dSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    twoloops(d, n);
+    return R_NilValue;
+END_RCPP
+}
+// twoloops_matrix
+void twoloops_matrix(const int& d, const int& n);
+RcppExport SEXP _XOMultinom_twoloops_matrix(SEXP dSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int& >::type d(dSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    twoloops_matrix(d, n);
+    return R_NilValue;
+END_RCPP
+}
+// dynamic_nested_loops
+void dynamic_nested_loops(int levels, double x);
+RcppExport SEXP _XOMultinom_dynamic_nested_loops(SEXP levelsSEXP, SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type levels(levelsSEXP);
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    dynamic_nested_loops(levels, x);
+    return R_NilValue;
+END_RCPP
+}
 // any_sug
 bool any_sug(Rcpp::LogicalVector x);
 RcppExport SEXP _XOMultinom_any_sug(SEXP xSEXP) {
@@ -485,6 +518,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_XOMultinom_range_probability_C", (DL_FUNC) &_XOMultinom_range_probability_C, 3},
     {"_XOMultinom_recursive_sum_C", (DL_FUNC) &_XOMultinom_recursive_sum_C, 7},
     {"_XOMultinom_smallest_order_value_C", (DL_FUNC) &_XOMultinom_smallest_order_value_C, 3},
+    {"_XOMultinom_twoloops", (DL_FUNC) &_XOMultinom_twoloops, 2},
+    {"_XOMultinom_twoloops_matrix", (DL_FUNC) &_XOMultinom_twoloops_matrix, 2},
+    {"_XOMultinom_dynamic_nested_loops", (DL_FUNC) &_XOMultinom_dynamic_nested_loops, 2},
     {"_XOMultinom_any_sug", (DL_FUNC) &_XOMultinom_any_sug, 1},
     {"_XOMultinom_cumsum_rcpp", (DL_FUNC) &_XOMultinom_cumsum_rcpp, 1},
     {"_XOMultinom_matelmult_rcpp", (DL_FUNC) &_XOMultinom_matelmult_rcpp, 2},

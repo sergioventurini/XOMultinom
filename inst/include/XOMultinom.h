@@ -134,4 +134,12 @@ std::vector<std::vector<double>> multiplyUpperTriangular(const std::vector<std::
 void printMatrix(const std::vector<std::vector<double>>& matrix);
 Rcpp::NumericMatrix vector2D_2_NM(std::vector<std::vector<double>> mat);
 
+// TEMPORARY ------------------------------------------------------------------
+void twoloops(const int& d, const int& n);
+void twoloops_matrix(const int& d, const int& n);
+void action(std::vector<double> indices);
+void create_loops(int current_level, std::vector<double> indices, double xa, int levels,
+  void (*act)(std::vector<double>));
+void dynamic_nested_loops(int levels, double x);
+
 #endif

@@ -297,6 +297,18 @@ smallest_order_value_C <- function(td, n, m) {
     .Call(`_XOMultinom_smallest_order_value_C`, td, n, m)
 }
 
+twoloops <- function(d, n) {
+    invisible(.Call(`_XOMultinom_twoloops`, d, n))
+}
+
+twoloops_matrix <- function(d, n) {
+    invisible(.Call(`_XOMultinom_twoloops_matrix`, d, n))
+}
+
+dynamic_nested_loops <- function(levels, x) {
+    invisible(.Call(`_XOMultinom_dynamic_nested_loops`, levels, x))
+}
+
 any_sug <- function(x) {
     .Call(`_XOMultinom_any_sug`, x)
 }
