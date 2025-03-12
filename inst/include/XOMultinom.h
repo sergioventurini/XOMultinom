@@ -133,6 +133,8 @@ std::vector<std::vector<double>> multiplyUpperTriangular(const std::vector<std::
   const std::vector<std::vector<double>>& B);
 void printMatrix(const std::vector<std::vector<double>>& matrix);
 Rcpp::NumericMatrix vector2D_2_NM(std::vector<std::vector<double>> mat);
+arma::mat vec_2_armaMat(std::vector<std::vector<double>> x);
+std::vector<std::vector<double>> armaMat_2_vec(const arma::mat& mat);
 
 // TEMPORARY ------------------------------------------------------------------
 void twoloops(const int& d, const int& n);

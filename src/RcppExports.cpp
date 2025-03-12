@@ -494,6 +494,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vec_2_armaMat
+arma::mat vec_2_armaMat(std::vector<std::vector<double>> x);
+RcppExport SEXP _XOMultinom_vec_2_armaMat(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::vector<double>> >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(vec_2_armaMat(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// armaMat_2_vec
+std::vector<std::vector<double>> armaMat_2_vec(const arma::mat& mat);
+RcppExport SEXP _XOMultinom_armaMat_2_vec(SEXP matSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type mat(matSEXP);
+    rcpp_result_gen = Rcpp::wrap(armaMat_2_vec(mat));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_XOMultinom_computeQk_full", (DL_FUNC) &_XOMultinom_computeQk_full, 5},
@@ -531,6 +553,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_XOMultinom_df2nm_rcpp", (DL_FUNC) &_XOMultinom_df2nm_rcpp, 1},
     {"_XOMultinom_flipcols_rcpp", (DL_FUNC) &_XOMultinom_flipcols_rcpp, 1},
     {"_XOMultinom_vector2D_2_NM", (DL_FUNC) &_XOMultinom_vector2D_2_NM, 1},
+    {"_XOMultinom_vec_2_armaMat", (DL_FUNC) &_XOMultinom_vec_2_armaMat, 1},
+    {"_XOMultinom_armaMat_2_vec", (DL_FUNC) &_XOMultinom_armaMat_2_vec, 1},
     {NULL, NULL, 0}
 };
 

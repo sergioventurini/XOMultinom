@@ -349,3 +349,11 @@ vector2D_2_NM <- function(mat) {
     .Call(`_XOMultinom_vector2D_2_NM`, mat)
 }
 
+vec_2_armaMat <- function(x) {
+    .Call(`_XOMultinom_vec_2_armaMat`, x)
+}
+
+armaMat_2_vec <- function(mat) {
+    .Call(`_XOMultinom_armaMat_2_vec`, mat)
+}
+

@@ -230,3 +230,40 @@ Rcpp::NumericMatrix vector2D_2_NM(std::vector<std::vector<double>> mat) {
 
   return result;
 }
+
+// [[Rcpp::export]]
+arma::mat vec_2_armaMat(std::vector<std::vector<double>> x) {
+  // Determine matrix dimensions
+  size_t rows = x.size();
+  size_t cols = rows > 0 ? x[0].size() : 0;
+
+  // Create an Armadillo matrix
+  arma::mat mat(rows, cols);
+
+  // Fill the matrix
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      mat(i, j) = x[i][j];
+    }
+  }
+
+  return mat;
+}
+
+// [[Rcpp::export]]
+std::vector<std::vector<double>> armaMat_2_vec(const arma::mat& mat) {
+  size_t rows = mat.n_rows;
+  size_t cols = mat.n_cols;
+
+  // Create a nested vector with the same dimensions
+  std::vector<std::vector<double>> vec(rows, std::vector<double>(cols));
+
+  // Copy data from arma::mat to std::vector<std::vector<double>>
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      vec[i][j] = mat(i, j);
+    }
+  }
+
+  return vec;
+}
