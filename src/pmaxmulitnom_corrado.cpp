@@ -5,7 +5,7 @@
 
 // [[Rcpp::depends("RcppArmadillo")]]
 
-// Note: RcppExport is an alias for extern "C"
+// Note: Rcpp::Export is an alias for extern "C"
 
 double pmaxmultinom_corrado_one(
   const std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& Qk,
@@ -21,11 +21,21 @@ double pmaxmultinom_corrado_one(
     int m = prob.size();
     std::vector<std::vector<double>> Qk_tmp = {};
     std::vector<std::vector<double>> res = computeQk_culled(*Qk[1], x, 0, 2, size, prob, verbose, tol);
+    // printMatrix(res);
     for (int k = 3; k < m; k++) {
       Qk_tmp = computeQk_culled(*Qk[k - 1], x, 0, k, size, prob, verbose, tol);
+      // printMatrix(Qk_tmp);
       res = multiplyUpperTriangular(res, Qk_tmp);
     }
+    // printMatrix(computeQk_culled(*Qk[0], x, 0, 1, size, prob, verbose, tol));
     res = multiplyMatrix(computeQk_culled(*Qk[0], x, 0, 1, size, prob, verbose, tol), res);
+    // printMatrix(computeQk_culled(*Qk[m - 1], x, 0, m, size, prob, verbose, tol));
+    // printMatrix(
+    //   multiplyMatrix(
+    //     computeQk_culled(*Qk[m - 2], x, 0, m - 1, size, prob, verbose, tol),
+    //     computeQk_culled(*Qk[m - 1], x, 0, m, size, prob, verbose, tol)
+    //   )
+    // );
     res = multiplyMatrix(res, computeQk_culled(*Qk[m - 1], x, 0, m, size, prob, verbose, tol));
     return res[0][0];
   }

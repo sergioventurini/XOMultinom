@@ -29,13 +29,7 @@ void pmin_cond(std::vector<double> indices, double x,
 }
 
 double px_cond_min(double x, int size, double prob) {
-  double tmp = (size >= 0) ? R::dbinom(x, size, prob, 0) : 0;
-
-  // if (size >= 0) {
-  //   tmp = R::dbinom(x, size, prob, 0);
-  // }
-
-  return tmp;
+  return (size >= 0) ? R::dbinom(x, size, prob, 0) : 0;
 }
 
 // Recursive function to create loops

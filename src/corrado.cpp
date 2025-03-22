@@ -5,7 +5,7 @@
 
 // [[Rcpp::depends("RcppArmadillo")]]
 
-// Note: RcppExport is an alias for extern "C"
+// Note: Rcpp::Export is an alias for extern "C"
 
 // [[Rcpp::export]]
 std::vector<std::vector<double>> computeQk_full(const int& k, const int& size,

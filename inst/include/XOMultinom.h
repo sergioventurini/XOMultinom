@@ -131,10 +131,12 @@ std::vector<std::vector<double>> multiplyMatrix(const std::vector<std::vector<do
   const std::vector<std::vector<double>>& B);
 std::vector<std::vector<double>> multiplyUpperTriangular(const std::vector<std::vector<double>>& A,
   const std::vector<std::vector<double>>& B);
-void printMatrix(const std::vector<std::vector<double>>& matrix);
 Rcpp::NumericMatrix vector2D_2_NM(std::vector<std::vector<double>> mat);
 arma::mat vec_2_armaMat(std::vector<std::vector<double>> x);
 std::vector<std::vector<double>> armaMat_2_vec(const arma::mat& mat);
+void printVector(const std::unique_ptr<std::vector<double>>& vecPtr);
+void printComplexVector(const std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& complexVec);
+void printMatrix(const std::vector<std::vector<double>>& matrix);
 
 // TEMPORARY ------------------------------------------------------------------
 void twoloops(const int& d, const int& n);

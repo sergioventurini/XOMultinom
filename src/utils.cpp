@@ -185,24 +185,13 @@ std::vector<std::vector<double>> multiplyUpperTriangular(const std::vector<std::
 
   for (int i = 0; i < rowsA; ++i) {
     for (int j = i; j < rowsA; ++j) {  // j starts from i (upper triangular property)
-      C[i][j] = 0;
-      for (int k = i; k <= j; ++k) {  // k starts from i
+      for (int k = i; k <= j; ++k) {   // k starts from i
         C[i][j] += A[i][k] * B[k][j];
       }
     }
   }
 
   return C;
-}
-
-// Function to print a matrix
-void printMatrix(const std::vector<std::vector<double>>& matrix) {
-  for (const auto& row : matrix) {
-    for (double val : row) {
-      std::cout << val << " ";
-    }
-    std::cout << std::endl;
-  }
 }
 
 // [[Rcpp::export]]
@@ -266,4 +255,46 @@ std::vector<std::vector<double>> armaMat_2_vec(const arma::mat& mat) {
   }
 
   return vec;
+}
+
+void printVector(const std::unique_ptr<std::vector<double>>& vecPtr) {
+  if (!vecPtr) {
+    std::cout << "Null pointer!" << std::endl;
+    return;
+  }
+
+  for (double val : *vecPtr) {  // Dereference pointer to access vector
+    std::cout << std::fixed << std::setprecision(6); // enables fixed-point notation
+    std::cout << std::setw(8) << val << std::endl;
+  }
+  std::cout << std::endl;
+}
+
+void printComplexVector(const std::vector<std::unique_ptr<std::vector<std::vector<double>>>>& complexVec) {
+  for (size_t i = 0; i < complexVec.size(); ++i) {  // Iterate over unique_ptr elements
+    if (!complexVec[i]) { // Check if unique_ptr is valid
+      std::cout << "Null pointer!" << std::endl;
+      continue;
+    }
+
+    for (const auto& matrix : *complexVec[i]) { // Dereference unique_ptr to access the vector
+      for (const auto& row : matrix) {  // Iterate over inner vector
+        std::cout << std::fixed << std::setprecision(6); // enables fixed-point notation
+        std::cout << std::setw(8) << row << " ";
+      }
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+  }
+}
+
+void printMatrix(const std::vector<std::vector<double>>& matrix) {
+  for (const auto& row : matrix) {
+    for (double val : row) {
+      std::cout << std::fixed << std::setprecision(6); // enables fixed-point notation
+      std::cout << std::setw(8) << val << " ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
 }

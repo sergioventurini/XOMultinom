@@ -5,7 +5,7 @@
 
 // [[Rcpp::depends("RcppArmadillo")]]
 
-// Note: RcppExport is an alias for extern "C"
+// Note: Rcpp::Export is an alias for extern "C"
 
 void pmax_cond(std::vector<double> indices,
   std::unique_ptr<double>& res, std::unique_ptr<std::vector<double>>& prmax_sum,
@@ -29,13 +29,7 @@ void pmax_cond(std::vector<double> indices,
 }
 
 double px_cond_max(double x, int size, double prob) {
-  double tmp = (size >= 0) ? R::dbinom(x, size, prob, 0) : 0;
-
-  // if (size >= 0) {
-  //   tmp = R::dbinom(x, size, prob, 0);
-  // }
-
-  return tmp;
+  return (size >= 0) ? R::dbinom(x, size, prob, 0) : 0;
 }
 
 // Recursive function to create loops
@@ -110,6 +104,8 @@ double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericV
       (*prmax_sum)[i] = tmp;
     }
 
+    // printVector(prmax_sum);
+
     std::vector<std::unique_ptr<std::vector<std::vector<double>>>> prx_sum(km2);
     for (int p = 0; p < km2; p++) {
       prx_sum[p] = std::make_unique<std::vector<std::vector<double>>>(x + 1, std::vector<double>(p * x + 1));
@@ -119,6 +115,8 @@ double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericV
         }
       }
     }
+
+    // printComplexVector(prx_sum);
 
     dynamic_nested_loops_max(km2, pmax_cond, x, size, prob, verbose, res, prmax_sum, prx_sum, tol);
 
