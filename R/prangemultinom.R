@@ -19,7 +19,7 @@
 #'   Possible values are \code{"R"}, \code{"Rcpp"} and \code{"Corrado"}.
 #' @param parallel A length-one character vector indicating the type of parallel
 #'   operation to be used (if any). Possible values are \code{"multicore"}
-#'   (which worksonly on Unix/mcOS), \code{"snow"} and \code{"no"} (i.e. serial
+#'   (which works only on Unix/mcOS), \code{"snow"} and \code{"no"} (i.e. serial
 #'   instead of parallel computing).
 #' @param threads A length-one numeric vector for the number of chains to run.
 #'   If greater than 1, package \pkg{\link{parallel}} is used to take advantage of

@@ -1,8 +1,8 @@
 Package: XOMultinom
 Type: Package
 Title: Exact distributions of some functions of the ordered multinomial counts
-Version: 0.6.4
-Date: 2025-03-11
+Version: 0.6.5
+Date: 2025-09-01
 Authors@R: c(
   person("Sergio", "Venturini", role=c("aut", "cre"), email = "sergio.venturini@unicatt.it"),
   person("Marco", "Bonetti", role=c("ctb"), email = "marco.bonetti@unibocconi.it"))
