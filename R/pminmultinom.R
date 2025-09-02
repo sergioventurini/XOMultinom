@@ -288,5 +288,8 @@ pminmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "
     }
   }
 
+  if (any(res < 0))
+    res[res < 0] <- 0
+
   return(res)
 }

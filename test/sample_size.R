@@ -76,23 +76,25 @@ ggplot(df, aes(x = incr, y = n, color = factor(k), group = k)) +
 
 # MINIMUM
 
-pow_seq <- c(0.8, 0.9)
-alpha_seq <- c(0.05, 0.01, 0.001)
-k_seq <- c(3:10, 15, 20, 30)
-decr_seq <- seq(0.1, 0.9, 0.1)
+pow_seq <- .8 #c(0.8, 0.9)
+alpha_seq <- .05 #c(0.05, 0.01, 0.001)
+k_seq <- 10 #c(3:10, 15, 20, 30)
+decr_seq <- .2 #seq(0.1, 0.9, 0.1)
 n_seq <- numeric(length(decr_seq))
 n_master <- list()
 for (pow in pow_seq) {
   for (alpha in alpha_seq) {
     cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
     n_all <- maxmin_multinom_size(k_seq, decr_seq, power = pow, alpha = alpha,
-                                  type = "min", method = "Corrado", verbose = FALSE)
+                                  type = "min", method = "Corrado", verbose = TRUE)
     n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- n_all
   }
 }
 
-save(n_master, file = "/Users/Sergio/dev/XOMultinom/data/sample_size_MIN.RData")
+# debug(find_k_gamma)
+# debug(maxmin_multinom_size)
 
+save(n_master, file = "/Users/Sergio/dev/XOMultinom/data/sample_size_MIN.RData")
 
 ### TMP ###
 
