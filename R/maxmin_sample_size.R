@@ -238,60 +238,13 @@ maxmin_multinom_size <- function(k_seq, delta_seq, power = 0.8, alpha = 0.05,
   for (k in k_seq) {
     if (verbose)
       cat("  Number of classes = ", k, "\n", sep = "")
-    probs_H0 <- rep(1/k, k)
+
     i <- 1
     for (delta in delta_seq) {
-      if (verbose)
-        cat("  * probability increment = ", delta*100, "%\n", sep = "")
-      if (type == "max") {
-        pmax <- incr_2_pmax(k, delta)
-        probs_H1 <- c(pmax, rep((1 - pmax)/(k - 1), k - 1))
-      }
-      else if (type == "min") {
-        pmin <- decr_2_pmin(k, delta)
-        probs_H1 <- c(pmin, rep((1 - pmin)/(k - 1), k - 1))
-      }
-      else {
-        stop("the type argument can only be equal to 'max' or 'min'.")
-      }
-      
-      nval <- 1
-      prb <- 0
-      while (prb < power) {
-        if (verbose)
-          cat("    - distance to power = ", power - prb, " - n value = ", nval, "\n", sep = "")
-        # k_alpha <- find_k_alpha(probs_H0, nval, alpha, type = type, method = method)
-        # gamma_prob <- find_gamma_prob(probs_H0, nval, alpha, k_alpha, type = type, method = method)
-        k_gamma <- find_k_gamma(probs_H0, nval, alpha, type = type, method = method)
-        k_alpha <- k_gamma[["k_alpha"]]
-        gamma_prob <- k_gamma[["gamma_prob"]]
+      res <- power_optimize(k, n_max = 5000, delta, power = power, alpha = alpha,
+                            type = type, method_prob = method, verbose = verbose)
 
-        if (type == "max") {
-          px <- dmaxmultinom(x = (k_alpha - 1):nval, size = nval, prob = probs_H1,
-                             log = FALSE, verbose = FALSE, method = method,
-                             parallel = "multicore",
-                             threads = parallel::detectCores(), tol = 1e-5)
-          if (!is.na(gamma_prob)) {
-            prb <- sum(px[-1]) + gamma_prob*px[1]
-          }
-        }
-        else if (type == "min") {
-          if (!is.na(k_alpha)) {
-            Fx <- pminmultinom(x = k_alpha:(k_alpha + 1), size = nval, prob = probs_H1,
-                               log = FALSE, verbose = FALSE, method = method,
-                               parallel = "multicore",
-                               threads = parallel::detectCores(), tol = 1e-5)
-            if (!is.na(gamma_prob)) {
-              prb <- Fx[1] + gamma_prob*diff(Fx)
-            }
-          }
-        }
-        else {
-          stop("the type argument can only be equal to 'max' or 'min'.")
-        }
-        nval <- nval + 1
-      }
-      n_seq[i] <- nval - 1
+      n_seq[i] <- ceiling(res$minimum)
       i <- i + 1
     }
     names(n_seq) <- delta_seq
