@@ -13,133 +13,128 @@ for (pow in pow_seq) {
   for (alpha in alpha_seq) {
     cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
     n_all <- maxmin_multinom_size(k_seq, incr_seq, power = pow, alpha = alpha,
-                                  type = "max", method = "Corrado", verbose = FALSE)
+                                  n_max = 200, type = "max", method = "Corrado",
+                                  verbose = TRUE, optmethod = "uniroot")
     n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- n_all
+
+    save(n_master, file = "/Users/Sergio/dev/XOMultinom/data/sample_size_MAX.RData")
   }
 }
 
-save(n_master, file = "/Users/Sergio/dev/XOMultinom/data/sample_size_MAX.RData")
+# df <- data.frame(power = numeric(0),
+#                  alpha = numeric(0),
+#                  k = numeric(0),
+#                  n = numeric(0),
+#                  incr = numeric(0))
+# i <- 1
+# for (p in 1:length(pow_seq)) {
+#   for (a in 1:length(alpha_seq)) {
+#     for (k in 1:length(k_seq)) {
+#       df_tmp <- data.frame(power = pow_seq[p],
+#                            alpha = alpha_seq[a],
+#                            k = k_seq[k],
+#                            n = n_master[[i]][[k]],
+#                            incr = incr_seq*100)
+#       df <- rbind(df, df_tmp)
+#     }
+#     i <- i + 1
+#   }
+# }
+# df$alpha <- factor(df$alpha, 
+#                    levels = sort(unique(df$alpha), decreasing = TRUE))
 
-df <- data.frame(power = numeric(0),
-                 alpha = numeric(0),
-                 k = numeric(0),
-                 n = numeric(0),
-                 incr = numeric(0))
-i <- 1
-for (p in 1:length(pow_seq)) {
-  for (a in 1:length(alpha_seq)) {
-    for (k in 1:length(k_seq)) {
-      df_tmp <- data.frame(power = pow_seq[p],
-                           alpha = alpha_seq[a],
-                           k = k_seq[k],
-                           n = n_master[[i]][[k]],
-                           incr = incr_seq*100)
-      df <- rbind(df, df_tmp)
-    }
-    i <- i + 1
-  }
-}
-df$alpha <- factor(df$alpha, 
-                   levels = sort(unique(df$alpha), decreasing = TRUE))
-
-ggplot(df, aes(x = incr, y = n, color = factor(k), group = k)) +
-  geom_line(size = 1.1) +
-  geom_point(size = 2) +
-  facet_grid(alpha ~ power, labeller = label_both, scales = "free_y") +
-  # scale_color_grey(
-  #   start = 0.1, end = 0.9,  # control how dark/light the grays are
-  #   name = "k"
-  # ) +
-  scale_color_viridis_d(option = "turbo", name = "k") +
-  scale_x_continuous(breaks = seq(10, 90, 10)) +
-  labs(
-    x = "% increase in one probability",
-    y = "Sample size"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    panel.grid.minor = element_blank(),
-    panel.grid.major = element_line(color = "grey90"),
-    strip.background = element_rect(fill = "grey95", color = NA),
-    strip.text = element_text(face = "bold"),
-    legend.position = "bottom",
-    legend.direction = "horizontal",
-    legend.box = "horizontal"
-  ) +
-  guides(color = guide_legend(nrow = 1))
+# ggplot(df, aes(x = incr, y = n, color = factor(k), group = k)) +
+#   geom_line(linewidth = 1.1) +
+#   geom_point(size = 2) +
+#   facet_grid(alpha ~ power, labeller = label_both, scales = "free_y") +
+#   # scale_color_grey(
+#   #   start = 0.1, end = 0.9,  # control how dark/light the grays are
+#   #   name = "k"
+#   # ) +
+#   scale_color_viridis_d(option = "turbo", name = "k") +
+#   scale_x_continuous(breaks = seq(10, 90, 10)) +
+#   labs(
+#     x = "% increase in one probability",
+#     y = "Sample size"
+#   ) +
+#   theme_minimal(base_size = 14) +
+#   theme(
+#     panel.grid.minor = element_blank(),
+#     panel.grid.major = element_line(color = "grey90"),
+#     strip.background = element_rect(fill = "grey95", color = NA),
+#     strip.text = element_text(face = "bold"),
+#     legend.position = "bottom",
+#     legend.direction = "horizontal",
+#     legend.box = "horizontal"
+#   ) +
+#   guides(color = guide_legend(nrow = 1))
 
 ###
 
 # MINIMUM
 
 pow_seq <- c(0.8, 0.9)
-alpha_seq <- c(0.05, 0.01, 0.001)
-k_seq <- c(3:10, 15, 20, 30)
-decr_seq <- seq(0.1, 0.9, 0.1)
+alpha_seq <- c(0.05, 0.01)
+k_seq <- c(3:6)
+decr_seq <- seq(0.2, 0.9, 0.1)
 n_seq <- numeric(length(decr_seq))
 n_master <- list()
 for (pow in pow_seq) {
   for (alpha in alpha_seq) {
     cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
     n_all <- maxmin_multinom_size(k_seq, decr_seq, power = pow, alpha = alpha,
-                                  type = "min", method = "Corrado", verbose = TRUE)
+                                  n_max = 1000, type = "min", method = "Corrado",
+                                  verbose = TRUE, optmethod = "uniroot")
     n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- n_all
+
+    save(n_master, file = "/Users/Sergio/dev/XOMultinom/data/sample_size_MIN.RData")
   }
 }
 
-save(n_master, file = "/Users/Sergio/dev/XOMultinom/data/sample_size_MIN.RData")
+# df <- data.frame(power = numeric(0),
+#                  alpha = numeric(0),
+#                  k = numeric(0),
+#                  n = numeric(0),
+#                  decr = numeric(0))
+# i <- 1
+# for (p in 1:length(pow_seq)) {
+#   for (a in 1:length(alpha_seq)) {
+#     for (k in 1:length(k_seq)) {
+#       df_tmp <- data.frame(power = pow_seq[p],
+#                            alpha = alpha_seq[a],
+#                            k = k_seq[k],
+#                            n = n_master[[i]][[k]],
+#                            decr = decr_seq*100)
+#       df <- rbind(df, df_tmp)
+#     }
+#     i <- i + 1
+#   }
+# }
+# df$alpha <- factor(df$alpha, 
+#                    levels = sort(unique(df$alpha), decreasing = TRUE))
 
-df <- data.frame(power = numeric(0),
-                 alpha = numeric(0),
-                 k = numeric(0),
-                 n = numeric(0),
-                 decr = numeric(0))
-i <- 1
-for (p in 1:length(pow_seq)) {
-  for (a in 1:length(alpha_seq)) {
-    for (k in 1:length(k_seq)) {
-      df_tmp <- data.frame(power = pow_seq[p],
-                           alpha = alpha_seq[a],
-                           k = k_seq[k],
-                           n = n_master[[i]][[k]],
-                           decr = decr_seq*100)
-      df <- rbind(df, df_tmp)
-    }
-    i <- i + 1
-  }
-}
-df$alpha <- factor(df$alpha, 
-                   levels = sort(unique(df$alpha), decreasing = TRUE))
-
-ggplot(df, aes(x = decr, y = n, color = factor(k), group = k)) +
-  geom_line(size = 1.1) +
-  geom_point(size = 2) +
-  facet_grid(alpha ~ power, labeller = label_both, scales = "free_y") +
-  # scale_color_grey(
-  #   start = 0.1, end = 0.9,  # control how dark/light the grays are
-  #   name = "k"
-  # ) +
-  scale_color_viridis_d(option = "turbo", name = "k") +
-  scale_x_continuous(breaks = seq(10, 90, 10)) +
-  labs(
-    x = "% decrease in one probability",
-    y = "Sample size"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    panel.grid.minor = element_blank(),
-    panel.grid.major = element_line(color = "grey90"),
-    strip.background = element_rect(fill = "grey95", color = NA),
-    strip.text = element_text(face = "bold"),
-    legend.position = "bottom",
-    legend.direction = "horizontal",
-    legend.box = "horizontal"
-  ) +
-  guides(color = guide_legend(nrow = 1))
-
-### TMP ###
-
-# power_optim(nval = 100, k = 10, delta = 0.2, power = 0.8, alpha = 0.05,
-#             type = "min", method_f = "Corrado", verbose = TRUE)
-# power_optimize(k = 5, n_max = 2000, delta = 0.2, power = 0.8, alpha = 0.05,
-#                type = "min", method_f = "Corrado", verbose = TRUE)
+# ggplot(df, aes(x = decr, y = n, color = factor(k), group = k)) +
+#   geom_line(linewidth = 1.1) +
+#   geom_point(size = 2) +
+#   facet_grid(alpha ~ power, labeller = label_both, scales = "free_y") +
+#   # scale_color_grey(
+#   #   start = 0.1, end = 0.9,  # control how dark/light the grays are
+#   #   name = "k"
+#   # ) +
+#   scale_color_viridis_d(option = "turbo", name = "k") +
+#   scale_x_continuous(breaks = seq(10, 90, 10)) +
+#   labs(
+#     x = "% decrease in one probability",
+#     y = "Sample size"
+#   ) +
+#   theme_minimal(base_size = 14) +
+#   theme(
+#     panel.grid.minor = element_blank(),
+#     panel.grid.major = element_line(color = "grey90"),
+#     strip.background = element_rect(fill = "grey95", color = NA),
+#     strip.text = element_text(face = "bold"),
+#     legend.position = "bottom",
+#     legend.direction = "horizontal",
+#     legend.box = "horizontal"
+#   ) +
+#   guides(color = guide_legend(nrow = 1))

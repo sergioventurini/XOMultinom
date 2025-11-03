@@ -101,9 +101,9 @@ prangemultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method =
     if (verbose) {
       devout <- ""
       if (.Platform$OS.type != "windows" && !have_mc) {
-        message("--- STARTING PARALLEL CALCULATION OF ", xlen, " VALUES ---")
+        message("--- STARTING PARALLEL CALCULATION OF ", xlen, ifelse(xlen > 1, " VALUES ---", " VALUE ---"))
       } else {
-        message("Performing parallel calculation of ", xlen, " values...")
+        message("Performing parallel calculation of ", xlen, ifelse(xlen > 1, " values...", " value..."))
       }
     } else {
       if (.Platform$OS.type != "windows") {
