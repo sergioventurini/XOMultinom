@@ -4,7 +4,7 @@
 \alias{find_k_gamma}
 \title{Utility function.}
 \usage{
-find_k_gamma(probs, n, alpha = 0.05, type, method)
+find_k_gamma(probs, n, alpha = 0.05, type)
 }
 \arguments{
 \item{k}{A length-one integer vector of the number of multinomial classes.}

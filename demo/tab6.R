@@ -33,8 +33,7 @@ for (m_idx in 1:length(m)) {
       } else {
         cat(t[t_idx])
       }
-      # probs[n_idx, t_idx, m_idx] <- 1 - smallest_order_value(t[t_idx] + 1, n_list[[m_idx]][n_idx], m[m_idx])
-      probs[n_idx, t_idx, m_idx] <- 1 - smallest_order_value_C(t[t_idx] + 1, n_list[[m_idx]][n_idx], m[m_idx])
+      probs[n_idx, t_idx, m_idx] <- 1 - smallest_order_value(t[t_idx] + 1, n_list[[m_idx]][n_idx], m[m_idx])
     }
     cat("\n")
   }

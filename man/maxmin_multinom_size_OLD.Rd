@@ -10,7 +10,6 @@ maxmin_multinom_size_OLD(
   power = 0.8,
   alpha = 0.05,
   type,
-  method,
   verbose = TRUE
 )
 }

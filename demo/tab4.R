@@ -38,8 +38,7 @@ for (m_idx in 1:length(m)) {
       } else {
         cat(t[t_idx])
       }
-      # probs[n_idx, t_idx, m_idx] <- highest_order_statistics(t[t_idx], n_list[[m_idx]][n_idx], m[m_idx], J)
-      probs[n_idx, t_idx, m_idx] <- highest_order_statistics_C(t[t_idx], n_list[[m_idx]][n_idx], m[m_idx], J)
+      probs[n_idx, t_idx, m_idx] <- highest_order_statistics(t[t_idx], n_list[[m_idx]][n_idx], m[m_idx], J)
     }
     cat("\n")
   }

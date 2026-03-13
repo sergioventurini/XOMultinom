@@ -15,22 +15,6 @@
 #'   computed.
 #' @param verbose A length-one logical vector; if TRUE, details are printed
 #'   during the calculation.
-#' @param method A length-one character vector indicating the method to use.
-#'   Possible values are \code{"R"}, \code{"Rcpp"} and \code{"Corrado"}.
-#' @param parallel A length-one character vector indicating the type of parallel
-#'   operation to be used (if any). Possible values are \code{"multicore"}
-#'   (which works only on Unix/mcOS), \code{"snow"} and \code{"no"} (i.e. serial
-#'   instead of parallel computing).
-#' @param threads A length-one numeric vector for the number of chains to run.
-#'   If greater than 1, package \pkg{\link{parallel}} is used to take advantage of
-#'   any multiprocessing or distributed computing capabilities that may be available.
-#' @param cl An optional \pkg{parallel} or \pkg{snow} cluster for use if
-#'   \code{parallel = "snow"}. If not supplied, a cluster on the local machine
-#'   is created for the duration of the call.
-#' @param env An optional \code{\link{environment}}. If not supplied, one is
-#'   created inside the function.
-#' @param tol An optional length-one non-negative value used to round the CDF
-#'   values when it is close to 1.
 #' @return A numeric vector providing the probabilities of the range.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{drangemulitnom}} for computing the
@@ -49,33 +33,11 @@
 #' xseq <- 0:n
 #' 
 #' cdfrange <- prangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
-#'                            verbose = TRUE, method = "Corrado")
+#'                            verbose = TRUE)
 #' plot(xseq, cdfrange, type = "s", xlab = "x", ylab = "CDF")
 #'
 #' @export
-prangemultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method = "Rcpp",
-  parallel = "no", threads = 1, cl = NULL, env = NULL, tol = 1e-10) {
-  have_mc <- have_snow <- FALSE
-  if (parallel != "no" && threads > 1L) {
-    if (parallel == "multicore") have_mc <- .Platform$OS.type != "windows"
-    else if (parallel == "snow") have_snow <- TRUE
-    if (!have_mc && !have_snow) {
-      warning("number of cores forced to 1 (i.e. no parallel computing used).")
-      threads <- 1L
-    } else {
-      nc <- parallel::detectCores()
-      if (threads > nc) {
-        warning(
-          paste0("number of threads specified is larger than the number of available cores; threads set to ", nc, "."))
-        threads <- nc
-      }
-    }
-    loadNamespace("parallel") # get this out of the way before recording seed
-  }
-  if (!method == "Corrado") {
-    stop("method not available.")
-  }
-
+prangemultinom <- function(x, size, prob, log = FALSE, verbose = FALSE) {
   k <- length(prob)
   xlen <- length(x)
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0)
@@ -87,63 +49,13 @@ prangemultinom <- function(x, size, prob, log = FALSE, verbose = FALSE, method =
     prob <- prob[!i0]
     k <- length(prob)
   }
-  if (is.null(env)) {
-    env <- environment()
-  }
-  
-  if (have_mc || have_snow) {
-    prangemultinom_parallel <- function(x.c, size.c, prob.c, env.c, method.c) {
-      if (method.c == "Corrado") {
-        prangemultinom_corrado_one(x = x.c, size = size.c, prob = prob.c, verbose = FALSE, tol = tol)
-      }
-    }
 
-    if (verbose) {
-      devout <- ""
-      if (.Platform$OS.type != "windows" && !have_mc) {
-        message("--- STARTING PARALLEL CALCULATION OF ", xlen, ifelse(xlen > 1, " VALUES ---", " VALUE ---"))
-      } else {
-        message("Performing parallel calculation of ", xlen, ifelse(xlen > 1, " values...", " value..."))
-      }
-    } else {
-      if (.Platform$OS.type != "windows") {
-        devout <- '/dev/null'
-      } else {
-        devout <- 'nul:'
-      }
-    }
+  res <- prangemultinom_corrado(x, size, prob, log, verbose)
 
-    res <- if (have_mc) {
-             parallel::mclapply(x, function(xi) prangemultinom_parallel(x.c = xi,
-               size.c = size, prob.c = prob, env.c = env, method.c = method),
-               mc.cores = threads)
-           } else if (have_snow) {
-             if (is.null(cl)) {
-               # outfile doesn't work on Windows
-               cl <- parallel::makePSOCKcluster(rep("localhost", threads), outfile = devout)
-             }
-             parallel::setDefaultCluster(cl)
-             parallel::clusterEvalQ(NULL, suppressMessages(require(XOMultinom)))
-             parallel::clusterExport(NULL, c("size", "prob", "env", "method"), envir = env)
-             res <- parallel::parLapply(NULL, x, function(xi) prangemultinom_parallel(x.c = xi,
-               size.c = size, prob.c = prob, env.c = env, method.c = method))
-             parallel::stopCluster(cl)
-             res
-           }
-    res <- unlist(res)
-
-    if (verbose) {
-      if (.Platform$OS.type != "windows" && !have_mc){
-        message("--- END OF PARALLEL CALCULATION OF ", xlen, " VALUES ---\n")
-      } else {
-        # message("done!")
-      }
-    }
-  } else {
-    if (method == "Corrado") {
-      res <- prangemultinom_corrado(x, size, prob, log, verbose, tol)
-    }
-  }
+  if (any(res < 0))
+    res[res < 0] <- 0
+  if (any(res > 1))
+    res[res > 1] <- 1
 
   return(res)
 }

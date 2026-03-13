@@ -12,91 +12,266 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// computeQk_full
-std::vector<std::vector<double>> computeQk_full(const int& k, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_computeQk_full(SEXP kSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
+// prob_max_leq
+double prob_max_leq(int n, const std::vector<double>& pi, double c);
+RcppExport SEXP _XOMultinom_prob_max_leq(SEXP nSEXP, SEXP piSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int& >::type k(kSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(computeQk_full(k, size, prob, verbose, tol));
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_max_leq(n, pi, c));
     return rcpp_result_gen;
 END_RCPP
 }
-// computeQk_culled
-std::vector<std::vector<double>> computeQk_culled(std::vector<std::vector<double>> Qk, const double& a, const double& b, const int& k, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_computeQk_culled(SEXP QkSEXP, SEXP aSEXP, SEXP bSEXP, SEXP kSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
+// prob_min_geq
+double prob_min_geq(int n, const std::vector<double>& pi, double c);
+RcppExport SEXP _XOMultinom_prob_min_geq(SEXP nSEXP, SEXP piSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::vector<std::vector<double>> >::type Qk(QkSEXP);
-    Rcpp::traits::input_parameter< const double& >::type a(aSEXP);
-    Rcpp::traits::input_parameter< const double& >::type b(bSEXP);
-    Rcpp::traits::input_parameter< const int& >::type k(kSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(computeQk_culled(Qk, a, b, k, size, prob, verbose, tol));
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_min_geq(n, pi, c));
     return rcpp_result_gen;
 END_RCPP
 }
-// computeQk
-std::vector<std::vector<double>> computeQk(const double& a, const double& b, const int& k, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_computeQk(SEXP aSEXP, SEXP bSEXP, SEXP kSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
+// prob_max_gt
+double prob_max_gt(int n, const std::vector<double>& pi, double c);
+RcppExport SEXP _XOMultinom_prob_max_gt(SEXP nSEXP, SEXP piSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type a(aSEXP);
-    Rcpp::traits::input_parameter< const double& >::type b(bSEXP);
-    Rcpp::traits::input_parameter< const int& >::type k(kSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(computeQk(a, b, k, size, prob, verbose, tol));
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_max_gt(n, pi, c));
     return rcpp_result_gen;
 END_RCPP
 }
-// computeQk_max
-std::vector<std::vector<double>> computeQk_max(const double& x, const int& k, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_computeQk_max(SEXP xSEXP, SEXP kSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
+// prob_min_lt
+double prob_min_lt(int n, const std::vector<double>& pi, double c);
+RcppExport SEXP _XOMultinom_prob_min_lt(SEXP nSEXP, SEXP piSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type k(kSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(computeQk_max(x, k, size, prob, verbose, tol));
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_min_lt(n, pi, c));
     return rcpp_result_gen;
 END_RCPP
 }
-// computeQk_min
-std::vector<std::vector<double>> computeQk_min(const double& x, const int& k, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_computeQk_min(SEXP xSEXP, SEXP kSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
+// prob_min_leq
+double prob_min_leq(int n, const std::vector<double>& pi, double c);
+RcppExport SEXP _XOMultinom_prob_min_leq(SEXP nSEXP, SEXP piSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type k(kSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(computeQk_min(x, k, size, prob, verbose, tol));
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_min_leq(n, pi, c));
     return rcpp_result_gen;
 END_RCPP
 }
-// highest_order_statistics_C
-double highest_order_statistics_C(const double& td, int n, int m, int J);
-RcppExport SEXP _XOMultinom_highest_order_statistics_C(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP, SEXP JSEXP) {
+// prob_joint
+double prob_joint(int n, const std::vector<double>& pi, double a, double b);
+RcppExport SEXP _XOMultinom_prob_joint(SEXP nSEXP, SEXP piSEXP, SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_joint(n, pi, a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prob_max_eq
+double prob_max_eq(int n, const std::vector<double>& pi, double c);
+RcppExport SEXP _XOMultinom_prob_max_eq(SEXP nSEXP, SEXP piSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_max_eq(n, pi, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prob_min_eq
+double prob_min_eq(int n, const std::vector<double>& pi, double c);
+RcppExport SEXP _XOMultinom_prob_min_eq(SEXP nSEXP, SEXP piSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_min_eq(n, pi, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pmf_max_range
+Rcpp::NumericVector pmf_max_range(int n, const std::vector<double>& pi, double c_lo, double c_hi);
+RcppExport SEXP _XOMultinom_pmf_max_range(SEXP nSEXP, SEXP piSEXP, SEXP c_loSEXP, SEXP c_hiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c_lo(c_loSEXP);
+    Rcpp::traits::input_parameter< double >::type c_hi(c_hiSEXP);
+    rcpp_result_gen = Rcpp::wrap(pmf_max_range(n, pi, c_lo, c_hi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pmf_min_range
+Rcpp::NumericVector pmf_min_range(int n, const std::vector<double>& pi, double c_lo, double c_hi);
+RcppExport SEXP _XOMultinom_pmf_min_range(SEXP nSEXP, SEXP piSEXP, SEXP c_loSEXP, SEXP c_hiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type c_lo(c_loSEXP);
+    Rcpp::traits::input_parameter< double >::type c_hi(c_hiSEXP);
+    rcpp_result_gen = Rcpp::wrap(pmf_min_range(n, pi, c_lo, c_hi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prob_range_lt
+double prob_range_lt(int n, const std::vector<double>& pi, double r);
+RcppExport SEXP _XOMultinom_prob_range_lt(SEXP nSEXP, SEXP piSEXP, SEXP rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_range_lt(n, pi, r));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prob_range_leq
+double prob_range_leq(int n, const std::vector<double>& pi, double r);
+RcppExport SEXP _XOMultinom_prob_range_leq(SEXP nSEXP, SEXP piSEXP, SEXP rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_range_leq(n, pi, r));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prob_range_geq
+double prob_range_geq(int n, const std::vector<double>& pi, double r);
+RcppExport SEXP _XOMultinom_prob_range_geq(SEXP nSEXP, SEXP piSEXP, SEXP rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_range_geq(n, pi, r));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prob_range_gt
+double prob_range_gt(int n, const std::vector<double>& pi, double r);
+RcppExport SEXP _XOMultinom_prob_range_gt(SEXP nSEXP, SEXP piSEXP, SEXP rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_range_gt(n, pi, r));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prob_range_eq
+double prob_range_eq(int n, const std::vector<double>& pi, double r);
+RcppExport SEXP _XOMultinom_prob_range_eq(SEXP nSEXP, SEXP piSEXP, SEXP rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_range_eq(n, pi, r));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pmf_range_range
+Rcpp::NumericVector pmf_range_range(int n, const std::vector<double>& pi, double r_lo, double r_hi);
+RcppExport SEXP _XOMultinom_pmf_range_range(SEXP nSEXP, SEXP piSEXP, SEXP r_loSEXP, SEXP r_hiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< double >::type r_lo(r_loSEXP);
+    Rcpp::traits::input_parameter< double >::type r_hi(r_hiSEXP);
+    rcpp_result_gen = Rcpp::wrap(pmf_range_range(n, pi, r_lo, r_hi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dmaxmultinom_corrado
+Rcpp::NumericVector dmaxmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_dmaxmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(dmaxmultinom_corrado(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dminmultinom_corrado
+Rcpp::NumericVector dminmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_dminmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(dminmultinom_corrado(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// drangemultinom_corrado
+Rcpp::NumericVector drangemultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_drangemultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(drangemultinom_corrado(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// highest_order_statistics
+double highest_order_statistics(const double& td, int n, int m, int J);
+RcppExport SEXP _XOMultinom_highest_order_statistics(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP, SEXP JSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -104,13 +279,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< int >::type J(JSEXP);
-    rcpp_result_gen = Rcpp::wrap(highest_order_statistics_C(td, n, m, J));
+    rcpp_result_gen = Rcpp::wrap(highest_order_statistics(td, n, m, J));
     return rcpp_result_gen;
 END_RCPP
 }
-// max_for_min_C
-double max_for_min_C(const double& t_max, int n, int m, int t);
-RcppExport SEXP _XOMultinom_max_for_min_C(SEXP t_maxSEXP, SEXP nSEXP, SEXP mSEXP, SEXP tSEXP) {
+// max_for_min
+double max_for_min(const double& t_max, int n, int m, int t);
+RcppExport SEXP _XOMultinom_max_for_min(SEXP t_maxSEXP, SEXP nSEXP, SEXP mSEXP, SEXP tSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -118,13 +293,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< int >::type t(tSEXP);
-    rcpp_result_gen = Rcpp::wrap(max_for_min_C(t_max, n, m, t));
+    rcpp_result_gen = Rcpp::wrap(max_for_min(t_max, n, m, t));
     return rcpp_result_gen;
 END_RCPP
 }
-// max_for_range_C
-double max_for_range_C(const double& t_max, int n, int m, arma::vec prev, int t);
-RcppExport SEXP _XOMultinom_max_for_range_C(SEXP t_maxSEXP, SEXP nSEXP, SEXP mSEXP, SEXP prevSEXP, SEXP tSEXP) {
+// max_for_range
+double max_for_range(const double& t_max, int n, int m, arma::vec prev, int t);
+RcppExport SEXP _XOMultinom_max_for_range(SEXP t_maxSEXP, SEXP nSEXP, SEXP mSEXP, SEXP prevSEXP, SEXP tSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -133,72 +308,26 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type prev(prevSEXP);
     Rcpp::traits::input_parameter< int >::type t(tSEXP);
-    rcpp_result_gen = Rcpp::wrap(max_for_range_C(t_max, n, m, prev, t));
+    rcpp_result_gen = Rcpp::wrap(max_for_range(t_max, n, m, prev, t));
     return rcpp_result_gen;
 END_RCPP
 }
-// max_order_statistic_C
-double max_order_statistic_C(const double& td, int n, int m);
-RcppExport SEXP _XOMultinom_max_order_statistic_C(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
+// max_order_statistic
+double max_order_statistic(const double& td, int n, int m);
+RcppExport SEXP _XOMultinom_max_order_statistic(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double& >::type td(tdSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    rcpp_result_gen = Rcpp::wrap(max_order_statistic_C(td, n, m));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pmaxmultinom_C_one
-double pmaxmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_pmaxmultinom_C_one(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(pmaxmultinom_C_one(x, size, prob, verbose, tol));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pmaxmultinom_C
-Rcpp::NumericVector pmaxmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_pmaxmultinom_C(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(pmaxmultinom_C(x, size, prob, logd, verbose, tol));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pmaxmultinom_corrado_one_parallel
-double pmaxmultinom_corrado_one_parallel(const double& x, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_pmaxmultinom_corrado_one_parallel(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(pmaxmultinom_corrado_one_parallel(x, size, prob, verbose, tol));
+    rcpp_result_gen = Rcpp::wrap(max_order_statistic(td, n, m));
     return rcpp_result_gen;
 END_RCPP
 }
 // pmaxmultinom_corrado
-Rcpp::NumericVector pmaxmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_pmaxmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
+Rcpp::NumericVector pmaxmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_pmaxmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -207,60 +336,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
     Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
     Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(pmaxmultinom_corrado(x, size, prob, logd, verbose, tol));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pminmultinom_C_one
-double pminmultinom_C_one(const double& x, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_pminmultinom_C_one(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(pminmultinom_C_one(x, size, prob, verbose, tol));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pminmultinom_C
-Rcpp::NumericVector pminmultinom_C(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_pminmultinom_C(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(pminmultinom_C(x, size, prob, logd, verbose, tol));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pminmultinom_corrado_one_parallel
-double pminmultinom_corrado_one_parallel(const double& x, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_pminmultinom_corrado_one_parallel(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(pminmultinom_corrado_one_parallel(x, size, prob, verbose, tol));
+    rcpp_result_gen = Rcpp::wrap(pmaxmultinom_corrado(x, size, prob, logd, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // pminmultinom_corrado
-Rcpp::NumericVector pminmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_pminmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
+Rcpp::NumericVector pminmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_pminmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -269,29 +351,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
     Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
     Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(pminmultinom_corrado(x, size, prob, logd, verbose, tol));
-    return rcpp_result_gen;
-END_RCPP
-}
-// prangemultinom_corrado_one
-double prangemultinom_corrado_one(const double& x, const int& size, const Rcpp::NumericVector& prob, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_prangemultinom_corrado_one(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(prangemultinom_corrado_one(x, size, prob, verbose, tol));
+    rcpp_result_gen = Rcpp::wrap(pminmultinom_corrado(x, size, prob, logd, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // prangemultinom_corrado
-Rcpp::NumericVector prangemultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose, const double& tol);
-RcppExport SEXP _XOMultinom_prangemultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP, SEXP tolSEXP) {
+Rcpp::NumericVector prangemultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_prangemultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -300,27 +366,26 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
     Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
     Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(prangemultinom_corrado(x, size, prob, logd, verbose, tol));
+    rcpp_result_gen = Rcpp::wrap(prangemultinom_corrado(x, size, prob, logd, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
-// range_probability_C
-double range_probability_C(const double& td, int n, int m);
-RcppExport SEXP _XOMultinom_range_probability_C(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
+// range_probability
+double range_probability(const double& td, int n, int m);
+RcppExport SEXP _XOMultinom_range_probability(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double& >::type td(tdSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    rcpp_result_gen = Rcpp::wrap(range_probability_C(td, n, m));
+    rcpp_result_gen = Rcpp::wrap(range_probability(td, n, m));
     return rcpp_result_gen;
 END_RCPP
 }
-// recursive_sum_C
-double recursive_sum_C(const double& td, int n, int m, int J, int sum_depth, int cur_depth, arma::vec rangeArg);
-RcppExport SEXP _XOMultinom_recursive_sum_C(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP, SEXP JSEXP, SEXP sum_depthSEXP, SEXP cur_depthSEXP, SEXP rangeArgSEXP) {
+// recursive_sum
+double recursive_sum(const double& td, int n, int m, int J, int sum_depth, int cur_depth, arma::vec rangeArg);
+RcppExport SEXP _XOMultinom_recursive_sum(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP, SEXP JSEXP, SEXP sum_depthSEXP, SEXP cur_depthSEXP, SEXP rangeArgSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -331,54 +396,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type sum_depth(sum_depthSEXP);
     Rcpp::traits::input_parameter< int >::type cur_depth(cur_depthSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type rangeArg(rangeArgSEXP);
-    rcpp_result_gen = Rcpp::wrap(recursive_sum_C(td, n, m, J, sum_depth, cur_depth, rangeArg));
+    rcpp_result_gen = Rcpp::wrap(recursive_sum(td, n, m, J, sum_depth, cur_depth, rangeArg));
     return rcpp_result_gen;
 END_RCPP
 }
-// smallest_order_value_C
-double smallest_order_value_C(const double& td, int n, int m);
-RcppExport SEXP _XOMultinom_smallest_order_value_C(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
+// smallest_order_value
+double smallest_order_value(const double& td, int n, int m);
+RcppExport SEXP _XOMultinom_smallest_order_value(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double& >::type td(tdSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    rcpp_result_gen = Rcpp::wrap(smallest_order_value_C(td, n, m));
+    rcpp_result_gen = Rcpp::wrap(smallest_order_value(td, n, m));
     return rcpp_result_gen;
-END_RCPP
-}
-// twoloops
-void twoloops(const int& d, const int& n);
-RcppExport SEXP _XOMultinom_twoloops(SEXP dSEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int& >::type d(dSEXP);
-    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
-    twoloops(d, n);
-    return R_NilValue;
-END_RCPP
-}
-// twoloops_matrix
-void twoloops_matrix(const int& d, const int& n);
-RcppExport SEXP _XOMultinom_twoloops_matrix(SEXP dSEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int& >::type d(dSEXP);
-    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
-    twoloops_matrix(d, n);
-    return R_NilValue;
-END_RCPP
-}
-// dynamic_nested_loops
-void dynamic_nested_loops(int levels, double x);
-RcppExport SEXP _XOMultinom_dynamic_nested_loops(SEXP levelsSEXP, SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type levels(levelsSEXP);
-    Rcpp::traits::input_parameter< double >::type x(xSEXP);
-    dynamic_nested_loops(levels, x);
-    return R_NilValue;
 END_RCPP
 }
 // any_sug
@@ -518,31 +550,35 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_XOMultinom_computeQk_full", (DL_FUNC) &_XOMultinom_computeQk_full, 5},
-    {"_XOMultinom_computeQk_culled", (DL_FUNC) &_XOMultinom_computeQk_culled, 8},
-    {"_XOMultinom_computeQk", (DL_FUNC) &_XOMultinom_computeQk, 7},
-    {"_XOMultinom_computeQk_max", (DL_FUNC) &_XOMultinom_computeQk_max, 6},
-    {"_XOMultinom_computeQk_min", (DL_FUNC) &_XOMultinom_computeQk_min, 6},
-    {"_XOMultinom_highest_order_statistics_C", (DL_FUNC) &_XOMultinom_highest_order_statistics_C, 4},
-    {"_XOMultinom_max_for_min_C", (DL_FUNC) &_XOMultinom_max_for_min_C, 4},
-    {"_XOMultinom_max_for_range_C", (DL_FUNC) &_XOMultinom_max_for_range_C, 5},
-    {"_XOMultinom_max_order_statistic_C", (DL_FUNC) &_XOMultinom_max_order_statistic_C, 3},
-    {"_XOMultinom_pmaxmultinom_C_one", (DL_FUNC) &_XOMultinom_pmaxmultinom_C_one, 5},
-    {"_XOMultinom_pmaxmultinom_C", (DL_FUNC) &_XOMultinom_pmaxmultinom_C, 6},
-    {"_XOMultinom_pmaxmultinom_corrado_one_parallel", (DL_FUNC) &_XOMultinom_pmaxmultinom_corrado_one_parallel, 5},
-    {"_XOMultinom_pmaxmultinom_corrado", (DL_FUNC) &_XOMultinom_pmaxmultinom_corrado, 6},
-    {"_XOMultinom_pminmultinom_C_one", (DL_FUNC) &_XOMultinom_pminmultinom_C_one, 5},
-    {"_XOMultinom_pminmultinom_C", (DL_FUNC) &_XOMultinom_pminmultinom_C, 6},
-    {"_XOMultinom_pminmultinom_corrado_one_parallel", (DL_FUNC) &_XOMultinom_pminmultinom_corrado_one_parallel, 5},
-    {"_XOMultinom_pminmultinom_corrado", (DL_FUNC) &_XOMultinom_pminmultinom_corrado, 6},
-    {"_XOMultinom_prangemultinom_corrado_one", (DL_FUNC) &_XOMultinom_prangemultinom_corrado_one, 5},
-    {"_XOMultinom_prangemultinom_corrado", (DL_FUNC) &_XOMultinom_prangemultinom_corrado, 6},
-    {"_XOMultinom_range_probability_C", (DL_FUNC) &_XOMultinom_range_probability_C, 3},
-    {"_XOMultinom_recursive_sum_C", (DL_FUNC) &_XOMultinom_recursive_sum_C, 7},
-    {"_XOMultinom_smallest_order_value_C", (DL_FUNC) &_XOMultinom_smallest_order_value_C, 3},
-    {"_XOMultinom_twoloops", (DL_FUNC) &_XOMultinom_twoloops, 2},
-    {"_XOMultinom_twoloops_matrix", (DL_FUNC) &_XOMultinom_twoloops_matrix, 2},
-    {"_XOMultinom_dynamic_nested_loops", (DL_FUNC) &_XOMultinom_dynamic_nested_loops, 2},
+    {"_XOMultinom_prob_max_leq", (DL_FUNC) &_XOMultinom_prob_max_leq, 3},
+    {"_XOMultinom_prob_min_geq", (DL_FUNC) &_XOMultinom_prob_min_geq, 3},
+    {"_XOMultinom_prob_max_gt", (DL_FUNC) &_XOMultinom_prob_max_gt, 3},
+    {"_XOMultinom_prob_min_lt", (DL_FUNC) &_XOMultinom_prob_min_lt, 3},
+    {"_XOMultinom_prob_min_leq", (DL_FUNC) &_XOMultinom_prob_min_leq, 3},
+    {"_XOMultinom_prob_joint", (DL_FUNC) &_XOMultinom_prob_joint, 4},
+    {"_XOMultinom_prob_max_eq", (DL_FUNC) &_XOMultinom_prob_max_eq, 3},
+    {"_XOMultinom_prob_min_eq", (DL_FUNC) &_XOMultinom_prob_min_eq, 3},
+    {"_XOMultinom_pmf_max_range", (DL_FUNC) &_XOMultinom_pmf_max_range, 4},
+    {"_XOMultinom_pmf_min_range", (DL_FUNC) &_XOMultinom_pmf_min_range, 4},
+    {"_XOMultinom_prob_range_lt", (DL_FUNC) &_XOMultinom_prob_range_lt, 3},
+    {"_XOMultinom_prob_range_leq", (DL_FUNC) &_XOMultinom_prob_range_leq, 3},
+    {"_XOMultinom_prob_range_geq", (DL_FUNC) &_XOMultinom_prob_range_geq, 3},
+    {"_XOMultinom_prob_range_gt", (DL_FUNC) &_XOMultinom_prob_range_gt, 3},
+    {"_XOMultinom_prob_range_eq", (DL_FUNC) &_XOMultinom_prob_range_eq, 3},
+    {"_XOMultinom_pmf_range_range", (DL_FUNC) &_XOMultinom_pmf_range_range, 4},
+    {"_XOMultinom_dmaxmultinom_corrado", (DL_FUNC) &_XOMultinom_dmaxmultinom_corrado, 5},
+    {"_XOMultinom_dminmultinom_corrado", (DL_FUNC) &_XOMultinom_dminmultinom_corrado, 5},
+    {"_XOMultinom_drangemultinom_corrado", (DL_FUNC) &_XOMultinom_drangemultinom_corrado, 5},
+    {"_XOMultinom_highest_order_statistics", (DL_FUNC) &_XOMultinom_highest_order_statistics, 4},
+    {"_XOMultinom_max_for_min", (DL_FUNC) &_XOMultinom_max_for_min, 4},
+    {"_XOMultinom_max_for_range", (DL_FUNC) &_XOMultinom_max_for_range, 5},
+    {"_XOMultinom_max_order_statistic", (DL_FUNC) &_XOMultinom_max_order_statistic, 3},
+    {"_XOMultinom_pmaxmultinom_corrado", (DL_FUNC) &_XOMultinom_pmaxmultinom_corrado, 5},
+    {"_XOMultinom_pminmultinom_corrado", (DL_FUNC) &_XOMultinom_pminmultinom_corrado, 5},
+    {"_XOMultinom_prangemultinom_corrado", (DL_FUNC) &_XOMultinom_prangemultinom_corrado, 5},
+    {"_XOMultinom_range_probability", (DL_FUNC) &_XOMultinom_range_probability, 3},
+    {"_XOMultinom_recursive_sum", (DL_FUNC) &_XOMultinom_recursive_sum, 7},
+    {"_XOMultinom_smallest_order_value", (DL_FUNC) &_XOMultinom_smallest_order_value, 3},
     {"_XOMultinom_any_sug", (DL_FUNC) &_XOMultinom_any_sug, 1},
     {"_XOMultinom_cumsum_rcpp", (DL_FUNC) &_XOMultinom_cumsum_rcpp, 1},
     {"_XOMultinom_matelmult_rcpp", (DL_FUNC) &_XOMultinom_matelmult_rcpp, 2},

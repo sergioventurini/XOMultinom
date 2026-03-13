@@ -1,6 +1,3 @@
-// -*- mode: C++; c-indent-level: 2; c-basic-offset: 4; indent-tabs-mode: nil; -*-
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
 #include "XOMultinom.h"
 
 // [[Rcpp::depends("RcppArmadillo")]]

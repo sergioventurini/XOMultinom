@@ -1,6 +1,3 @@
-// -*- mode: C++; c-indent-level: 2; c-basic-offset: 4; indent-tabs-mode: nil; -*-
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
 #include "XOMultinom.h"
 
 // Note: RcppExport is an alias for extern "C"
@@ -35,7 +32,7 @@
 //' highest_order_statistics(6, 10, 5, 2)
 //'
 // [[Rcpp::export]]
-double recursive_sum_C(const double & td, int n, int m, int J, int sum_depth, int cur_depth, arma::vec rangeArg) {
+double recursive_sum(const double & td, int n, int m, int J, int sum_depth, int cur_depth, arma::vec rangeArg) {
   int t = floor(td);
 
   double S = 0;
@@ -52,12 +49,12 @@ double recursive_sum_C(const double & td, int n, int m, int J, int sum_depth, in
     for (int r = cur_range(0); r <= cur_range(1); r++) {
       rangeArg.resize(cur_depth);
       rangeArg(cur_depth - 1) = r;
-      S = S + recursive_sum_C(t, n, m, J, sum_depth, cur_depth + 1, rangeArg);
+      S = S + recursive_sum(t, n, m, J, sum_depth, cur_depth + 1, rangeArg);
       R_CheckUserInterrupt();
     }
   } else {
     double prob_arg = floor((t - arma::sum(rangeArg))/(J - sum_depth));
-    double temp_p = max_order_statistic_C(prob_arg, n - arma::sum(rangeArg), m - sum_depth);
+    double temp_p = max_order_statistic(prob_arg, n - arma::sum(rangeArg), m - sum_depth);
     double common_term = lgamma(n + 1) + lgamma(m + 1) - n*log(m);
     double coef = (n - arma::sum(rangeArg))*log(m - sum_depth) - lgamma(m - sum_depth + 1) - lgamma(n - arma::sum(rangeArg) + 1);
     for (int k = 0; k < rangeArg.n_elem; k++) {

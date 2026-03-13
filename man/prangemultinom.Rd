@@ -5,19 +5,7 @@
 \title{Distribution function (CDF) of the range for a generic multinomial random
 vector.}
 \usage{
-prangemultinom(
-  x,
-  size,
-  prob,
-  log = FALSE,
-  verbose = FALSE,
-  method = "Rcpp",
-  parallel = "no",
-  threads = 1,
-  cl = NULL,
-  env = NULL,
-  tol = 1e-10
-)
+prangemultinom(x, size, prob, log = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{x}{A numeric vector indicating the values of the range to compute
@@ -34,28 +22,6 @@ computed.}
 
 \item{verbose}{A length-one logical vector; if TRUE, details are printed
 during the calculation.}
-
-\item{method}{A length-one character vector indicating the method to use.
-Possible values are \code{"R"}, \code{"Rcpp"} and \code{"Corrado"}.}
-
-\item{parallel}{A length-one character vector indicating the type of parallel
-operation to be used (if any). Possible values are \code{"multicore"}
-(which works only on Unix/mcOS), \code{"snow"} and \code{"no"} (i.e. serial
-instead of parallel computing).}
-
-\item{threads}{A length-one numeric vector for the number of chains to run.
-If greater than 1, package \pkg{\link{parallel}} is used to take advantage of
-any multiprocessing or distributed computing capabilities that may be available.}
-
-\item{cl}{An optional \pkg{parallel} or \pkg{snow} cluster for use if
-\code{parallel = "snow"}. If not supplied, a cluster on the local machine
-is created for the duration of the call.}
-
-\item{env}{An optional \code{\link{environment}}. If not supplied, one is
-created inside the function.}
-
-\item{tol}{An optional length-one non-negative value used to round the CDF
-values when it is close to 1.}
 }
 \value{
 A numeric vector providing the probabilities of the range.
@@ -73,7 +39,7 @@ probs <- rdirichlet(1, rep(1/k, k))  # or rep(1/k, k)
 xseq <- 0:n
 
 cdfrange <- prangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                           verbose = TRUE, method = "Corrado")
+                           verbose = TRUE)
 plot(xseq, cdfrange, type = "s", xlab = "x", ylab = "CDF")
 
 }

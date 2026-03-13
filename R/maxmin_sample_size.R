@@ -21,7 +21,7 @@
 #' summary(as.numeric(incr))
 #'
 #' @export
-find_k_gamma <- function(probs, n, alpha = 0.05, type, method) {
+find_k_gamma <- function(probs, n, alpha = 0.05, type) {
   if (alpha <= 0 | alpha >= 1)
     stop("the alpha argument must be in between 0 and 1.")
   if (any(diff(probs) > 0))
@@ -30,9 +30,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type, method) {
   if (type == "max") {
     xval <- 0:(n + 1)
     px <- dmaxmultinom(x = xval, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE, method = method,
-                       parallel = "multicore",
-                       threads = parallel::detectCores(), tol = 1e-5)
+                       log = FALSE, verbose = FALSE)
 
     pgtk <- rev(cumsum(rev(px)))
     k_alpha <- min(xval[which(pgtk <= alpha)])
@@ -50,9 +48,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type, method) {
   else if (type == "min") {
     xval <- 0:n
     Fx <- pminmultinom(x = xval, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE, method = method,
-                       parallel = "multicore",
-                       threads = parallel::detectCores(), tol = 1e-5)
+                       log = FALSE, verbose = FALSE)
     chk <- which(Fx <= alpha)
     if (length(chk) > 0) {
       k_alpha <- max(xval[chk])
@@ -103,7 +99,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type, method) {
 #' summary(as.numeric(incr))
 #'
 #' @export
-find_k_alpha <- function(probs, n, alpha = 0.05, type, method) {
+find_k_alpha <- function(probs, n, alpha = 0.05, type) {
   if (alpha <= 0 | alpha >= 1)
     stop("the alpha argument must be in between 0 and 1.")
   if (any(diff(probs) > 0))
@@ -112,18 +108,14 @@ find_k_alpha <- function(probs, n, alpha = 0.05, type, method) {
   if (type == "max") {
     xval <- 0:(n + 1)
     px <- dmaxmultinom(x = xval, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE, method = method,
-                       parallel = "multicore",
-                       threads = parallel::detectCores(), tol = 1e-5)
+                       log = FALSE, verbose = FALSE)
     pgtk <- rev(cumsum(rev(px)))
     k_alpha <- min(xval[which(pgtk <= alpha)])
   }
   else if (type == "min") {
     xval <- 0:n
     Fx <- pminmultinom(x = xval, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE, method = method,
-                       parallel = "multicore",
-                       threads = parallel::detectCores(), tol = 1e-5)
+                       log = FALSE, verbose = FALSE)
     chk <- which(Fx <= alpha)
     if (length(chk) > 0) {
       k_alpha <- max(xval[chk])
@@ -162,7 +154,7 @@ find_k_alpha <- function(probs, n, alpha = 0.05, type, method) {
 #' summary(as.numeric(incr))
 #'
 #' @export
-find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type, method) {
+find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
   if (alpha <= 0 | alpha >= 1)
     stop("the alpha argument must be in between 0 and 1.")
   if (any(diff(probs) > 0))
@@ -170,9 +162,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type, method) {
 
   if (type == "max") {
     px <- dmaxmultinom(x = (k_alpha - 1):n, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE, method = method,
-                       parallel = "multicore",
-                       threads = parallel::detectCores(), tol = 1e-5)
+                       log = FALSE, verbose = FALSE)
     p_k_alpha <- sum(px[-1])
     p_k_alpha_m_1 <- px[1]
     if (p_k_alpha_m_1 > 0) {
@@ -188,9 +178,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type, method) {
     }
     else {
       Fx <- pminmultinom(x = k_alpha:(k_alpha + 1), size = n, prob = probs,
-                         log = FALSE, verbose = FALSE, method = method,
-                         parallel = "multicore",
-                         threads = parallel::detectCores(), tol = 1e-5)
+                         log = FALSE, verbose = FALSE)
       p_k_alpha <- Fx[1]
       p_k_alpha_p_1 <- diff(Fx)
       if (p_k_alpha_p_1 > 0) {
@@ -232,7 +220,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type, method) {
 #'
 #' @export
 maxmin_multinom_size_OLD <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
-                                     type, method, verbose = TRUE) {
+                                     type, verbose = TRUE) {
   n_seq <- numeric(length(change_seq))
   n_all <- list()
   for (k in k_seq) {
@@ -260,17 +248,15 @@ maxmin_multinom_size_OLD <- function(k_seq, change_seq, power = 0.8, alpha = 0.0
       while (prb < power) {
         if (verbose)
           cat("    - distance to power = ", power - prb, " - n value = ", nval, "\n", sep = "")
-        # k_alpha <- find_k_alpha(probs_H0, nval, alpha, type = type, method = method)
-        # gamma_prob <- find_gamma_prob(probs_H0, nval, alpha, k_alpha, type = type, method = method)
-        k_gamma <- find_k_gamma(probs_H0, nval, alpha, type = type, method = method)
+        # k_alpha <- find_k_alpha(probs_H0, nval, alpha, type = type)
+        # gamma_prob <- find_gamma_prob(probs_H0, nval, alpha, k_alpha, type = type)
+        k_gamma <- find_k_gamma(probs_H0, nval, alpha, type = type)
         k_alpha <- k_gamma[["k_alpha"]]
         gamma_prob <- k_gamma[["gamma_prob"]]
 
         if (type == "max") {
           px <- dmaxmultinom(x = (k_alpha - 1):nval, size = nval, prob = probs_H1,
-                             log = FALSE, verbose = FALSE, method = method,
-                             parallel = "multicore",
-                             threads = parallel::detectCores(), tol = 1e-5)
+                             log = FALSE, verbose = FALSE)
           if (!is.na(gamma_prob)) {
             prb <- sum(px[-1]) + gamma_prob*px[1]
           }
@@ -278,9 +264,7 @@ maxmin_multinom_size_OLD <- function(k_seq, change_seq, power = 0.8, alpha = 0.0
         else if (type == "min") {
           if (!is.na(k_alpha)) {
             Fx <- pminmultinom(x = k_alpha:(k_alpha + 1), size = nval, prob = probs_H1,
-                               log = FALSE, verbose = FALSE, method = method,
-                               parallel = "multicore",
-                               threads = parallel::detectCores(), tol = 1e-5)
+                               log = FALSE, verbose = FALSE)
             if (!is.na(gamma_prob)) {
               prb <- Fx[1] + gamma_prob*diff(Fx)
             }
@@ -325,7 +309,7 @@ maxmin_multinom_size_OLD <- function(k_seq, change_seq, power = 0.8, alpha = 0.0
 #'
 #' @export
 maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
-                                 n_max = 500, type, method, verbose = TRUE,
+                                 n_max = 500, type, verbose = TRUE,
                                  optmethod = "uniroot", extendInt = "upX") {
   if (power <= 0 | power >= 1)
     stop("the power argument must be in between 0 and 1.")
@@ -347,7 +331,7 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
 
       if (optmethod == "optimize") {
         res <- power_optimize(k, n_max = n_max, change = change, power = power, alpha = alpha,
-                              type = type, method_f = method, verbose = verbose)
+                              type = type, verbose = verbose)
         n_max_new <- n_max
         if (type == "max") {
           while (res$objective > 1e-3) {
@@ -357,7 +341,7 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
             if (n_max_new < 2)
               stop("the minimization algorithm did not converge --> try increasing the maximum n value")
             res <- power_optimize(k, n_max = n_max_new, change = change, power = power, alpha = alpha,
-                                  type = type, method_f = method, verbose = verbose)
+                                  type = type, verbose = verbose)
           }
         }
         else if (type == "min") {
@@ -368,7 +352,7 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
             if (n_max_new > 2500)
               stop("the minimization algorithm did not converge --> try increasing the maximum n value")
             res <- power_optimize(k, n_max = n_max_new, change = change, power = power, alpha = alpha,
-                                  type = type, method_f = method, verbose = verbose)
+                                  type = type, verbose = verbose)
           }
         }
 
@@ -376,7 +360,7 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
       }
       else if (optmethod == "uniroot") {
         res <- power_uniroot(k, n_max = n_max, change = change, power = power, alpha = alpha,
-                            type = type, method_f = method, extendInt = extendInt, verbose = verbose)
+                            type = type, extendInt = extendInt, verbose = verbose)
         
         n_seq[i] <- ceiling(res$root)
       }

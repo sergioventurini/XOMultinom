@@ -8,24 +8,22 @@ n <- 300
 # probs <- rdirichlet(1, rep(1/k, k))
 probs <- rdirichlet(1, rep(1, k))
 # probs <- rep(1/k, k)
+r <- 0.97
+probs <- r^(0:(k - 1))
+probs <- probs/sum(probs)
 xseq <- 0:n
 
 # CDF
 system.time(cdfmax <- pmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                      verbose = TRUE, method = "Corrado",
-                      parallel = "multicore", threads = 10, tol = 1e-5))
+                      verbose = TRUE))
 par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
 plot(xseq, cdfmax, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
 
 # PMF
-pmfmax <- dmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                       verbose = TRUE, method = "Corrado",
-                       parallel = "multicore", threads = 10, tol = 1e-5)
+system.time(pmfmax <- dmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
+                                   verbose = TRUE))
 plot(xseq, pmfmax, type = "h", xlab = "x", ylab = "PMF")
 points(xseq, pmfmax, pch = 20)
-
-# dmaxmultinom(x = c(3, 10, 2, 15), size = n, prob = probs, log = FALSE,
-#              verbose = TRUE, method = "Rcpp")
 
 ### Comparison with simulated data ###
 set.seed(1406)
@@ -63,24 +61,22 @@ n <- 300
 # probs <- rdirichlet(1, rep(1/k, k))
 probs <- rdirichlet(1, rep(1, k))
 # probs <- rep(1/k, k)
+r <- 0.97
+probs <- r^(0:(k - 1))
+probs <- probs/sum(probs)
 xseq <- 0:n
 
 # CDF
-cdfmin <- pminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                       verbose = TRUE, method = "Corrado",
-                       parallel = "multicore", threads = 10, tol = 1e-30)
+system.time(cdfmin <- pminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
+                                   verbose = TRUE))
 par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
 plot(xseq, cdfmin, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
 
 # PMF
-pmfmin <- dminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                       verbose = TRUE, method = "Corrado",
-                       parallel = "multicore", threads = 10, tol = 1e-5)
+system.time(pmfmin <- dminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
+                                   verbose = TRUE))
 plot(xseq, pmfmin, type = "h", xlab = "x", ylab = "PMF")
 points(xseq, pmfmin, pch = 20)
-
-# dminmultinom(x = c(3, 10, 2, 15), size = n, prob = probs, log = FALSE,
-#              verbose = TRUE, method = "Rcpp")
 
 ### Comparison with simulated data ###
 set.seed(1406)
@@ -121,16 +117,14 @@ probs <- rdirichlet(1, rep(1, k))
 xseq <- 0:n
 
 # CDF
-cdfrange <- prangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                           verbose = TRUE, method = "Corrado",
-                           parallel = "multicore", threads = 10, tol = 1e-30)
+system.time(cdfrange <- prangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
+                                       verbose = TRUE))
 par(mfrow = c(2, 1), mar = c(4, 4, 1, 1) + 0.1)
 plot(xseq, cdfrange, type = "s", xlab = "x", ylab = "CDF", ylim = c(0, 1))
 
 # PMF
-pmfrange <- drangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                           verbose = TRUE, method = "Corrado",
-                           parallel = "multicore", threads = 10, tol = 1e-5)
+system.time(pmfrange <- drangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
+                                       verbose = TRUE))
 plot(xseq, pmfrange, type = "h", xlab = "x", ylab = "PMF")
 points(xseq, pmfrange, pch = 20)
 

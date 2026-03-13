@@ -11,7 +11,6 @@ maxmin_multinom_size(
   alpha = 0.05,
   n_max = 500,
   type,
-  method,
   verbose = TRUE,
   optmethod = "uniroot",
   extendInt = "upX"

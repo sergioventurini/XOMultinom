@@ -1,8 +1,4 @@
-// -*- mode: C++; c-indent-level: 2; c-basic-offset: 4; indent-tabs-mode: nil; -*-
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
-#include "RcppArmadillo.h"
-#include <R_ext/Utils.h>
+#include "XOMultinom.h"
 
 // Note: RcppExport is an alias for extern "C"
 
@@ -34,10 +30,10 @@
 //'   maximum, minimum, range and sums of order statistics", Royal Society
 //'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
 //' @examples
-//' max_order_statistic_C(3, 10, 5) # P(N_(m) <= 3; n = 10, m = 5)
+//' max_order_statistic(3, 10, 5) # P(N_(m) <= 3; n = 10, m = 5)
 //'
 // [[Rcpp::export]]
-double max_order_statistic_C(const double & td, int n, int m) {
+double max_order_statistic(const double & td, int n, int m) {
   int t = floor(td);
   double P = 0;
 
@@ -80,7 +76,7 @@ double max_order_statistic_C(const double & td, int n, int m) {
           summ_term_nominator = (n - t*q)*log(m - q);
         }
         double coef = exp(common_term + summ_term + summ_term_nominator);
-        double temp = max_order_statistic_C(t - 1, n - t*q, m - q);
+        double temp = max_order_statistic(t - 1, n - t*q, m - q);
         P = P + coef*temp;
         R_CheckUserInterrupt();
       }

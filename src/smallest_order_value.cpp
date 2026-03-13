@@ -1,6 +1,3 @@
-// -*- mode: C++; c-indent-level: 2; c-basic-offset: 4; indent-tabs-mode: nil; -*-
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
 #include "XOMultinom.h"
 
 // Note: RcppExport is an alias for extern "C"
@@ -34,10 +31,10 @@
 //'   maximum, minimum, range and sums of order statistics", Royal Society
 //'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
 //' @examples
-//' smallest_order_value_C(1, 10, 5) # P(N_(1) <= 1; n = 10, m = 5)
+//' smallest_order_value(1, 10, 5) # P(N_(1) <= 1; n = 10, m = 5)
 //'
 // [[Rcpp::export]]
-double smallest_order_value_C(const double & td, int n, int m) {
+double smallest_order_value(const double & td, int n, int m) {
   int t = floor(td);
   double P = 0;
 
@@ -49,7 +46,7 @@ double smallest_order_value_C(const double & td, int n, int m) {
     P = 1;
     return P;
   }
-  P = max_for_min_C(n, n, m, t);
+  P = max_for_min(n, n, m, t);
 
   return P;
 }

@@ -1,6 +1,3 @@
-// -*- mode: C++; c-indent-level: 2; c-basic-offset: 4; indent-tabs-mode: nil; -*-
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
 #include "XOMultinom.h"
 
 // Note: RcppExport is an alias for extern "C"
@@ -35,10 +32,10 @@
 //'   maximum, minimum, range and sums of order statistics", Royal Society
 //'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
 //' @examples
-//' highest_order_statistics_C(6, 10, 5, 2)
+//' highest_order_statistics(6, 10, 5, 2)
 //'
 // [[Rcpp::export]]
-double highest_order_statistics_C(const double & td, int n, int m, int J) {
+double highest_order_statistics(const double & td, int n, int m, int J) {
   int t = floor(td);
   double P = 0;
 
@@ -58,15 +55,15 @@ double highest_order_statistics_C(const double & td, int n, int m, int J) {
   }
 
   // first term if n_<1> <= t/J
-  P = max_order_statistic_C(floor(t/J), n, m);
+  P = max_order_statistic(floor(t/J), n, m);
 
   if (J > 1) {
     for (int sum_depth = 1; sum_depth <= (J - 1); sum_depth++) {
       arma::vec rangeArg = arma::vec();
       int cur_depth = 1;
-      // double TMP = recursive_sum_C(t, n, m, J, sum_depth, cur_depth, rangeArg);
-      // printf("recursive_sum_C(%.1d, %.0d, %.0d, %.0d, %.0d, %.0d, rangeArg) = %.7f\n", t, n, m, J, sum_depth, cur_depth, TMP);
-      P = P + recursive_sum_C(t, n, m, J, sum_depth, cur_depth, rangeArg);
+      // double TMP = recursive_sum(t, n, m, J, sum_depth, cur_depth, rangeArg);
+      // printf("recursive_sum(%.1d, %.0d, %.0d, %.0d, %.0d, %.0d, rangeArg) = %.7f\n", t, n, m, J, sum_depth, cur_depth, TMP);
+      P = P + recursive_sum(t, n, m, J, sum_depth, cur_depth, rangeArg);
       R_CheckUserInterrupt();
     }
   }

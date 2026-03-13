@@ -1,6 +1,3 @@
-// -*- mode: C++; c-indent-level: 2; c-basic-offset: 4; indent-tabs-mode: nil; -*-
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
 #include "XOMultinom.h"
 
 // Note: RcppExport is an alias for extern "C"
@@ -32,10 +29,10 @@
 //'   maximum, minimum, range and sums of order statistics", Royal Society
 //'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
 //' @examples
-//' range_probability_C(1, 7, 10)
+//' range_probability(1, 7, 10)
 //'
 // [[Rcpp::export]]
-double range_probability_C(const double & td, int n, int m) {
+double range_probability(const double & td, int n, int m) {
   int t = floor(td);
   double P = 0;
   double aux = 0;
@@ -44,14 +41,14 @@ double range_probability_C(const double & td, int n, int m) {
     P = 1;
     return P;
   }
-  P = max_order_statistic_C(t, n, m);
+  P = max_order_statistic(t, n, m);
   arma::vec prev = arma::vec(3);
   prev(0) = t;
   prev(1) = n;
   prev(2) = m;
-  for (int t_max = (t + 1); t <= n; t++) {
-    aux = max_for_range_C(t_max, n, m, prev, t);
-    P = P + aux;
+  for (int t_max = (t + 1); t_max <= n; t_max++) {
+    aux = max_for_range(t_max, n, m, prev, t);
+    P += aux;
     prev(0) = t_max;
     prev(1) = n;
     prev(2) = m;
