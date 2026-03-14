@@ -76,8 +76,8 @@ system.time(
 # MINIMUM
 
 pow_seq <- c(0.8, 0.9)
-alpha_seq <- c(0.05, 0.01)
-k_seq <- c(3:10, 15)
+alpha_seq <- c(0.05, 0.01, 0.001)
+k_seq <- c(3:10)
 decr_seq <- seq(0.2, 0.9, 0.1)
 n_seq <- numeric(length(decr_seq))
 n_master <- list()

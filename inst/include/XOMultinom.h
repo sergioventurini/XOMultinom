@@ -1,11 +1,9 @@
 #ifndef XOMULTINOM_H
 #define XOMULTINOM_H
 
-// #define ARMA_NO_DEBUG // this macro disables bounds checks in the Armadillo
-                         // library making the code faster (but also more
-                         // frail!); the suggestion is to disable it only for
-                         // the final release (see
-                         // http://arma.sourceforge.net/docs.html)
+// #define ARMA_NO_DEBUG  // disables Armadillo bounds checks for release builds;
+//                        // comment out during development to catch indexing bugs
+//                        // (see http://arma.sourceforge.net/docs.html)
 
 // we only include RcppArmadillo.h which pulls Rcpp.h in for us
 #include <RcppArmadillo.h>
@@ -17,9 +15,12 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <numeric>
 #include <stdexcept>
 #include <string>
+#include <tuple>
+#include <unordered_map>
 #include <vector>
 #include "progress.hpp"
 #include "progbar.h"
@@ -29,16 +30,53 @@ static const double log_pi = std::log(M_PI);
 static const double log_2pi = std::log(2.0 * M_PI);
 static const double log_two = std::log(2.0);
 
-// FUNCTIONS FROM BONETTI ET AL. (2019) ---------------------------------------
+// ---------------------------------------------------------------------------
+// Hash functors for memoization caches
+// ---------------------------------------------------------------------------
+// Hash for std::tuple<int, int, int>
+struct TupleHash3 {
+  std::size_t operator()(const std::tuple<int, int, int>& tpl) const noexcept {
+    std::size_t h = 0;
+    h ^= std::hash<int>{}(std::get<0>(tpl)) + 0x9e3779b9u + (h << 6) + (h >> 2);
+    h ^= std::hash<int>{}(std::get<1>(tpl)) + 0x9e3779b9u + (h << 6) + (h >> 2);
+    h ^= std::hash<int>{}(std::get<2>(tpl)) + 0x9e3779b9u + (h << 6) + (h >> 2);
+    return h;
+  }
+};
+
+// Hash for std::tuple<int, int, int, int>
+struct TupleHash4 {
+  std::size_t operator()(const std::tuple<int, int, int, int>& tpl) const noexcept {
+    std::size_t h = 0;
+    h ^= std::hash<int>{}(std::get<0>(tpl)) + 0x9e3779b9u + (h << 6) + (h >> 2);
+    h ^= std::hash<int>{}(std::get<1>(tpl)) + 0x9e3779b9u + (h << 6) + (h >> 2);
+    h ^= std::hash<int>{}(std::get<2>(tpl)) + 0x9e3779b9u + (h << 6) + (h >> 2);
+    h ^= std::hash<int>{}(std::get<3>(tpl)) + 0x9e3779b9u + (h << 6) + (h >> 2);
+    return h;
+  }
+};
+
+// ---------------------------------------------------------------------------
+// FUNCTIONS FROM BONETTI ET AL. (2019)
+// ---------------------------------------------------------------------------
 double max_order_statistic(const double & td, int n, int m);
-double recursive_sum(const double & td, int n, int m, int J, int sum_depth, int cur_depth, arma::vec rangeArg);
+double recursive_sum(const double & td, int n, int m, int J, int sum_depth,
+                     int cur_depth, arma::vec rangeArg);
 double highest_order_statistics(const double & td, int n, int m, int J);
 double max_for_min(const double & t_max, int n, int m, int t);
 double smallest_order_value(const double & td, int n, int m);
 double max_for_range(const double & t_max, int n, int m, arma::vec prev, int t);
 double range_probability(const double & td, int n, int m);
 
-// FUNCTIONS FROM CORRADO (2011) -----------------------------------------------
+double max_for_range_impl(double t_max, int n, int m,
+                          int orig_t_max, int orig_n, int orig_m, int t);
+double recursive_sum_impl(int t, int n, int m, int J, int sum_depth,
+                          int cur_depth, std::vector<int>& rangeArg,
+                          int partial_sum);
+
+// ---------------------------------------------------------------------------
+// FUNCTIONS FROM CORRADO (2011)
+// ---------------------------------------------------------------------------
 double prob_max_leq(int n, const std::vector<double>& pi, double c);
 double prob_min_geq(int n, const std::vector<double>& pi, double c);
 double prob_joint(int n, const std::vector<double>& pi, double a, double b);
@@ -78,7 +116,9 @@ Rcpp::NumericVector drangemultinom_corrado(const Rcpp::NumericVector& x,
   const int& size, const Rcpp::NumericVector& prob,
   const bool& logd, const bool& verbose);
 
-// UTILITY FUNCTIONS ----------------------------------------------------------
+// ---------------------------------------------------------------------------
+// UTILITY FUNCTIONS
+// ---------------------------------------------------------------------------
 bool any_sug(Rcpp::LogicalVector x);
 Rcpp::NumericVector cumsum_rcpp(Rcpp::NumericVector x);
 Rcpp::NumericVector matelmult_rcpp(Rcpp::NumericVector v1, Rcpp::NumericVector v2);

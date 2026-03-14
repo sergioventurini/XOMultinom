@@ -4,6 +4,72 @@
 
 // Note: RcppExport is an alias for extern "C"
 
+static inline double log_binom_pmf(int N, double p, int j) {
+  if (j < 0 || j > N) return -std::numeric_limits<double>::infinity();
+  if (p <= 0.0)        return (j == 0) ? 0.0 : -std::numeric_limits<double>::infinity();
+  if (p >= 1.0)        return (j == N) ? 0.0 : -std::numeric_limits<double>::infinity();
+  return std::lgamma(N + 1.0)
+       - std::lgamma(j + 1.0)
+       - std::lgamma(N - j + 1.0)
+       + j  * std::log(p)
+       + (N - j) * std::log(1.0 - p);
+}
+
+// fill_binom_range --> fills v[lo..hi] with Binom(N, p, j) for j in [lo, hi]
+static void fill_binom_range(std::vector<double>& v,
+                             int N, double p, int lo, int hi) {
+  if (lo > hi) return;
+
+  const double q  = 1.0 - p;
+  const double pq = (q > 1e-300) ? p / q : 0.0;
+  const double qp = (p > 1e-300) ? q / p : 0.0;
+
+  if (p > 1.0 - 1e-14) {
+    for (int j = lo; j <= hi; ++j) v[j] = (j == N) ? 1.0 : 0.0;
+    return;
+  }
+  if (p < 1e-300) {
+    for (int j = lo; j <= hi; ++j) v[j] = (j == 0) ? 1.0 : 0.0;
+    return;
+  }
+
+  if (lo == 0) {
+    double f = std::pow(q, static_cast<double>(N));
+    if (f > 0.0) {
+      v[0] = f;
+      for (int j = 1; j <= hi; ++j) {
+        f    *= pq * (N - j + 1.0) / j;
+        v[j]  = f;
+      }
+      return;
+    }
+  }
+
+  // ── General path (lo > 0, or lo = 0 with pow underflow) ─────────────────
+  // Seed at the binomial mode clipped to [lo, hi]; always a normal double.
+
+  const int mode  = static_cast<int>(std::floor(static_cast<double>(N) * p));
+  const int jstar = std::max(lo, std::min(hi, mode));
+
+  double f  = std::exp(log_binom_pmf(N, p, jstar));
+  v[jstar]  = f;
+
+  // Walk UP: Binom(N,p,j+1) = Binom(N,p,j) * (p/q) * (N-j)/(j+1)
+  double fu = f;
+  for (int j = jstar; j < hi; ++j) {
+    fu       *= pq * (N - j) / (j + 1.0);
+    v[j + 1]  = fu;
+  }
+
+  // Walk DOWN: Binom(N,p,j-1) = Binom(N,p,j) * (q/p) * j/(N-j+1)
+  double fd = f;
+  for (int j = jstar; j > lo; --j) {
+    fd       *= qp * j / (N - j + 1.0);
+    v[j - 1]  = fd;
+  }
+}
+
+// vstep --> convolve weight vector v[] with Binom(n-i, p, d) for d in [b, a]
 static void vstep(std::vector<double>& v, std::vector<double>& w,
                   int n, double p, int b, int a) {
   const double q  = 1.0 - p;
@@ -11,7 +77,7 @@ static void vstep(std::vector<double>& v, std::vector<double>& w,
 
   std::fill(w.begin(), w.end(), 0.0);
 
-  // Edge case: p = 1  =>  Binom(n-i,1) concentrates all mass at d = n-i
+  // Edge case: p = 1  =>  Binom(n-i, 1, d) puts all mass at d = n-i
   if (p > 1.0 - 1e-14) {
     for (int i = 0; i <= n; ++i) {
       if (v[i] == 0.0) continue;
@@ -22,27 +88,59 @@ static void vstep(std::vector<double>& v, std::vector<double>& w,
     return;
   }
 
-  // Precompute q^(n-i) for i = 0 .. n  in O(n)
-  std::vector<double> qpow(n + 1);
-  qpow[n] = 1.0;
-  for (int i = n - 1; i >= 0; --i) qpow[i] = qpow[i + 1] * q;
+  // precompute g[i] = Binom(n-i, p, b) for all i
 
+  std::vector<double> g(n + 1, 0.0);
+
+  if (b == 0) {
+    // fast path (b = 0, max statistic)
+    g[n] = 1.0;
+    for (int i = n; i > 0; --i) {
+      g[i - 1] = g[i] * q;
+      if (g[i - 1] == 0.0) break;   // underflow: tail is zero, stop early
+    }
+
+  } else {
+    // ── General path (b > 0, min and range statistics) ───────────────────────
+    // Peak of g[i] as a function of i: i* = n - b/p  (clipped to [0, n])
+    const int istar = std::max(0, std::min(n,
+          n - static_cast<int>(std::ceil(static_cast<double>(b) / p))));
+
+    // seed at istar in log-space (always a normal double, immune to underflow)
+    const int max_d_star = n - istar;
+    if (max_d_star >= b) {
+      g[istar] = std::exp(log_binom_pmf(max_d_star, p, b));
+
+      // walk UP:   g[i+1] = g[i] * (n-i-b) / ((n-i)*q)
+      for (int i = istar; i < n; ++i) {
+        if (g[i] == 0.0) break;
+        const int mdi = n - i;
+        if (mdi <= b) break;
+        g[i + 1] = g[i] * static_cast<double>(mdi - b)
+                         / (static_cast<double>(mdi) * q);
+      }
+
+      // Walk DOWN: g[i-1] = g[i] * (n-i+1)*q / (n-i+1-b)
+      for (int i = istar; i > 0; --i) {
+        if (g[i] == 0.0) break;
+        const int mdi1 = n - i + 1;
+        if (mdi1 <= b) break;
+        g[i - 1] = g[i] * static_cast<double>(mdi1) * q
+                         / static_cast<double>(mdi1 - b);
+      }
+    }
+  }
+
+  // main convolution loop
   for (int i = 0; i <= n; ++i) {
-    if (v[i] == 0.0) continue;
+    if ((i & 1023) == 0) R_CheckUserInterrupt();   // throttled: every 1024 rows
+    if (v[i] == 0.0 || g[i] == 0.0) continue;
     const int max_d = n - i;
-    if (b > max_d) continue;          // can't place >= b balls
+    // g[i] > 0 implies max_d >= b (ensured by the precomputation above)
 
-    // Start at d=0: f = Binom(max_d, p, 0) = q^max_d
-    double f = qpow[i];
-
-    // Advance recurrence from d=0 up to d=b
-    //   Binom(max_d, p, d) = Binom(max_d, p, d-1) * (p/q) * (max_d-d+1)/d
-    for (int d = 1; d <= b; ++d)
-      f *= pq * (max_d - d + 1.0) / d;
-    // f = Binom(max_d, p, b)
-
-    const int  d_hi = std::min(a, max_d);
-    const double vi = v[i];
+    double f         = g[i];
+    const int  d_hi  = std::min(a, max_d);
+    const double vi  = v[i];
     for (int d = b; d <= d_hi; ++d) {
       w[i + d] += vi * f;
       if (d < d_hi)
@@ -71,42 +169,30 @@ static inline bool min_convert(double c, int n, int& ci) {
 // [[Rcpp::export]]
 double prob_max_leq(int n, const std::vector<double>& pi, double c) {
   int ci;
-  if (!max_convert(c, n, ci)) return 0.0;   // NaN → 0
+  if (!max_convert(c, n, ci)) return 0.0;
   if (ci >= n) return 1.0;
   if (ci <  0) return 0.0;
 
   const int m = static_cast<int>(pi.size());
 
-  // suffix_sum[k] = sum_{j=k}^{m-1} pi[j]
+  if (static_cast<long long>(ci) * m < static_cast<long long>(n)) return 0.0;
+
   std::vector<double> suf(m + 1, 0.0);
   for (int k = m - 1; k >= 0; --k) suf[k] = suf[k + 1] + pi[k];
 
   std::vector<double> v(n + 1, 0.0), w(n + 1);
 
-  // Initiating row vector: culled first row of Q_1  (pi_0* = pi[0])
+  // Initialise v[j] = Binom(n, pi[0], j) for j in [0, ci].
+  // fill_binom_range seeds at the mode so pow(q,n) is never computed.
   {
-    const double p  = pi[0];
-    const double q  = 1.0 - p;
-    const double pq = (q > 1e-300) ? p / q : 0.0;
-    if (p > 1.0 - 1e-14) {
-      if (n <= ci) v[n] = 1.0;
-    } else {
-      double f = std::pow(q, static_cast<double>(n));   // Binom(n,p,0)
-      v[0] = f;
-      for (int j = 1; j <= std::min(ci, n); ++j) {
-        f *= pq * (n - j + 1.0) / j;
-        v[j] = f;
-      }
-      // v[j] = 0 for j > ci  (initialized to 0)
-    }
+    const double p = pi[0];
+    if (p > 1.0 - 1e-14) { if (n <= ci) v[n] = 1.0; }
+    else                  { fill_binom_range(v, n, p, 0, std::min(ci, n)); }
   }
 
-  // Propagate through urns k = 1 .. m-2  (0-indexed)
   for (int k = 1; k <= m - 2; ++k)
     vstep(v, w, n, pi[k] / suf[k], 0, ci);
 
-  // Final summation: last urn gets n_m = n - j balls.
-  // Require n_m <= ci  =>  j >= n - ci
   double result = 0.0;
   for (int j = std::max(0, n - ci); j <= n; ++j) result += v[j];
   return std::min(1.0, result);
@@ -115,7 +201,7 @@ double prob_max_leq(int n, const std::vector<double>& pi, double c) {
 // [[Rcpp::export]]
 double prob_min_geq(int n, const std::vector<double>& pi, double c) {
   int ci;
-  if (!min_convert(c, n, ci)) return 1.0;   // NaN --> 1  (conservative)
+  if (!min_convert(c, n, ci)) return 1.0;
   if (ci <= 0)                return 1.0;
   if (static_cast<long long>(ci) * pi.size() > static_cast<long long>(n)) return 0.0;
 
@@ -126,31 +212,16 @@ double prob_min_geq(int n, const std::vector<double>& pi, double c) {
 
   std::vector<double> v(n + 1, 0.0), w(n + 1);
 
-  // Initiating row vector: culled first row of Q_1  (keep d >= ci)
+  // Initialise v[j] = Binom(n, pi[0], j) for j in [ci, n].
   {
-    const double p  = pi[0];
-    const double q  = 1.0 - p;
-    const double pq = (q > 1e-300) ? p / q : 0.0;
-    if (p > 1.0 - 1e-14) {
-      if (n >= ci) v[n] = 1.0;
-    } else {
-      double f = std::pow(q, static_cast<double>(n));   // Binom(n,p,0)
-      // Advance to j = ci
-      for (int j = 1; j <= std::min(ci, n); ++j)
-        f *= pq * (n - j + 1.0) / j;
-      // f = Binom(n, p, ci)
-      for (int j = ci; j <= n; ++j) {
-        v[j] = f;
-        if (j < n) f *= pq * (n - j) / (j + 1.0);
-      }
-    }
+    const double p = pi[0];
+    if (p > 1.0 - 1e-14) { if (n >= ci) v[n] = 1.0; }
+    else                  { fill_binom_range(v, n, p, ci, n); }
   }
 
-  // Propagate through urns k = 1 .. m-2
   for (int k = 1; k <= m - 2; ++k)
     vstep(v, w, n, pi[k] / suf[k], ci, n);
 
-  // Final summation: require n_m = n - j >= ci  =>  j <= n - ci
   double result = 0.0;
   for (int j = 0; j <= n - ci; ++j) result += v[j];
   return std::min(1.0, result);
@@ -170,15 +241,13 @@ double prob_min_lt(int n, const std::vector<double>& pi, double c) {
 // [[Rcpp::export]]
 double prob_min_leq(int n, const std::vector<double>& pi, double c) {
   if (std::isnan(c)) return 0.0;
-  if (c < 0.0)       return 0.0;   // min is always >= 0
+  if (c < 0.0)       return 0.0;
   if (c >= static_cast<double>(n)) return 1.0;
-  // floor(c) is now safe to compute
   return std::max(0.0, 1.0 - prob_min_geq(n, pi, std::floor(c) + 1.0));
 }
 
 // [[Rcpp::export]]
 double prob_joint(int n, const std::vector<double>& pi, double a, double b) {
-  // Convert bounds
   int ai, bi;
   if (!max_convert(a, n, ai)) return 0.0;
   if (!min_convert(b, n, bi)) return 0.0;
@@ -194,29 +263,17 @@ double prob_joint(int n, const std::vector<double>& pi, double a, double b) {
 
   std::vector<double> v(n + 1, 0.0), w(n + 1);
 
-  // Initiating vector: keep bi <= d <= ai
+  // Initialise v[j] = Binom(n, pi[0], j) for j in [lo, hi].
   {
     const double p  = pi[0];
-    const double q  = 1.0 - p;
-    const double pq = (q > 1e-300) ? p / q : 0.0;
     const int lo = std::max(0, bi), hi = std::min(ai, n);
-    if (p > 1.0 - 1e-14) {
-      if (n >= lo && n <= hi) v[n] = 1.0;
-    } else {
-      double f = std::pow(q, static_cast<double>(n));
-      for (int j = 1; j <= lo; ++j)
-        f *= pq * (n - j + 1.0) / j;
-      for (int j = lo; j <= hi; ++j) {
-        v[j] = f;
-        if (j < hi) f *= pq * (n - j) / (j + 1.0);
-      }
-    }
+    if (p > 1.0 - 1e-14) { if (n >= lo && n <= hi) v[n] = 1.0; }
+    else                  { fill_binom_range(v, n, p, lo, hi); }
   }
 
   for (int k = 1; k <= m - 2; ++k)
     vstep(v, w, n, pi[k] / suf[k], bi, ai);
 
-  // Final sum: bi <= n - j <= ai  =>  n-ai <= j <= n-bi
   double result = 0.0;
   for (int j = std::max(0, n - ai); j <= std::min(n, n - bi); ++j)
     result += v[j];
@@ -226,7 +283,6 @@ double prob_joint(int n, const std::vector<double>& pi, double a, double b) {
 // PMF: P(max n_k = c)
 // [[Rcpp::export]]
 double prob_max_eq(int n, const std::vector<double>& pi, double c) {
-  // Non-integer, NaN, or Inf → PMF is 0
   if (!std::isfinite(c) || c != std::floor(c)) return 0.0;
   const int ci = static_cast<int>(c);
   if (ci < 0 || ci > n) return 0.0;
@@ -247,15 +303,12 @@ double prob_min_eq(int n, const std::vector<double>& pi, double c) {
 }
 
 // PMF vector for max over c in [c_lo, c_hi]
-// Chains adjacent CDF calls: each curr becomes the next prev, so the
-// boundary between successive PMF values is computed only once.
 // [[Rcpp::export]]
 Rcpp::NumericVector pmf_max_range(int n, const std::vector<double>& pi,
                                   double c_lo, double c_hi) {
   if (!std::isfinite(c_lo) || !std::isfinite(c_hi))
     return Rcpp::NumericVector(0);
 
-  // First integer >= c_lo, last integer <= c_hi
   const int lo = std::max(0, static_cast<int>(std::ceil(c_lo)));
   const int hi = std::min(n, static_cast<int>(std::floor(c_hi)));
   if (lo > hi) return Rcpp::NumericVector(0);
@@ -264,6 +317,7 @@ Rcpp::NumericVector pmf_max_range(int n, const std::vector<double>& pi,
   Rcpp::NumericVector out(len);
   double prev = (lo > 0) ? prob_max_leq(n, pi, static_cast<double>(lo - 1)) : 0.0;
   for (int i = 0; i < len; ++i) {
+    R_CheckUserInterrupt();
     double curr = prob_max_leq(n, pi, static_cast<double>(lo + i));
     out[i] = std::max(0.0, curr - prev);
     prev = curr;
@@ -284,10 +338,11 @@ Rcpp::NumericVector pmf_min_range(int n, const std::vector<double>& pi,
 
   const int len = hi - lo + 1;
   Rcpp::NumericVector out(len);
-  // surv[i] = P(min >= lo + i),  surv[len] = P(min >= hi + 1)
   std::vector<double> surv(len + 1);
-  for (int i = 0; i <= len; ++i)
+  for (int i = 0; i <= len; ++i) {
+    R_CheckUserInterrupt();
     surv[i] = prob_min_geq(n, pi, static_cast<double>(lo + i));
+  }
   for (int i = 0; i < len; ++i)
     out[i] = std::max(0.0, surv[i] - surv[i + 1]);
   return out;
@@ -297,21 +352,23 @@ static double prob_range_lt_int(int n, const std::vector<double>& pi, int r) {
   if (r <= 0) return 0.0;
   if (r > n)  return 1.0;
   const int m = static_cast<int>(pi.size());
-  if (m <= 1) return 1.0;   // single urn: range is always 0
+  if (m <= 1) return 1.0;
 
   double result = 0.0;
 
-  // First sum: h = 0..n-r+1,  a = h+r-1, b = h
-  for (int h = 0; h <= n - r + 1; ++h)
+  for (int h = 0; h <= n - r + 1; ++h) {
+    R_CheckUserInterrupt();
     result += prob_joint(n, pi,
                          static_cast<double>(h + r - 1),
                          static_cast<double>(h));
+  }
 
-  // Second sum (subtracted): h = 0..n-r,  a = h+r-1, b = h+1
-  for (int h = 0; h <= n - r; ++h)
+  for (int h = 0; h <= n - r; ++h) {
+    R_CheckUserInterrupt();
     result -= prob_joint(n, pi,
                          static_cast<double>(h + r - 1),
                          static_cast<double>(h + 1));
+  }
 
   return std::min(1.0, std::max(0.0, result));
 }
@@ -342,8 +399,6 @@ double prob_range_gt(int n, const std::vector<double>& pi, double r) {
   return std::max(0.0, 1.0 - prob_range_leq(n, pi, r));
 }
 
-// Pr( range = r )   —   PMF; returns 0 for non-integer r
-// P(range = r) = P(range < r+1) - P(range < r)
 // [[Rcpp::export]]
 double prob_range_eq(int n, const std::vector<double>& pi, double r) {
   if (!std::isfinite(r) || r != std::floor(r)) return 0.0;
@@ -354,7 +409,6 @@ double prob_range_eq(int n, const std::vector<double>& pi, double r) {
   return std::max(0.0, hi - lo);
 }
 
-// PMF over a range of integer r values [ceil(r_lo), floor(r_hi)]
 // [[Rcpp::export]]
 Rcpp::NumericVector pmf_range_range(int n, const std::vector<double>& pi,
                                     double r_lo, double r_hi) {
@@ -368,9 +422,9 @@ Rcpp::NumericVector pmf_range_range(int n, const std::vector<double>& pi,
   const int len = hi - lo + 1;
   Rcpp::NumericVector out(len);
 
-  // CDF anchor just below lo: P(range < lo)
   double prev = (lo > 0) ? prob_range_lt_int(n, pi, lo) : 0.0;
   for (int i = 0; i < len; ++i) {
+    R_CheckUserInterrupt();
     double curr = prob_range_lt_int(n, pi, lo + i + 1);
     out[i] = std::max(0.0, curr - prev);
     prev = curr;

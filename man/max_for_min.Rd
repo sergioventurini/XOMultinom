@@ -5,12 +5,9 @@
 \title{Utility function for computing the distribution of the smallest order
 statistic.}
 \usage{
-max_for_min(t_max, n, m, t)
+max_for_min(t_max_d, n, m, t)
 }
 \arguments{
-\item{t_max}{A length-one numeric vector indicating the value to compute the
-survival function for.}
-
 \item{n}{A length-one integer vector indicating the number of independent
 balls.}
 
@@ -18,6 +15,9 @@ balls.}
 urns/cells.}
 
 \item{t}{A length-one numeric vector indicating the value to compute for.}
+
+\item{t_max}{A length-one numeric vector indicating the value to compute the
+survival function for.}
 }
 \value{
 A length-one numeric vector.

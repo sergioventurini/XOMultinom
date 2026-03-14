@@ -33,25 +33,22 @@
 //'
 // [[Rcpp::export]]
 double range_probability(const double & td, int n, int m) {
-  int t = floor(td);
-  double P = 0;
-  double aux = 0;
+  int t = (int)floor(td);
+  double P = 0.0;
 
   if (t > n) {
-    P = 1;
-    return P;
+    return 1.0;
   }
-  P = max_order_statistic(t, n, m);
-  arma::vec prev = arma::vec(3);
-  prev(0) = t;
-  prev(1) = n;
-  prev(2) = m;
-  for (int t_max = (t + 1); t_max <= n; t_max++) {
-    aux = max_for_range(t_max, n, m, prev, t);
-    P += aux;
-    prev(0) = t_max;
-    prev(1) = n;
-    prev(2) = m;
+
+  P = max_order_statistic((double)t, n, m);
+
+  int prev_t_max = t;   // initial "previous" t_max before the loop starts
+
+  for (int t_max = t + 1; t_max <= n; t_max++) {
+    P += max_for_range_impl((double)t_max, n, m,
+                            prev_t_max, n, m,
+                            t);
+    prev_t_max = t_max;
     R_CheckUserInterrupt();
   }
 

@@ -142,8 +142,8 @@ highest_order_statistics <- function(td, n, m, J) {
 #' @examples
 #' smallest_order_value(1, 10, 5) # P(N_(1) <= 1; n = 10, m = 5)
 #'
-max_for_min <- function(t_max, n, m, t) {
-    .Call(`_XOMultinom_max_for_min`, t_max, n, m, t)
+max_for_min <- function(t_max_d, n, m, t) {
+    .Call(`_XOMultinom_max_for_min`, t_max_d, n, m, t)
 }
 
 #' Utility function for computing the distribution of the range.

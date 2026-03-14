@@ -35,18 +35,17 @@
 //'
 // [[Rcpp::export]]
 double smallest_order_value(const double & td, int n, int m) {
-  int t = floor(td);
-  double P = 0;
+  int t = (int)floor(td);
 
-  if (t > floor(n/m)) {
-    P = 0;
-    return P;
+  if (t > (int)floor((double)n / m)) {
+    return 0.0;
   }
   if (t == 0) {
-    P = 1;
-    return P;
+    return 1.0;
   }
-  P = max_for_min(n, n, m, t);
 
-  return P;
+  // max_for_min now memoizes (t_max, n, m, t) triples, so repeated calls
+  // with the same arguments (e.g. evaluating the CDF at many t values) are
+  // effectively free after the first computation.
+  return max_for_min((double)n, n, m, t);
 }

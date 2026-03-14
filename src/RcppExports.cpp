@@ -284,16 +284,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // max_for_min
-double max_for_min(const double& t_max, int n, int m, int t);
-RcppExport SEXP _XOMultinom_max_for_min(SEXP t_maxSEXP, SEXP nSEXP, SEXP mSEXP, SEXP tSEXP) {
+double max_for_min(const double& t_max_d, int n, int m, int t);
+RcppExport SEXP _XOMultinom_max_for_min(SEXP t_max_dSEXP, SEXP nSEXP, SEXP mSEXP, SEXP tSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type t_max(t_maxSEXP);
+    Rcpp::traits::input_parameter< const double& >::type t_max_d(t_max_dSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< int >::type t(tSEXP);
-    rcpp_result_gen = Rcpp::wrap(max_for_min(t_max, n, m, t));
+    rcpp_result_gen = Rcpp::wrap(max_for_min(t_max_d, n, m, t));
     return rcpp_result_gen;
 END_RCPP
 }

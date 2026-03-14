@@ -34,54 +34,51 @@
 //'
 // [[Rcpp::export]]
 double max_order_statistic(const double & td, int n, int m) {
-  int t = floor(td);
-  double P = 0;
+  int t = (int)floor(td);
 
-  if ((t == 0) && (n != 0)) {
-    P = 0;
-    return P;
-  }
-  if ((t == 0) && (n == 0)) {
-    P = 1;
-    return P;
-  }
-  if (t >= n) {
-    P = 1;
-    return P;
-  }
-  if ((n == 0) && (m != 0)) {
-    P = 1;
-    return P;
-  }
-  if ((n == 0) && (m == 0)) {
-    P = 1;
-    return P;
+  if (t == 0 && n != 0) return 0.0;
+  if (t >= n) return 1.0;
+
+  // --- Memoization ---
+  // Static cache persists across R calls, so subproblems are reused when the
+  // user evaluates the CDF at multiple points or when called from
+  // highest_order_statistics / range_probability.
+  static std::unordered_map<std::tuple<int,int,int>, double, TupleHash3> cache;
+
+  auto key = std::make_tuple(t, n, m);
+  {
+    auto it = cache.find(key);
+    if (it != cache.end()) return it->second;
   }
 
-  double common_term = lgamma(n + 1) + lgamma(m + 1) - n*log(m);
+  // --- Recursive computation ---
+  double P = 0.0;
+  const double common_term = lgamma(n + 1) + lgamma(m + 1) - (double)n * std::log((double)m);
+
   if (t == 1) {
-    if (m >= n) {
-      P = exp(lgamma(m + 1) - lgamma(m - n + 1) - n*log(m));
-    } else {
-      P = 0;
-    }
+    // P(all cells <= 1 | n, m): requires m >= n (pigeon-hole)
+    P = (m >= n)
+          ? std::exp(lgamma(m + 1) - lgamma(m - n + 1) - (double)n * std::log((double)m))
+          : 0.0;
   } else {
-    int LowSum = fmax(0, n - t*m + m);
-    int UpSum = floor(n/t);
-    if (LowSum <= UpSum) {
-      for (int q = LowSum; q <= UpSum; q++) {
-        double summ_term = -q*lgamma(t + 1) - lgamma(q + 1) - lgamma(m - q + 1) - lgamma(n - t*q + 1);
-        double summ_term_nominator = 0;
-        if (m != q) {
-          summ_term_nominator = (n - t*q)*log(m - q);
-        }
-        double coef = exp(common_term + summ_term + summ_term_nominator);
-        double temp = max_order_statistic(t - 1, n - t*q, m - q);
-        P = P + coef*temp;
-        R_CheckUserInterrupt();
-      }
+    const int LowSum = (int)std::max(0, n - t * m + m);
+    const int UpSum  = (int)floor((double)n / (double)t);
+
+    for (int q = LowSum; q <= UpSum; q++) {
+      const double summ_term = -q * lgamma(t + 1)
+                               - lgamma(q + 1)
+                               - lgamma(m - q + 1)
+                               - lgamma(n - t * q + 1);
+      // Guard log(0): when m == q all remaining cells have exactly t balls
+      const double summ_nom  = (m != q)
+                                 ? (double)(n - t * q) * std::log((double)(m - q))
+                                 : 0.0;
+      P += std::exp(common_term + summ_term + summ_nom)
+           * max_order_statistic((double)(t - 1), n - t * q, m - q);
+      R_CheckUserInterrupt();
     }
   }
 
+  cache[key] = P;
   return P;
 }

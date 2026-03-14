@@ -36,8 +36,8 @@
 //'
 // [[Rcpp::export]]
 double highest_order_statistics(const double & td, int n, int m, int J) {
-  int t = floor(td);
-  double P = 0;
+  int t = (int)floor(td);
+  double P = 0.0;
 
   if (J > m) {
     Rcpp::stop("J should be smaller or equal than m.");
@@ -46,24 +46,24 @@ double highest_order_statistics(const double & td, int n, int m, int J) {
     Rcpp::stop("total sum is every time equal to n.");
   }
   if ((t == 0) && (n != 0)) {
-    P = 0;
-    return P;
+    return 0.0;
   }
   if ((t == 0) && (n == 0)) {
-    P = 1;
-    return P;
+    return 1.0;
   }
 
-  // first term if n_<1> <= t/J
-  P = max_order_statistic(floor(t/J), n, m);
+  P = max_order_statistic((double)floor((double)t / J), n, m);
 
   if (J > 1) {
+    std::vector<int> rangeArg;
+    rangeArg.reserve(J - 1);   // maximum number of elements pushed at any time
+
     for (int sum_depth = 1; sum_depth <= (J - 1); sum_depth++) {
-      arma::vec rangeArg = arma::vec();
-      int cur_depth = 1;
-      // double TMP = recursive_sum(t, n, m, J, sum_depth, cur_depth, rangeArg);
-      // printf("recursive_sum(%.1d, %.0d, %.0d, %.0d, %.0d, %.0d, rangeArg) = %.7f\n", t, n, m, J, sum_depth, cur_depth, TMP);
-      P = P + recursive_sum(t, n, m, J, sum_depth, cur_depth, rangeArg);
+      rangeArg.clear();
+      P += recursive_sum_impl(t, n, m, J, sum_depth,
+                              /* cur_depth = */ 1,
+                              rangeArg,
+                              /* partial_sum = */ 0);
       R_CheckUserInterrupt();
     }
   }

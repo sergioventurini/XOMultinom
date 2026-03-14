@@ -2,6 +2,61 @@
 
 // Note: RcppExport is an alias for extern "C"
 
+double recursive_sum_impl(int t, int n, int m, int J, int sum_depth,
+                          int cur_depth, std::vector<int>& rangeArg,
+                          int partial_sum) {
+  double S = 0.0;
+
+  if (cur_depth <= sum_depth) {
+    int lo, hi;
+    if (cur_depth == 1) {
+      lo = (int)floor((double)t / J) + 1;
+      hi = t - sum_depth + 1;
+    } else {
+      lo = (int)floor((double)(t - partial_sum) / (J - cur_depth + 1)) + 1;
+      hi = std::min(rangeArg[cur_depth - 2], t - partial_sum);
+    }
+
+    for (int r = lo; r <= hi; r++) {
+      rangeArg.push_back(r);
+      S += recursive_sum_impl(t, n, m, J, sum_depth,
+                              cur_depth + 1, rangeArg,
+                              partial_sum + r);
+      rangeArg.pop_back();
+      R_CheckUserInterrupt();
+    }
+
+  } else {
+    const int n_rem = n - partial_sum;   // n - sum(rangeArg)
+
+    const double prob_arg = std::floor((double)(t - partial_sum) / (J - sum_depth));
+    const double temp_p   = max_order_statistic(prob_arg, n_rem, m - sum_depth);
+
+    const double common_term = lgamma(n + 1) + lgamma(m + 1) - (double)n * std::log((double)m);
+
+    const double log_rem = (n_rem > 0 && m != sum_depth)
+                             ? (double)n_rem * std::log((double)(m - sum_depth))
+                             : 0.0;
+
+    double coef = log_rem - lgamma(m - sum_depth + 1) - lgamma(n_rem + 1);
+
+    for (int k = 0; k < (int)rangeArg.size(); k++) {
+      coef -= lgamma((double)rangeArg[k] + 1);
+    }
+
+    std::unordered_map<int, int> freq;
+    freq.reserve(rangeArg.size());
+    for (int val : rangeArg) freq[val]++;
+    for (auto& kv : freq) {
+      coef -= lgamma((double)kv.second + 1);
+    }
+
+    S = temp_p * std::exp(common_term + coef);
+  }
+
+  return S;
+}
+
 //' Utility function for computing recursively a sum.
 //'
 //' This is an auxiliary function to compute a sum recursively.
@@ -32,44 +87,17 @@
 //' highest_order_statistics(6, 10, 5, 2)
 //'
 // [[Rcpp::export]]
-double recursive_sum(const double & td, int n, int m, int J, int sum_depth, int cur_depth, arma::vec rangeArg) {
-  int t = floor(td);
+double recursive_sum(const double & td, int n, int m, int J, int sum_depth,
+                     int cur_depth, arma::vec rangeArg) {
+  int t = (int)floor(td);
 
-  double S = 0;
-  arma::vec cur_range = arma::vec(2);
-
-  if (cur_depth <= sum_depth) { // either increment summation depth or calculate the term
-    if (cur_depth == 1) {
-      cur_range(0) = floor(t/J + 1);
-      cur_range(1) = t - sum_depth + 1;
-    } else {
-      cur_range(0) = floor((t - arma::sum(rangeArg(arma::span(0, cur_depth - 2))))/(J - cur_depth + 1) + 1);
-      cur_range(1) = fmin(rangeArg(cur_depth - 2), t - arma::sum(rangeArg(arma::span(0, cur_depth - 2))));
-    }
-    for (int r = cur_range(0); r <= cur_range(1); r++) {
-      rangeArg.resize(cur_depth);
-      rangeArg(cur_depth - 1) = r;
-      S = S + recursive_sum(t, n, m, J, sum_depth, cur_depth + 1, rangeArg);
-      R_CheckUserInterrupt();
-    }
-  } else {
-    double prob_arg = floor((t - arma::sum(rangeArg))/(J - sum_depth));
-    double temp_p = max_order_statistic(prob_arg, n - arma::sum(rangeArg), m - sum_depth);
-    double common_term = lgamma(n + 1) + lgamma(m + 1) - n*log(m);
-    double coef = (n - arma::sum(rangeArg))*log(m - sum_depth) - lgamma(m - sum_depth + 1) - lgamma(n - arma::sum(rangeArg) + 1);
-    for (int k = 0; k < rangeArg.n_elem; k++) {
-      coef = coef - lgamma(rangeArg(k) + 1);
-      R_CheckUserInterrupt();
-    }
-    arma::vec equal_statistics = arma::unique(rangeArg);
-    for (int k = 0; k < equal_statistics.n_elem; k++) {
-      arma::uvec temp_idx = arma::find(rangeArg == equal_statistics(k));
-      int temp = temp_idx.n_elem;
-      coef = coef - lgamma(temp + 1);
-      R_CheckUserInterrupt();
-    }
-    S = temp_p*exp(common_term + coef);
+  std::vector<int> rangeArgVec(rangeArg.n_elem);
+  int partial_sum = 0;
+  for (arma::uword i = 0; i < rangeArg.n_elem; i++) {
+    rangeArgVec[i] = (int)rangeArg(i);
+    partial_sum   += rangeArgVec[i];
   }
 
-  return S;
+  return recursive_sum_impl(t, n, m, J, sum_depth, cur_depth,
+                            rangeArgVec, partial_sum);
 }
