@@ -13,10 +13,10 @@ system.time(
   for (pow in pow_seq) {
     for (alpha in alpha_seq) {
       cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
-      n_all <- maxmin_multinom_size(k_seq, incr_seq, power = pow, alpha = alpha,
-                                    n_max = 200, type = "max",
-                                    verbose = TRUE, optmethod = "uniroot")
-      n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- n_all
+      res <- maxmin_multinom_size(k_seq, incr_seq, power = pow, alpha = alpha,
+                                  n_max = 200, type = "max",
+                                  verbose = TRUE, optmethod = "uniroot")
+      n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- res$sizes
   
       save(n_master, file = "/Users/Sergio/dev/XOMultinom/data/sample_size_MAX.RData")
     }
@@ -85,10 +85,10 @@ system.time(
   for (pow in pow_seq) {
     for (alpha in alpha_seq) {
       cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
-      n_all <- maxmin_multinom_size(k_seq, decr_seq, power = pow, alpha = alpha,
-                                    n_max = 1000, type = "min",
-                                    verbose = TRUE, optmethod = "uniroot")
-      n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- n_all
+      res <- maxmin_multinom_size(k_seq, decr_seq, power = pow, alpha = alpha,
+                                  n_max = 1000, type = "min",
+                                  verbose = TRUE, optmethod = "uniroot")
+      n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- res$sizes
   
       save(n_master, file = "/Users/Sergio/dev/XOMultinom/data/sample_size_MIN.RData")
     }

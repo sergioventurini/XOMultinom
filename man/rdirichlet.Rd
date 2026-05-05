@@ -27,4 +27,5 @@ across rows.
 \examples{
 rdirichlet(5, c(1, 1, 1))
 rdirichlet(3, c(2, 5, 3))
+
 }

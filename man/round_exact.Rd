@@ -25,4 +25,5 @@ rounding to mitigate issues due to floating-point representation.
 \examples{
 round_exact(0.145, 2)
 round_exact(c(1.005, -1.005), 2)
+
 }

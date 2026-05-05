@@ -15,6 +15,8 @@
 #' @examples
 #' round_exact(0.145, 2)
 #' round_exact(c(1.005, -1.005), 2)
+#'
+#' @export
 round_exact <- function(x, digits = 0) {
   round(x + sign(x) * 1e-10, digits)
 }
@@ -38,6 +40,8 @@ round_exact <- function(x, digits = 0) {
 #' @examples
 #' rdirichlet(5, c(1, 1, 1))
 #' rdirichlet(3, c(2, 5, 3))
+#'
+#' @export
 rdirichlet <- function (n, alpha) {
   n <- as.numeric(n)
   if (!is.matrix(alpha)) {

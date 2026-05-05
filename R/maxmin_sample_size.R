@@ -32,7 +32,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
 
     xval <- 0:(n + 1)
     px   <- dmaxmultinom(x = xval, size = n, prob = probs,
-                         log = FALSE, verbose = FALSE)
+                         log = FALSE, verbose = FALSE)$values
 
     pgtk    <- rev(cumsum(rev(px)))
     k_alpha <- min(xval[which(pgtk <= alpha)])
@@ -54,7 +54,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
     # Step 1 ── does the test have any rejection region at all?
     # P(min <= 0 | H0) should be > 0 for any finite n, but check defensively.
     F0 <- pminmultinom(x = 0L, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE)
+                       log = FALSE, verbose = FALSE)$values
     if (is.na(F0) || F0 > alpha) {
       return(list(k_alpha = NA, gamma_prob = NA))
     }
@@ -63,11 +63,11 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
     # Start at floor(n/k) (the mean of each cell) and double if needed
     hi <- max(1L, floor(n / k))
     Fhi <- pminmultinom(x = hi, size = n, prob = probs,
-                        log = FALSE, verbose = FALSE)
+                        log = FALSE, verbose = FALSE)$values
     while (!is.na(Fhi) && Fhi <= alpha && hi < n) {
       hi  <- min(n - 1L, hi * 2L)
       Fhi <- pminmultinom(x = hi, size = n, prob = probs,
-                          log = FALSE, verbose = FALSE)
+                          log = FALSE, verbose = FALSE)$values
     }
     if (is.na(Fhi) || Fhi <= alpha) {
       return(list(k_alpha = NA, gamma_prob = NA))
@@ -78,7 +78,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
     while (hi - lo > 1L) {
       mid  <- (lo + hi) %/% 2L
       Fmid <- pminmultinom(x = mid, size = n, prob = probs,
-                           log = FALSE, verbose = FALSE)
+                           log = FALSE, verbose = FALSE)$values
       if (is.na(Fmid)) {
         # Computation failed mid-search; use the last safe lower bound
         return(list(k_alpha = lo, gamma_prob = 0))
@@ -93,9 +93,9 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
 
     # Step 4 ── compute gamma from the two flanking CDF values
     Flo <- pminmultinom(x = k_alpha,       size = n, prob = probs,
-                        log = FALSE, verbose = FALSE)
+                        log = FALSE, verbose = FALSE)$values
     Fup <- pminmultinom(x = k_alpha + 1L,  size = n, prob = probs,
-                        log = FALSE, verbose = FALSE)
+                        log = FALSE, verbose = FALSE)$values
 
     if (is.na(Flo) || is.na(Fup)) {
       return(list(k_alpha = k_alpha, gamma_prob = 0))
@@ -139,14 +139,14 @@ find_k_alpha <- function(probs, n, alpha = 0.05, type) {
   if (type == "max") {
     xval <- 0:(n + 1)
     px <- dmaxmultinom(x = xval, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE)
+                       log = FALSE, verbose = FALSE)$values
     pgtk <- rev(cumsum(rev(px)))
     k_alpha <- min(xval[which(pgtk <= alpha)])
   }
   else if (type == "min") {
     xval <- 0:n
     Fx <- pminmultinom(x = xval, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE)
+                       log = FALSE, verbose = FALSE)$values
     chk <- which(Fx <= alpha)
     if (length(chk) > 0) {
       k_alpha <- max(xval[chk])
@@ -187,7 +187,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 
   if (type == "max") {
     px <- dmaxmultinom(x = (k_alpha - 1):n, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE)
+                       log = FALSE, verbose = FALSE)$values
     p_k_alpha <- sum(px[-1])
     p_k_alpha_m_1 <- px[1]
     if (p_k_alpha_m_1 > 0) {
@@ -203,7 +203,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
     }
     else {
       Fx <- pminmultinom(x = k_alpha:(k_alpha + 1), size = n, prob = probs,
-                         log = FALSE, verbose = FALSE)
+                         log = FALSE, verbose = FALSE)$values
       p_k_alpha <- Fx[1]
       p_k_alpha_p_1 <- diff(Fx)
       if (p_k_alpha_p_1 > 0) {

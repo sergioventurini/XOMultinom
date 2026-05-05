@@ -13,8 +13,8 @@ xseq <- 0:n
 
 microbenchmark(
   max = pmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                     verbose = FALSE),
+                     verbose = FALSE)$res,
   min = pminmultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                     verbose = FALSE),
+                     verbose = FALSE)$res,
   times = 10
 )
