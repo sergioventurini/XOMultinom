@@ -247,6 +247,19 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 #' equiprobability with a given power, using tests based on either the
 #' maximum or minimum multinomial cell count.
 #'
+#' @examples
+#' \dontrun{
+#' pow <- 0.8
+#' alpha <- 0.05
+#' k_seq <- 3:8
+#' incr_seq <- seq(0.1, 0.9, 0.1)
+#' res <- maxmin_multinom_size(k_seq, incr_seq, power = pow, alpha = alpha,
+#'                             n_max = 200, type = "max",
+#'                             verbose = TRUE, optmethod = "uniroot")
+#' summary(res)
+#' plot(res)
+#' }
+#'
 #' @export
 maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
                                  n_max = 500, type, verbose = TRUE,

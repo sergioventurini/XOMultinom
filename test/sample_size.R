@@ -7,7 +7,6 @@ pow_seq <- c(0.8, 0.9)
 alpha_seq <- c(0.05, 0.01, 0.001)
 k_seq <- c(3:10, 15, 20, 30)
 incr_seq <- seq(0.1, 0.9, 0.1)
-n_seq <- numeric(length(incr_seq))
 n_master <- list()
 system.time(
   for (pow in pow_seq) {
@@ -79,7 +78,6 @@ pow_seq <- c(0.8, 0.9)
 alpha_seq <- c(0.05, 0.01, 0.001)
 k_seq <- c(3:10)
 decr_seq <- seq(0.2, 0.9, 0.1)
-n_seq <- numeric(length(decr_seq))
 n_master <- list()
 system.time(
   for (pow in pow_seq) {
