@@ -35,7 +35,9 @@ Internal constructor used by \code{\link{pmaxmultinom}},
 \code{\link{drangemultinom}} to wrap their output in a structured S3 object.
 }
 \seealso{
-\code{\link{print.xomultinom_dist}}, \code{\link{summary.xomultinom_dist}},
-\code{\link{plot.xomultinom_dist}}
+\code{\link{print.xomultinom_dist}},
+\code{\link{summary.xomultinom_dist}},
+\code{\link{plot.xomultinom_dist}},
+\code{\link{autoplot.xomultinom_dist}}
 }
 \keyword{internal}

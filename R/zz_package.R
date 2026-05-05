@@ -24,6 +24,7 @@
 #' @docType package
 #'
 #' @useDynLib XOMultinom, .registration = TRUE
+#' @importFrom ggplot2 autoplot
 #' @importFrom Rcpp evalCpp
 #' @importFrom utils globalVariables packageDescription
 #' @importFrom tools file_path_as_absolute

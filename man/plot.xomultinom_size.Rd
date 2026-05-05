@@ -4,38 +4,63 @@
 \alias{plot.xomultinom_size}
 \title{Plot method for \code{xomultinom_size} objects}
 \usage{
-\method{plot}{xomultinom_size}(x, log_scale = FALSE, title = NULL, ...)
+\method{plot}{xomultinom_size}(
+  x,
+  log_scale = FALSE,
+  col = NULL,
+  main = NULL,
+  xlab = NULL,
+  ylab = "Required n",
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class \code{xomultinom_size}.}
 
 \item{log_scale}{Logical; if \code{TRUE}, the \eqn{y}-axis (required
-\eqn{n}) is displayed on a log\eqn{_{10}} scale. Useful when
-\eqn{n} varies over several orders of magnitude. Defaults to
-\code{FALSE}.}
+\eqn{n}) is displayed on a \eqn{\log_{10}} scale. Useful when \eqn{n}
+varies over several orders of magnitude. Defaults to \code{FALSE}.}
 
-\item{title}{Character string; plot title. If \code{NULL} (default), a
+\item{col}{Character vector of colours, one per value of \code{k_seq}.
+If \code{NULL} (default), colours are taken from the default R palette.}
+
+\item{main}{Character string; plot title.  If \code{NULL} (default), a
 descriptive title is generated automatically.}
 
-\item{...}{Further arguments passed to or from other methods (currently
-unused).}
+\item{xlab}{Character string; x-axis label. If \code{NULL} (default), an
+appropriate label is generated automatically.}
+
+\item{ylab}{Character string; y-axis label. Defaults to
+\code{"Required n"}.}
+
+\item{...}{Further graphical parameters passed to the underlying base R
+plotting functions.}
 }
 \value{
-Invisibly returns the \code{ggplot} object.
+Invisibly returns \code{NULL}.
 }
 \description{
-Produces a \code{ggplot2} line chart of the required sample size as a
-function of the probability perturbation, with one line per value of
-\eqn{k} (number of categories).
+Produces a base R line chart of the required sample size as a function of
+the probability perturbation, with one line per value of \eqn{k} (number
+of categories), compatible with \code{par(mfrow = ...)}, \code{layout()},
+and all other base R multi-panel layout mechanisms.
 }
 \examples{
 \dontrun{
-sz <- maxmin_xomultinom_size(
+sz <- maxmin_multinom_size(
   k_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
   power = 0.80, alpha = 0.05, type = "max"
 )
+
+# Compatible with par(mfrow = ...)
+op <- par(mfrow = c(1, 2))
 plot(sz)
 plot(sz, log_scale = TRUE)
+par(op)
 }
 
+}
+\seealso{
+\code{\link{autoplot.xomultinom_size}} for a \code{ggplot2}-based
+alternative.
 }

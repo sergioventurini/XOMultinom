@@ -21,8 +21,8 @@ Invisibly returns a named list with components \code{mean},
 }
 \description{
 Computes and displays descriptive statistics of the exact distribution
-stored in a \code{xomultinom_dist} object, including the mean, median, mode,
-standard deviation, effective support, and a central 95\\% probability
+stored in an \code{xomultinom_dist} object, including the mean, median,
+mode, standard deviation, effective support, and a central 95\\% probability
 interval.
 }
 \examples{

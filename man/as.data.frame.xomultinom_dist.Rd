@@ -2,7 +2,7 @@
 % Please edit documentation in R/xomultinom_classes.R
 \name{as.data.frame.xomultinom_dist}
 \alias{as.data.frame.xomultinom_dist}
-\title{Coerce a \code{xomultinom_dist} object to a data frame}
+\title{Coerce an \code{xomultinom_dist} object to a data frame}
 \usage{
 \method{as.data.frame}{xomultinom_dist}(x, ...)
 }
@@ -19,7 +19,7 @@ computed on the log scale the column is named \code{log_pmf} or
 \code{log_cdf} accordingly.
 }
 \description{
-Converts the evaluation points and probability values stored in a
+Converts the evaluation points and probability values stored in an
 \code{xomultinom_dist} object into a tidy \code{data.frame} suitable for
 further manipulation or export.
 }

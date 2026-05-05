@@ -8,7 +8,7 @@ new_xomultinom_size(sizes, k_seq, change_seq, power, alpha, type)
 }
 \arguments{
 \item{sizes}{Named list of sample sizes as returned by
-\code{\link{maxmin_xomultinom_size}}.}
+\code{\link{maxmin_multinom_size}}.}
 
 \item{k_seq}{Integer vector of numbers of categories used in the search.}
 
@@ -25,11 +25,13 @@ equiprobability used in the search.}
 An object of class \code{xomultinom_size}.
 }
 \description{
-Internal constructor used by \code{\link{maxmin_xomultinom_size}} to wrap its
+Internal constructor used by \code{\link{maxmin_multinom_size}} to wrap its
 output in a structured S3 object.
 }
 \seealso{
-\code{\link{print.xomultinom_size}}, \code{\link{summary.xomultinom_size}},
-\code{\link{plot.xomultinom_size}}
+\code{\link{print.xomultinom_size}},
+\code{\link{summary.xomultinom_size}},
+\code{\link{plot.xomultinom_size}},
+\code{\link{autoplot.xomultinom_size}}
 }
 \keyword{internal}

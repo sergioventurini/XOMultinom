@@ -7,9 +7,11 @@
 \method{plot}{xomultinom_dist}(
   x,
   add_approx = FALSE,
-  colour = "#2166ac",
-  approx_colour = "#d6604d",
-  title = NULL,
+  col = "#2166ac",
+  approx_col = "#d6604d",
+  main = NULL,
+  xlab = "x",
+  ylab = NULL,
   ...
 )
 }
@@ -20,32 +22,48 @@
 to the distribution (mean and variance computed from the exact PMF).
 Defaults to \code{FALSE}.}
 
-\item{colour}{Character string; colour used for the exact distribution.
+\item{col}{Character string; colour used for the exact distribution.
 Defaults to \code{"#2166ac"} (blue).}
 
-\item{approx_colour}{Character string; colour used for the approximation
+\item{approx_col}{Character string; colour used for the approximation
 overlay when \code{add_approx = TRUE}. Defaults to \code{"#d6604d"}
 (red).}
 
-\item{title}{Character string; plot title.  If \code{NULL} (default), a
+\item{main}{Character string; plot title.  If \code{NULL} (default), a
 descriptive title is generated automatically.}
 
-\item{...}{Further arguments passed to or from other methods (currently
-unused).}
+\item{xlab}{Character string; x-axis label. Defaults to \code{"x"}.}
+
+\item{ylab}{Character string; y-axis label.  If \code{NULL} (default), an
+appropriate label is generated automatically.}
+
+\item{...}{Further graphical parameters passed to the underlying base R
+plotting functions.}
 }
 \value{
-Invisibly returns the \code{ggplot} object.
+Invisibly returns \code{NULL}.
 }
 \description{
-Produces a \code{ggplot2}-based plot of the exact distribution stored in a
-\code{xomultinom_dist} object. PMFs are displayed as lollipop (spike) charts;
-CDFs are displayed as step functions. An optional normal approximation
-overlay can be added for diagnostic comparison.
+Produces a base R plot of the exact distribution stored in an
+\code{xomultinom_dist} object, compatible with \code{par(mfrow = ...)},
+\code{layout()}, and all other base R multi-panel layout mechanisms.
+PMFs are displayed as spike (needle) charts; CDFs are displayed as step
+functions.  An optional normal approximation overlay can be added for
+diagnostic comparison.
 }
 \examples{
 k <- 5; n <- 40
-obj <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
-plot(obj)
-plot(obj, add_approx = TRUE)
+obj_pmf <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+obj_cdf <- pmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
 
+# Compatible with par(mfrow = ...)
+op <- par(mfrow = c(1, 2))
+plot(obj_pmf)
+plot(obj_cdf)
+par(op)
+
+}
+\seealso{
+\code{\link{autoplot.xomultinom_dist}} for a \code{ggplot2}-based
+alternative.
 }

@@ -25,7 +25,7 @@ Invisibly returns \code{x}.
 }
 \description{
 Displays a compact, human-readable table of evaluation points and the
-corresponding exact probabilities (or log-probabilities) stored in a
+corresponding exact probabilities (or log-probabilities) stored in an
 \code{xomultinom_dist} object.
 }
 \examples{

@@ -37,7 +37,6 @@ Imports:
     graphics,
     parallel,
     Rcpp (>= 1.0.14),
-    scales,
     stats4,
     tools
 Suggests:

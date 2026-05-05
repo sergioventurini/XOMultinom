@@ -2,7 +2,7 @@
 % Please edit documentation in R/xomultinom_classes.R
 \name{as.data.frame.xomultinom_size}
 \alias{as.data.frame.xomultinom_size}
-\title{Coerce a \code{xomultinom_size} object to a data frame}
+\title{Coerce an \code{xomultinom_size} object to a data frame}
 \usage{
 \method{as.data.frame}{xomultinom_size}(x, ...)
 }
@@ -18,13 +18,13 @@ categories), \code{change} (probability perturbation), and
 \code{n_required} (required sample size).
 }
 \description{
-Converts the sample size results stored in a \code{xomultinom_size} object
+Converts the sample size results stored in an \code{xomultinom_size} object
 into a single tidy \code{data.frame} with columns for \eqn{k}, the
 probability perturbation, and the required sample size.
 }
 \examples{
 \dontrun{
-sz <- maxmin_xomultinom_size(
+sz <- maxmin_multinom_size(
   k_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
   power = 0.80, alpha = 0.05, type = "max"
 )
