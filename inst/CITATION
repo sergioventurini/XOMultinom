@@ -6,12 +6,11 @@ bibentry(bibtype = "Article",
                    person(given = "Marco",
                           family = "Bonetti",
                           email = "marco.bonetti@unibocconi.it")),
-  journal      = "Journal of Statistical Software",
-  year         = "2024",
+  journal      = "",
+  year         = "2026",
   volume       = "XX",
   number       = "XX",
   pages        = "1--XX",
   doi          = "(to appear)",
   header       = "To cite XOMultinom in publications use:"
 )
-

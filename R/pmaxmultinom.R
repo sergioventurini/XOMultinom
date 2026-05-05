@@ -1,45 +1,40 @@
-#' Distribution function (CDF) of the maximum for a generic multinomial random
-#' vector.
+#' CDF of the maximum for a multinomial distribution
 #'
-#' This function calculates the distribution function (i.e. the probability to be
-#' smaller than or equal to a given value) for the maximum of a generic
-#' (i.e. not necessarily equiprobable) multinomial vector.
+#' Computes the cumulative distribution function of the maximum cell count of a
+#' multinomial random vector with arbitrary cell probabilities.
 #'
-#' @param x A numeric vector indicating the values of the maximum to compute
-#'   the CDF for.
-#' @param size A length-one integer specifying the total number of objects
-#'   that are put into \emph{K} boxes in the typical multinomial experiment.
-#' @param prob A numeric non-negative of length \emph{K} specifying the
-#'   probability for the \emph{K} classes; is internally normalized to sum 1.
-#' @param log A length-one logical vector; if TRUE, log probabilities are
-#'   computed.
-#' @param verbose A length-one logical vector; if TRUE, details are printed
-#'   during the calculation.
-#' @return A numeric vector providing the probabilities of the maximum.
-#' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
-#' @seealso \code{\link{pminmulitnom_C}} for computing the
-#'   CDF of the minimum for a generic multinomial random vector.
-#' @seealso \code{\link{dmaxmulitnom_C}} for computing the
-#'   probability mass function (PMF) of the maximum for a generic
-#'   multinomial random vector.
-#' @seealso \code{\link{dminmulitnom_C}} for computing the
-#'   probability mass function (PMF) of the minimum for a generic
-#'   multinomial random vector.
-#' @references
-#'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-#'   distributions of some functions of the ordered multinomial counts:
-#'   maximum, minimum, range and sums of order statistics", Royal Society
-#'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
+#' @param x Numeric vector of values at which to evaluate the CDF.
+#' @param size Integer number of trials.
+#' @param prob Numeric vector of non-negative cell probabilities. Values are
+#'   internally normalized to sum to 1. Categories with zero probability are
+#'   removed before computation.
+#' @param log Logical; if \code{TRUE}, returns log-probabilities.
+#' @param verbose Logical; if \code{TRUE}, displays progress information during
+#'   the computation.
+#'
+#' @return Numeric vector of the same length as \code{x} containing
+#'   \eqn{P(\max(X_1, \ldots, X_K) \le x)} values, or log-probabilities if
+#'   \code{log = TRUE}.
+#'
 #' @examples
-#' k <- 4 # dimension of the multinomial random vector
+#' k <- 4
 #' n <- 60
-#' set.seed(101)
-#' probs <- rdirichlet(1, rep(1/k, k))  # or rep(1/k, k) 
+#' probs <- rep(1 / k, k)
 #' xseq <- 0:n
-#' 
-#' cdfmax <- pmaxmultinom(x = xseq, size = n, prob = probs, log = FALSE,
-#'                        verbose = TRUE)
-#' plot(xseq, cdfmax, type = "s", xlab = "x", ylab = "CDF")
+#'
+#' cdfmax <- pmaxmultinom(x = xseq, size = n, prob = probs)
+#' plot(cdfmax)
+#'
+#' @references
+#' Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
+#' distributions of some functions of the ordered multinomial counts:
+#' maximum, minimum, range and sums of order statistics. Royal Society
+#' Open Science, 6, 190198. \doi{10.1098/rsos.190198}
+#'
+#' @seealso
+#' \code{\link{pminmultinom}} for the CDF of the minimum,
+#' \code{\link{dmaxmultinom}} for the PMF of the maximum, and
+#' \code{\link{dminmultinom}} for the PMF of the minimum.
 #'
 #' @export
 pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE) {
@@ -62,5 +57,11 @@ pmaxmultinom <- function(x, size, prob, log = FALSE, verbose = FALSE) {
   if (any(res > 1))
     res[res > 1] <- 1
 
-  return(res)
+  return(new_xomultinom_dist(x      = x,
+                             values = res,
+                             stat   = "max",
+                             type   = "cdf",
+                             size   = size,
+                             prob   = prob,
+                             log    = log))
 }

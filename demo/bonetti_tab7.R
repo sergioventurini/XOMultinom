@@ -1,17 +1,21 @@
-### NOTE: the following code will take several minutes to run! ###
+### WARNING: the following code may take several minutes to run! ###
 
 library(XOMultinom)
 
-# Table 6 - Distribution of the multinomial minimum.
-t_min <- 0
-t_max <- 4 # the original t_max value was 7
+# Table 7 - Distribution of the multinomial range.
+t_min <- 1
+t_max <- 8 # the original t_max value was 16
 t <- t_min:t_max
-m <- c(5, 10, 15, 20)
-n_5 <- c(seq(5, 30, 5), 40)
-n_10 <- c(seq(30, 60, 10), 80)
-n_15 <- 90
-n_20 <- 100
-n_list <- list(n_5, n_10, n_15, n_20)
+m <- c(5, 10, 15, 20, 25, 30, 40, 50)
+n_5 <- seq(5, 30, 5)
+n_10 <- seq(10, 60, 10)
+n_15 <- seq(15, 90, 15)
+n_20 <- seq(20, 100, 20)
+n_25 <- seq(25, 100, 25)
+n_30 <- seq(30, 60, 30)
+n_40 <- seq(40, 80, 40)
+n_50 <- seq(50, 100, 50)
+n_list <- list(n_5, n_10, n_15, n_20, n_25, n_30, n_40, n_50)
 names(n_list) <- m
 n_mat <- matrix(NA, nrow = max(sapply(n_list, length)), ncol = length(m))
 for (j in 1:ncol(n_mat)) {
@@ -33,7 +37,7 @@ for (m_idx in 1:length(m)) {
       } else {
         cat(t[t_idx])
       }
-      probs[n_idx, t_idx, m_idx] <- 1 - smallest_order_value(t[t_idx] + 1, n_list[[m_idx]][n_idx], m[m_idx])
+      probs[n_idx, t_idx, m_idx] <- range_probability(t[t_idx], n_list[[m_idx]][n_idx], m[m_idx])
     }
     cat("\n")
   }

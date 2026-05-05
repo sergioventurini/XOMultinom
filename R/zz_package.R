@@ -1,29 +1,31 @@
-#' XOMultinom: a package 
-#'
-#' _PACKAGE
-#'
-#' @name XOMultinom-package
-#' @aliases XOMultinom-pkg
-#' @aliases XOMultinom-p
-#' @aliases XOMultinom
+#' XOMultinom: Exact distributions of ordered multinomial counts
 #'
 #' @description
-#' The \pkg{XOMultinom} package contains functions for computing the exact
-#' distributions of some functions of the ordered multinomial counts.
+#' The \pkg{XOMultinom} package provides functions for computing exact
+#' distributions of selected functions of ordered multinomial counts, including
+#' the maximum, minimum, range, and sums of order statistics.
 #'
-#' The main functions included in the package are:
-#' * \code{\link{highest_order_statistics}()}
-#' * \code{\link{max_order_statistic}()}
-#' * \code{\link{range_probability}()}
-#' * \code{\link{smallest_order_value}()}
-#' * \code{\link{dmaxmultinom}()}
-#' * \code{\link{dminmultinom}()}
-#' * \code{\link{pmaxmultinom}()}
-#' * \code{\link{pminmultinom}()}
+#' Main functions include:
+#' \itemize{
+#'   \item \code{\link{highest_order_statistics}()}
+#'   \item \code{\link{max_order_statistic}()}
+#'   \item \code{\link{range_probability}()}
+#'   \item \code{\link{smallest_order_value}()}
+#'   \item \code{\link{dmaxmultinom}()}
+#'   \item \code{\link{dminmultinom}()}
+#'   \item \code{\link{drangemultinom}()}
+#'   \item \code{\link{pmaxmultinom}()}
+#'   \item \code{\link{pminmultinom}()}
+#'   \item \code{\link{prangemultinom}()}
+#' }
+#'
+#' @name XOMultinom-package
+#' @aliases XOMultinom-package XOMultinom-pkg XOMultinom
+#' @docType package
 #'
 #' @useDynLib XOMultinom, .registration = TRUE
-#' @import stats
-#' @import utils
-#' 
-#' @keywords internal
-NULL
+#' @importFrom Rcpp evalCpp
+#' @importFrom utils globalVariables packageDescription
+#' @importFrom tools file_path_as_absolute
+#'
+"_PACKAGE"

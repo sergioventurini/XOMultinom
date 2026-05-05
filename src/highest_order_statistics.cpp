@@ -2,38 +2,30 @@
 
 // Note: RcppExport is an alias for extern "C"
 
-//' CDF of the sum of the first \eqn{J} largest order statistics for a
-//' multinomial distribution.
+//' CDF of the sum of the first \eqn{J} largest order statistics
 //'
-//' This function calculates the cumulative distribution function (CDF) of the
-//' sum of the first \eqn{J} largest order statistics under an equiprobable
-//' multinomial distribution assumption.
+//' Computes the cumulative distribution function of the sum of the first
+//' \eqn{J} largest order statistics for an equiprobable multinomial
+//' distribution.
 //'
-//' @param t A length-one numeric vector indicating the value to compute the CDF
-//'   for.
-//' @param n A length-one integer vector indicating the number of independent
-//'   balls.
-//' @param m A length-one integer vector indicating the number of independent
-//'   urns/cells.
-//' @param J A length-one integer vector indicating the number of largest order
-//'   statistics.
-//' @return A length-one numeric vector representing the probability of the
-//'   sum of the \eqn{J} largest order statistic.
-//' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
-//' @seealso \code{\link{max_order_statistic}} for computing the
-//'   CDF of the maximum.
-//' @seealso \code{\link{smallest_order_value}} for computing the CDF
-//'   of the smallest order statistic.
-//' @seealso \code{\link{range_probability}} for computing the CDF
-//'   of the range.
+//' @param td Numeric value at which to evaluate the CDF. Internally, this is
+//'   converted to \code{floor(td)}.
+//' @param n Integer number of balls/trials.
+//' @param m Integer number of urns/cells.
+//' @param J Integer number of largest order statistics to sum.
+//'
+//' @return Numeric value giving the CDF probability.
+//'
 //' @references
-//'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-//'   distributions of some functions of the ordered multinomial counts:
-//'   maximum, minimum, range and sums of order statistics", Royal Society
-//'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
+//' Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
+//' distributions of some functions of the ordered multinomial counts:
+//' maximum, minimum, range and sums of order statistics. Royal Society
+//' Open Science, 6, 190198. \doi{10.1098/rsos.190198}
+//'
 //' @examples
 //' highest_order_statistics(6, 10, 5, 2)
 //'
+//' @export
 // [[Rcpp::export]]
 double highest_order_statistics(const double & td, int n, int m, int J) {
   int t = (int)floor(td);

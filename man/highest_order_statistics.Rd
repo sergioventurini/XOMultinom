@@ -2,53 +2,35 @@
 % Please edit documentation in R/RcppExports.R
 \name{highest_order_statistics}
 \alias{highest_order_statistics}
-\title{CDF of the sum of the first \eqn{J} largest order statistics for a
-multinomial distribution.}
+\title{CDF of the sum of the first \eqn{J} largest order statistics}
 \usage{
 highest_order_statistics(td, n, m, J)
 }
 \arguments{
-\item{n}{A length-one integer vector indicating the number of independent
-balls.}
+\item{td}{Numeric value at which to evaluate the CDF. Internally, this is
+converted to \code{floor(td)}.}
 
-\item{m}{A length-one integer vector indicating the number of independent
-urns/cells.}
+\item{n}{Integer number of balls/trials.}
 
-\item{J}{A length-one integer vector indicating the number of largest order
-statistics.}
+\item{m}{Integer number of urns/cells.}
 
-\item{t}{A length-one numeric vector indicating the value to compute the CDF
-for.}
+\item{J}{Integer number of largest order statistics to sum.}
 }
 \value{
-A length-one numeric vector representing the probability of the
-sum of the \eqn{J} largest order statistic.
+Numeric value giving the CDF probability.
 }
 \description{
-This function calculates the cumulative distribution function (CDF) of the
-sum of the first \eqn{J} largest order statistics under an equiprobable
-multinomial distribution assumption.
+Computes the cumulative distribution function of the sum of the first
+\eqn{J} largest order statistics for an equiprobable multinomial
+distribution.
 }
 \examples{
 highest_order_statistics(6, 10, 5, 2)
 
 }
 \references{
-Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
+Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
 distributions of some functions of the ordered multinomial counts:
-maximum, minimum, range and sums of order statistics", Royal Society
-Open Science, 6: 190198, \url{http://dx.doi.org/10.1098/rsos.190198}.
-}
-\seealso{
-\code{\link{max_order_statistic}} for computing the
-CDF of the maximum.
-
-\code{\link{smallest_order_value}} for computing the CDF
-of the smallest order statistic.
-
-\code{\link{range_probability}} for computing the CDF
-of the range.
-}
-\author{
-Sergio Venturini \email{sergio.venturini@unicatt.it}
+maximum, minimum, range and sums of order statistics. Royal Society
+Open Science, 6, 190198. \doi{10.1098/rsos.190198}
 }

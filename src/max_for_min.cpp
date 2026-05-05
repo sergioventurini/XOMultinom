@@ -2,36 +2,19 @@
 
 // Note: RcppExport is an alias for extern "C"
 
-//' Utility function for computing the distribution of the smallest order
-//' statistic.
+//' Internal utility for smallest order statistic computation
 //'
-//' This is an auxiliary function to the distribution of the smallest order
-//' statistic.
+//' Recursive helper used to compute probabilities related to the
+//' smallest order statistic in a multinomial distribution.
 //'
-//' @param t_max A length-one numeric vector indicating the value to compute the
-//'   survival function for.
-//' @param n A length-one integer vector indicating the number of independent
-//'   balls.
-//' @param m A length-one integer vector indicating the number of independent
-//'   urns/cells.
-//' @param t A length-one numeric vector indicating the value to compute for.
-//' @return A length-one numeric vector.
-//' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
-//' @seealso \code{\link{highest_order_statistics}} for computing the
-//'   CDF of the sum of the first \eqn{J} largest order statistics.
-//' @seealso \code{\link{smallest_order_value}} for computing the CDF
-//'   of the smallest order statistic.
-//' @seealso \code{\link{range_probability}} for computing the CDF
-//'   of the range.
-//' @references
-//'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-//'   distributions of some functions of the ordered multinomial counts:
-//'   maximum, minimum, range and sums of order statistics", Royal Society
-//'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
-//' @examples
-//' smallest_order_value(1, 10, 5) # P(N_(1) <= 1; n = 10, m = 5)
+//' @param t_max_d Numeric upper bound (internally coerced to integer).
+//' @param n Integer number of balls/trials.
+//' @param m Integer number of urns/cells.
+//' @param t Integer threshold for the minimum.
 //'
-// [[Rcpp::export]]
+//' @return Numeric value.
+//'
+//' @keywords internal
 double max_for_min(const double & t_max_d, int n, int m, int t) {
   int t_max = (int)t_max_d;
 

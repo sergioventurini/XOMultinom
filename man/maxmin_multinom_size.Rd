@@ -2,7 +2,7 @@
 % Please edit documentation in R/maxmin_sample_size.R
 \name{maxmin_multinom_size}
 \alias{maxmin_multinom_size}
-\title{Utility function.}
+\title{Sample size determination for multinomial max/min tests}
 \usage{
 maxmin_multinom_size(
   k_seq,
@@ -17,34 +17,37 @@ maxmin_multinom_size(
 )
 }
 \arguments{
-\item{k}{A length-one integer vector of the number of multinomial classes.}
+\item{k_seq}{Integer vector of numbers of categories.}
 
-\item{pmax}{A length-one numeric vector with the probability values to
-compute the increments for.}
+\item{change_seq}{Numeric vector of probability perturbations from the
+equiprobable case.}
+
+\item{power}{Desired power level in (0, 1).}
+
+\item{alpha}{Significance level in (0, 1).}
+
+\item{n_max}{Maximum sample size considered in the search.}
+
+\item{type}{Character string; either \code{"max"} or \code{"min"}.}
+
+\item{verbose}{Logical; if \code{TRUE}, progress messages are printed.}
+
+\item{optmethod}{Character string; optimization method, either
+\code{"uniroot"} or \code{"optimize"}.}
+
+\item{extendInt}{Passed to \code{uniroot()} when used.}
 }
 \value{
-A numeric matrix.
+A list where each element corresponds to a value of \code{k_seq}
+and contains the required sample sizes for each value in \code{change_seq}.
 }
 \description{
-This is an auxiliary function to compute the increment as the distance
-from the case of equiprobability.
+Computes the required sample size to achieve a target power for hypothesis
+tests based on the maximum or minimum of a multinomial random vector under
+deviations from equiprobability.
 }
-\examples{
-k <- 3:50
-pmax <- seq(0.05, 1, 0.05)
-incr <- pmax_2_incr(k, pmax)
-summary(as.numeric(incr))
-
-}
-\references{
-Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-distributions of some functions of the ordered multinomial counts:
-maximum, minimum, range and sums of order statistics", Royal Society
-Open Science, 6: 190198, \url{http://dx.doi.org/10.1098/rsos.190198}.
-}
-\seealso{
-\code{\link{incr_2_pmax}} for the opposite calculation.
-}
-\author{
-Sergio Venturini \email{sergio.venturini@unicatt.it}
+\details{
+The function evaluates the sample size needed to detect deviations from
+equiprobability with a given power, using tests based on either the
+maximum or minimum multinomial cell count.
 }

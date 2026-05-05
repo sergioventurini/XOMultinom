@@ -47,35 +47,20 @@ double max_for_range_impl(double t_max_d, int n, int m,
   return aux;
 }
 
-//' Utility function for computing the distribution of the range.
+//' Internal utility for range distribution computation
 //'
-//' This is an auxiliary function to the distribution of the range.
+//' Wrapper around the internal recursive implementation used to compute
+//' probabilities related to the range of multinomial cell counts.
 //'
-//' @param t_max A length-one numeric vector indicating the value to compute the
-//'   survival function for.
-//' @param n A length-one integer vector indicating the number of independent
-//'   balls.
-//' @param m A length-one integer vector indicating the number of independent
-//'   urns/cells.
-//' @param prev Integer vector containing the previous iteration values.
-//' @param t A length-one numeric vector indicating the value to compute for.
-//' @return A length-one numeric vector.
-//' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
-//' @seealso \code{\link{highest_order_statistics}} for computing the
-//'   CDF of the sum of the first \eqn{J} largest order statistics.
-//' @seealso \code{\link{smallest_order_value}} for computing the CDF
-//'   of the smallest order statistic.
-//' @seealso \code{\link{range_probability}} for computing the CDF
-//'   of the range.
-//' @references
-//'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-//'   distributions of some functions of the ordered multinomial counts:
-//'   maximum, minimum, range and sums of order statistics", Royal Society
-//'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
-//' @examples
-//' range_probability(1, 7, 10)
+//' @param t_max Numeric upper bound.
+//' @param n Integer number of balls/trials.
+//' @param m Integer number of urns/cells.
+//' @param prev Numeric vector of length 3 containing previous recursion values.
+//' @param t Integer threshold value.
 //'
-// [[Rcpp::export]]
+//' @return Numeric probability value.
+//'
+//' @keywords internal
 double max_for_range(const double & t_max, int n, int m, arma::vec prev, int t) {
   return max_for_range_impl(t_max, n, m,
                             (int)prev(0), (int)prev(1), (int)prev(2),

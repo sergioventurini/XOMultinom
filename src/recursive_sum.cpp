@@ -57,36 +57,23 @@ double recursive_sum_impl(int t, int n, int m, int J, int sum_depth,
   return S;
 }
 
-//' Utility function for computing recursively a sum.
+//' Internal recursive summation helper
 //'
-//' This is an auxiliary function to compute a sum recursively.
+//' Wrapper around the internal recursive summation implementation used by
+//' \code{highest_order_statistics()}.
 //'
-//' @param td A length-one numeric vector indicating the value to compute the
-//'   function for.
-//' @param n A length-one integer vector indicating the number of independent
-//'   balls.
-//' @param m A length-one integer vector indicating the number of independent
-//'   urns/cells.
-//' @param J A length-one integer vector indicating the number of largest order
-//'   statistics.
-//' @param sum_depth A length-one integer vector indicating the summation depth.
-//' @param cur_depth A length-one integer vector indicating the current
-//'   summation depth.
-//' @param rangeArg Integer vector indicating the range of the summation.
-//' @return A length-one numeric vector representing the summation value.
-//' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
-//' @seealso \code{\link{highest_order_statistics}} for computing the CDF
-//'   of the sum for the first \eqn{J} largest order statistics for an
-//'   equiprobable multinomial distribution.
-//' @references
-//'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-//'   distributions of some functions of the ordered multinomial counts:
-//'   maximum, minimum, range and sums of order statistics", Royal Society
-//'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
-//' @examples
-//' highest_order_statistics(6, 10, 5, 2)
+//' @param td Numeric value used in the recursive computation. Internally, this
+//'   is converted to \code{floor(td)}.
+//' @param n Integer number of balls/trials.
+//' @param m Integer number of urns/cells.
+//' @param J Integer number of largest order statistics.
+//' @param sum_depth Integer target summation depth.
+//' @param cur_depth Integer current recursion depth.
+//' @param rangeArg Numeric vector containing the current recursion arguments.
 //'
-// [[Rcpp::export]]
+//' @return Numeric value giving the recursive summation result.
+//'
+//' @keywords internal
 double recursive_sum(const double & td, int n, int m, int J, int sum_depth,
                      int cur_depth, arma::vec rangeArg) {
   int t = (int)floor(td);

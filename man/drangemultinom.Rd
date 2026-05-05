@@ -2,65 +2,51 @@
 % Please edit documentation in R/drangemultinom.R
 \name{drangemultinom}
 \alias{drangemultinom}
-\title{Probability mass function (PDF) of the range for a generic multinomial random
-vector.}
+\title{PMF of the range for a multinomial distribution}
 \usage{
 drangemultinom(x, size, prob, log = FALSE, verbose = FALSE)
 }
 \arguments{
-\item{x}{A numeric vector indicating the values of the range to compute
-the CDF for.}
+\item{x}{Numeric vector of values at which to evaluate the PMF.}
 
-\item{size}{A length-one integer specifying the total number of objects
-that are put into \emph{K} boxes in the typical multinomial experiment.}
+\item{size}{Integer number of trials.}
 
-\item{prob}{A numeric non-negative of length \emph{K} specifying the
-probability for the \emph{K} classes; is internally normalized to sum 1.}
+\item{prob}{Numeric vector of non-negative cell probabilities. Values are
+internally normalized to sum to 1. Categories with zero probability are
+removed before computation.}
 
-\item{log}{A length-one logical vector; if TRUE, log probabilities are
-computed.}
+\item{log}{Logical; if \code{TRUE}, returns log-probabilities.}
 
-\item{verbose}{A length-one logical vector; if TRUE, details are printed
-during the calculation.}
+\item{verbose}{Logical; if \code{TRUE}, displays progress information during
+the computation.}
 }
 \value{
-A numeric vector providing the probabilities of the range.
+Numeric vector of the same length as \code{x} containing
+\eqn{P(R = x)} values, or log-probabilities if \code{log = TRUE}.
 }
 \description{
-This function calculates the probability mass function (i.e. the probability to be
-exactly equal to a given value) for the range of a generic
-(i.e. not necessarily equiprobable) multinomial vector.
+Computes the probability mass function of the range
+\eqn{R = \max(X_1, \ldots, X_K) - \min(X_1, \ldots, X_K)}
+for a multinomial random vector with arbitrary cell probabilities.
 }
 \examples{
-k <- 4 # dimension of the multinomial random vector
+k <- 4
 n <- 60
-set.seed(101)
-probs <- rdirichlet(1, rep(1/k, k))  # or rep(1/k, k) 
+probs <- rep(1 / k, k)
 xseq <- 0:n
 
-cdfmax <- prangemultinom(x = xseq, size = n, prob = probs, log = FALSE,
-                       verbose = TRUE)
-plot(xseq, cdfmax, type = "s", xlab = "x", ylab = "CDF")
+pmfrange <- drangemultinom(x = xseq, size = n, prob = probs)
+plot(pmfrange)
 
 }
 \references{
-Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
+Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
 distributions of some functions of the ordered multinomial counts:
-range, range, range and sums of order statistics", Royal Society
-Open Science, 6: 190198, \url{http://dx.doi.org/10.1098/rsos.190198}.
+maximum, minimum, range and sums of order statistics. Royal Society
+Open Science, 6, 190198. \doi{10.1098/rsos.190198}
 }
 \seealso{
-\code{\link{pminmulitnom_C}} for computing the
-CDF of the range for a generic multinomial random vector.
-
-\code{\link{dmaxmulitnom_C}} for computing the
-probability mass function (PMF) of the range for a generic
-multinomial random vector.
-
-\code{\link{dminmulitnom_C}} for computing the
-probability mass function (PMF) of the range for a generic
-multinomial random vector.
-}
-\author{
-Sergio Venturini \email{sergio.venturini@unicatt.it}
+\code{\link{prangemultinom}} for the CDF of the range,
+\code{\link{dmaxmultinom}} for the PMF of the maximum, and
+\code{\link{dminmultinom}} for the PMF of the minimum.
 }

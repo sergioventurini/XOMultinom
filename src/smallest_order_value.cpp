@@ -2,38 +2,23 @@
 
 // Note: RcppExport is an alias for extern "C"
 
-//' Survival function of the smallest order statistic for an equiprobable
-//' multinomial distribution.
+//' Internal recursive summation helper
 //'
-//' This function calculates the survival function (i.e. the probability to be
-//' greater than or equal to a given value) for the smallest order statistic
-//' (i.e. the minimum) under an equiprobable multinomial distribution
-//' assumption.
+//' Wrapper around the internal recursive summation implementation used by
+//' \code{highest_order_statistics()}.
 //'
-//' @param td A length-one numeric vector indicating the value to compute the
-//'   survival function for.
-//' @param n A length-one integer vector indicating the number of independent
-//'   balls.
-//' @param m A length-one integer vector indicating the number of independent
-//'   urns/cells.
-//' @return A length-one numeric vector representing the probability of the
-//'   smallest order statistic.
-//' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
-//' @seealso \code{\link{highest_order_statistics}} for computing the
-//'   CDF of the sum of the first \eqn{J} largest order statistics.
-//' @seealso \code{\link{smallest_order_value}} for computing the CDF
-//'   of the smallest order statistic.
-//' @seealso \code{\link{range_probability}} for computing the CDF
-//'   of the range.
-//' @references
-//'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-//'   distributions of some functions of the ordered multinomial counts:
-//'   maximum, minimum, range and sums of order statistics", Royal Society
-//'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
-//' @examples
-//' smallest_order_value(1, 10, 5) # P(N_(1) <= 1; n = 10, m = 5)
+//' @param td Numeric value used in the recursive computation. Internally, this
+//'   is converted to \code{floor(td)}.
+//' @param n Integer number of balls/trials.
+//' @param m Integer number of urns/cells.
+//' @param J Integer number of largest order statistics.
+//' @param sum_depth Integer target summation depth.
+//' @param cur_depth Integer current recursion depth.
+//' @param rangeArg Numeric vector containing the current recursion arguments.
 //'
-// [[Rcpp::export]]
+//' @return Numeric value giving the recursive summation result.
+//'
+//' @keywords internal
 double smallest_order_value(const double & td, int n, int m) {
   int t = (int)floor(td);
 

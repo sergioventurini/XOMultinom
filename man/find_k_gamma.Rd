@@ -2,39 +2,34 @@
 % Please edit documentation in R/maxmin_sample_size.R
 \name{find_k_gamma}
 \alias{find_k_gamma}
-\title{Utility function.}
+\title{Critical value and randomization probability for max/min tests}
 \usage{
 find_k_gamma(probs, n, alpha = 0.05, type)
 }
 \arguments{
-\item{k}{A length-one integer vector of the number of multinomial classes.}
+\item{probs}{Numeric vector of probabilities. Must correspond to the
+equiprobable case (i.e., all equal).}
 
-\item{pmax}{A length-one numeric vector with the probability values to
-compute the increments for.}
+\item{n}{Integer number of trials.}
+
+\item{alpha}{Significance level in (0, 1).}
+
+\item{type}{Character string; either \code{"max"} or \code{"min"} indicating
+the test statistic.}
 }
 \value{
-A numeric matrix.
+A list with components:
+\item{k_alpha}{Critical value.}
+\item{gamma_prob}{Randomization probability.}
 }
 \description{
-This is an auxiliary function to compute the increment as the distance
-from the case of equiprobability.
+Computes the critical value \eqn{k_\alpha} and the corresponding
+randomization probability \eqn{\gamma} for hypothesis tests based on the
+maximum or minimum of a multinomial random vector under the null hypothesis
+of equiprobable categories.
 }
-\examples{
-k <- 3:50
-pmax <- seq(0.05, 1, 0.05)
-incr <- pmax_2_incr(k, pmax)
-summary(as.numeric(incr))
-
-}
-\references{
-Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-distributions of some functions of the ordered multinomial counts:
-maximum, minimum, range and sums of order statistics", Royal Society
-Open Science, 6: 190198, \url{http://dx.doi.org/10.1098/rsos.190198}.
-}
-\seealso{
-\code{\link{incr_2_pmax}} for the opposite calculation.
-}
-\author{
-Sergio Venturini \email{sergio.venturini@unicatt.it}
+\details{
+The function determines the rejection region for tests based on the
+maximum or minimum cell count. When the test is not exact, a randomized
+decision rule is constructed via \eqn{\gamma}.
 }

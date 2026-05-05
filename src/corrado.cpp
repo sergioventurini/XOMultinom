@@ -166,6 +166,16 @@ static inline bool min_convert(double c, int n, int& ci) {
   return true;
 }
 
+//' Probability that the maximum multinomial count is at most a threshold
+//'
+//' Computes \eqn{P(\max_k N_k \le c)} for multinomial cell counts with total
+//' count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c Numeric threshold for the maximum cell count.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_max_leq(int n, const std::vector<double>& pi, double c) {
   int ci;
@@ -198,6 +208,16 @@ double prob_max_leq(int n, const std::vector<double>& pi, double c) {
   return std::min(1.0, result);
 }
 
+//' Probability that the minimum multinomial count is at least a threshold
+//'
+//' Computes \eqn{P(\min_k N_k \ge c)} for multinomial cell counts with total
+//' count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c Numeric threshold for the minimum cell count.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_min_geq(int n, const std::vector<double>& pi, double c) {
   int ci;
@@ -227,17 +247,46 @@ double prob_min_geq(int n, const std::vector<double>& pi, double c) {
   return std::min(1.0, result);
 }
 
-// Convenience wrappers
+//' Probability that the maximum multinomial count exceeds a threshold
+//'
+//' Computes \eqn{P(\max_k N_k > c)} for multinomial cell counts with total
+//' count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c Numeric threshold for the maximum cell count.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_max_gt(int n, const std::vector<double>& pi, double c) {
   return std::max(0.0, 1.0 - prob_max_leq(n, pi, c));
 }
 
+//' Probability that the minimum multinomial count is below a threshold
+//'
+//' Computes \eqn{P(\min_k N_k < c)} for multinomial cell counts with total
+//' count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c Numeric threshold for the minimum cell count.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_min_lt(int n, const std::vector<double>& pi, double c) {
   return std::max(0.0, 1.0 - prob_min_geq(n, pi, c));
 }
 
+//' Probability that the minimum multinomial count is at most a threshold
+//'
+//' Computes \eqn{P(\min_k N_k \le c)} for multinomial cell counts with total
+//' count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c Numeric threshold for the minimum cell count.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_min_leq(int n, const std::vector<double>& pi, double c) {
   if (std::isnan(c)) return 0.0;
@@ -246,6 +295,17 @@ double prob_min_leq(int n, const std::vector<double>& pi, double c) {
   return std::max(0.0, 1.0 - prob_min_geq(n, pi, std::floor(c) + 1.0));
 }
 
+//' Joint probability for maximum and minimum multinomial counts
+//'
+//' Computes \eqn{P(\max_k N_k \le a, \min_k N_k \ge b)} for multinomial cell
+//' counts with total count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param a Numeric upper threshold for the maximum cell count.
+//' @param b Numeric lower threshold for the minimum cell count.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_joint(int n, const std::vector<double>& pi, double a, double b) {
   int ai, bi;
@@ -280,7 +340,16 @@ double prob_joint(int n, const std::vector<double>& pi, double a, double b) {
   return std::min(1.0, result);
 }
 
-// PMF: P(max n_k = c)
+//' Probability mass for the maximum multinomial count
+//'
+//' Computes \eqn{P(\max_k N_k = c)} for multinomial cell counts with total
+//' count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c Numeric count value at which to evaluate the probability mass.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_max_eq(int n, const std::vector<double>& pi, double c) {
   if (!std::isfinite(c) || c != std::floor(c)) return 0.0;
@@ -291,7 +360,16 @@ double prob_max_eq(int n, const std::vector<double>& pi, double c) {
   return std::max(0.0, hi - lo);
 }
 
-// PMF: P(min n_k = c)
+//' Probability mass for the minimum multinomial count
+//'
+//' Computes \eqn{P(\min_k N_k = c)} for multinomial cell counts with total
+//' count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c Numeric count value at which to evaluate the probability mass.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_min_eq(int n, const std::vector<double>& pi, double c) {
   if (!std::isfinite(c) || c != std::floor(c)) return 0.0;
@@ -302,7 +380,17 @@ double prob_min_eq(int n, const std::vector<double>& pi, double c) {
   return std::max(0.0, hi - lo);
 }
 
-// PMF vector for max over c in [c_lo, c_hi]
+//' Probability mass vector for maximum multinomial counts
+//'
+//' Computes \eqn{P(\max_k N_k = c)} for each integer `c` in the inclusive range
+//' from `c_lo` to `c_hi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c_lo Lower bound of the count range.
+//' @param c_hi Upper bound of the count range.
+//' @return Numeric vector of probability masses for the requested range.
+//' @export
 // [[Rcpp::export]]
 Rcpp::NumericVector pmf_max_range(int n, const std::vector<double>& pi,
                                   double c_lo, double c_hi) {
@@ -325,7 +413,17 @@ Rcpp::NumericVector pmf_max_range(int n, const std::vector<double>& pi,
   return out;
 }
 
-// PMF vector for min over c in [c_lo, c_hi]
+//' Probability mass vector for minimum multinomial counts
+//'
+//' Computes \eqn{P(\min_k N_k = c)} for each integer `c` in the inclusive range
+//' from `c_lo` to `c_hi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param c_lo Lower bound of the count range.
+//' @param c_hi Upper bound of the count range.
+//' @return Numeric vector of probability masses for the requested range.
+//' @export
 // [[Rcpp::export]]
 Rcpp::NumericVector pmf_min_range(int n, const std::vector<double>& pi,
                                   double c_lo, double c_hi) {
@@ -373,6 +471,16 @@ static double prob_range_lt_int(int n, const std::vector<double>& pi, int r) {
   return std::min(1.0, std::max(0.0, result));
 }
 
+//' Probability that the multinomial count range is below a threshold
+//'
+//' Computes \eqn{P(\max_k N_k - \min_k N_k < r)} for multinomial cell counts
+//' with total count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param r Numeric threshold for the count range.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_range_lt(int n, const std::vector<double>& pi, double r) {
   if (std::isnan(r))              return 0.0;
@@ -381,6 +489,16 @@ double prob_range_lt(int n, const std::vector<double>& pi, double r) {
   return prob_range_lt_int(n, pi, static_cast<int>(std::ceil(r)));
 }
 
+//' Probability that the multinomial count range is at most a threshold
+//'
+//' Computes \eqn{P(\max_k N_k - \min_k N_k \le r)} for multinomial cell counts
+//' with total count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param r Numeric threshold for the count range.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_range_leq(int n, const std::vector<double>& pi, double r) {
   if (std::isnan(r))               return 0.0;
@@ -389,16 +507,46 @@ double prob_range_leq(int n, const std::vector<double>& pi, double r) {
   return prob_range_lt_int(n, pi, static_cast<int>(std::floor(r)) + 1);
 }
 
+//' Probability that the multinomial count range is at least a threshold
+//'
+//' Computes \eqn{P(\max_k N_k - \min_k N_k \ge r)} for multinomial cell counts
+//' with total count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param r Numeric threshold for the count range.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_range_geq(int n, const std::vector<double>& pi, double r) {
   return std::max(0.0, 1.0 - prob_range_lt(n, pi, r));
 }
 
+//' Probability that the multinomial count range exceeds a threshold
+//'
+//' Computes \eqn{P(\max_k N_k - \min_k N_k > r)} for multinomial cell counts
+//' with total count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param r Numeric threshold for the count range.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_range_gt(int n, const std::vector<double>& pi, double r) {
   return std::max(0.0, 1.0 - prob_range_leq(n, pi, r));
 }
 
+//' Probability mass for the multinomial count range
+//'
+//' Computes \eqn{P(\max_k N_k - \min_k N_k = r)} for multinomial cell counts
+//' with total count `n` and category probabilities `pi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param r Numeric count-range value at which to evaluate the probability mass.
+//' @return A probability between 0 and 1.
+//' @export
 // [[Rcpp::export]]
 double prob_range_eq(int n, const std::vector<double>& pi, double r) {
   if (!std::isfinite(r) || r != std::floor(r)) return 0.0;
@@ -409,6 +557,17 @@ double prob_range_eq(int n, const std::vector<double>& pi, double r) {
   return std::max(0.0, hi - lo);
 }
 
+//' Probability mass vector for multinomial count ranges
+//'
+//' Computes \eqn{P(\max_k N_k - \min_k N_k = r)} for each integer `r` in the
+//' inclusive range from `r_lo` to `r_hi`.
+//'
+//' @param n Integer total count.
+//' @param pi Numeric vector of category probabilities.
+//' @param r_lo Lower bound of the count-range values.
+//' @param r_hi Upper bound of the count-range values.
+//' @return Numeric vector of probability masses for the requested range.
+//' @export
 // [[Rcpp::export]]
 Rcpp::NumericVector pmf_range_range(int n, const std::vector<double>& pi,
                                     double r_lo, double r_hi) {

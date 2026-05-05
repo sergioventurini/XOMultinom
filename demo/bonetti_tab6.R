@@ -1,20 +1,17 @@
-### NOTE: the following code will take several minutes to run! ###
+### WARNING: the following code may take several minutes to run! ###
 
 library(XOMultinom)
 
-# Table 5 - Distribution of the sum of the first three largest order statistics.
-t_min <- 8
-t_max <- 20 # the original t_max value was 34
+# Table 6 - Distribution of the multinomial minimum.
+t_min <- 0
+t_max <- 4 # the original t_max value was 7
 t <- t_min:t_max
-m <- c(10, 15, 20, 25, 30, 40, 50)
-n_10 <- seq(10, 60, 10)
-n_15 <- seq(15, 90, 15)
-n_20 <- seq(20, 100, 20)
-n_25 <- seq(25, 50, 25)
-n_30 <- seq(30, 60, 30)
-n_40 <- seq(40, 80, 40)
-n_50 <- seq(50, 100, 50)
-n_list <- list(n_10, n_15, n_20, n_25, n_30, n_40, n_50)
+m <- c(5, 10, 15, 20)
+n_5 <- c(seq(5, 30, 5), 40)
+n_10 <- c(seq(30, 60, 10), 80)
+n_15 <- 90
+n_20 <- 100
+n_list <- list(n_5, n_10, n_15, n_20)
 names(n_list) <- m
 n_mat <- matrix(NA, nrow = max(sapply(n_list, length)), ncol = length(m))
 for (j in 1:ncol(n_mat)) {
@@ -22,7 +19,6 @@ for (j in 1:ncol(n_mat)) {
 }
 # colnames(n_mat) <- paste0("m = ", m)
 # rownames(n_mat) <- rep("n = ", nrow(n_mat))
-J <- 3
 
 probs <- array(NA, dim = c(nrow(n_mat), length(t), ncol(n_mat)))
 dimnames(probs)[[2]] <- t
@@ -37,7 +33,7 @@ for (m_idx in 1:length(m)) {
       } else {
         cat(t[t_idx])
       }
-      probs[n_idx, t_idx, m_idx] <- highest_order_statistics(t[t_idx], n_list[[m_idx]][n_idx], m[m_idx], J)
+      probs[n_idx, t_idx, m_idx] <- 1 - smallest_order_value(t[t_idx] + 1, n_list[[m_idx]][n_idx], m[m_idx])
     }
     cat("\n")
   }

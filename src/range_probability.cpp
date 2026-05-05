@@ -2,35 +2,30 @@
 
 // Note: RcppExport is an alias for extern "C"
 
-//' CDF of the range for an equiprobable multinomial distribution.
+//' CDF of the range of multinomial cell counts
 //'
-//' This function calculates the cumulative distribution function (CDF)
-//' of the range under the assumption of an equiprobable multinomial
-//' distribution.
+//' Computes the cumulative distribution function of the range, that is,
+//' the difference between the maximum and minimum cell counts, for an
+//' equiprobable multinomial distribution.
 //'
-//' @param td A length-one numeric vector indicating the value to compute the
-//'   survival function for.
-//' @param n A length-one integer vector indicating the number of independent
-//'   balls.
-//' @param m A length-one integer vector indicating the number of independent
-//'   urns/cells.
-//' @return A length-one numeric vector representing the probability of the
-//'   smallest order statistic.
-//' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
-//' @seealso \code{\link{highest_order_statistics}} for computing the
-//'   CDF of the sum of the first \eqn{J} largest order statistics.
-//' @seealso \code{\link{smallest_order_value}} for computing the CDF
-//'   of the smallest order statistic.
-//' @seealso \code{\link{highest_order_statistics}} for computing the sum of
-//'   the first \eqn{J} largest order statistics.
+//' @param td Numeric value at which to evaluate the CDF. Internally, this is
+//'   converted to \code{floor(td)}.
+//' @param n Integer number of balls/trials.
+//' @param m Integer number of urns/cells.
+//'
+//' @return Numeric value giving \eqn{P(N_{(m)} - N_{(1)} \le t)}, where
+//'   \eqn{t = \lfloor td \rfloor}.
+//'
 //' @references
-//'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-//'   distributions of some functions of the ordered multinomial counts:
-//'   maximum, minimum, range and sums of order statistics", Royal Society
-//'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
+//' Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
+//' distributions of some functions of the ordered multinomial counts:
+//' maximum, minimum, range and sums of order statistics. Royal Society
+//' Open Science, 6, 190198. \doi{10.1098/rsos.190198}
+//'
 //' @examples
 //' range_probability(1, 7, 10)
 //'
+//' @export
 // [[Rcpp::export]]
 double range_probability(const double & td, int n, int m) {
   int t = (int)floor(td);

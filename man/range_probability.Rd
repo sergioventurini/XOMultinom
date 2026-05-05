@@ -2,49 +2,34 @@
 % Please edit documentation in R/RcppExports.R
 \name{range_probability}
 \alias{range_probability}
-\title{CDF of the range for an equiprobable multinomial distribution.}
+\title{CDF of the range of multinomial cell counts}
 \usage{
 range_probability(td, n, m)
 }
 \arguments{
-\item{td}{A length-one numeric vector indicating the value to compute the
-survival function for.}
+\item{td}{Numeric value at which to evaluate the CDF. Internally, this is
+converted to \code{floor(td)}.}
 
-\item{n}{A length-one integer vector indicating the number of independent
-balls.}
+\item{n}{Integer number of balls/trials.}
 
-\item{m}{A length-one integer vector indicating the number of independent
-urns/cells.}
+\item{m}{Integer number of urns/cells.}
 }
 \value{
-A length-one numeric vector representing the probability of the
-smallest order statistic.
+Numeric value giving \eqn{P(N_{(m)} - N_{(1)} \le t)}, where
+\eqn{t = \lfloor td \rfloor}.
 }
 \description{
-This function calculates the cumulative distribution function (CDF)
-of the range under the assumption of an equiprobable multinomial
-distribution.
+Computes the cumulative distribution function of the range, that is,
+the difference between the maximum and minimum cell counts, for an
+equiprobable multinomial distribution.
 }
 \examples{
 range_probability(1, 7, 10)
 
 }
 \references{
-Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
+Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
 distributions of some functions of the ordered multinomial counts:
-maximum, minimum, range and sums of order statistics", Royal Society
-Open Science, 6: 190198, \url{http://dx.doi.org/10.1098/rsos.190198}.
-}
-\seealso{
-\code{\link{highest_order_statistics}} for computing the
-CDF of the sum of the first \eqn{J} largest order statistics.
-
-\code{\link{smallest_order_value}} for computing the CDF
-of the smallest order statistic.
-
-\code{\link{highest_order_statistics}} for computing the sum of
-the first \eqn{J} largest order statistics.
-}
-\author{
-Sergio Venturini \email{sergio.venturini@unicatt.it}
+maximum, minimum, range and sums of order statistics. Royal Society
+Open Science, 6, 190198. \doi{10.1098/rsos.190198}
 }

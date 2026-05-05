@@ -2,39 +2,25 @@
 % Please edit documentation in R/maxmin_sample_size.R
 \name{find_k_alpha}
 \alias{find_k_alpha}
-\title{Utility function.}
+\title{Critical value for max/min multinomial tests}
 \usage{
 find_k_alpha(probs, n, alpha = 0.05, type)
 }
 \arguments{
-\item{k}{A length-one integer vector of the number of multinomial classes.}
+\item{probs}{Numeric vector of probabilities. Must correspond to the
+equiprobable case.}
 
-\item{pmax}{A length-one numeric vector with the probability values to
-compute the increments for.}
+\item{n}{Integer number of trials.}
+
+\item{alpha}{Significance level in (0, 1).}
+
+\item{type}{Character string; either \code{"max"} or \code{"min"}.}
 }
 \value{
-A numeric matrix.
+Integer critical value \eqn{k_\alpha}. Returns \code{NA} if no valid
+rejection region exists.
 }
 \description{
-This is an auxiliary function to compute the increment as the distance
-from the case of equiprobability.
-}
-\examples{
-k <- 3:50
-pmax <- seq(0.05, 1, 0.05)
-incr <- pmax_2_incr(k, pmax)
-summary(as.numeric(incr))
-
-}
-\references{
-Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
-distributions of some functions of the ordered multinomial counts:
-maximum, minimum, range and sums of order statistics", Royal Society
-Open Science, 6: 190198, \url{http://dx.doi.org/10.1098/rsos.190198}.
-}
-\seealso{
-\code{\link{incr_2_pmax}} for the opposite calculation.
-}
-\author{
-Sergio Venturini \email{sergio.venturini@unicatt.it}
+Computes the critical value \eqn{k_\alpha} for hypothesis tests based on
+the maximum or minimum of a multinomial random vector.
 }

@@ -1,4 +1,4 @@
-### NOTE: the following code will take several minutes to run! ###
+### WARNING: the following code may take several minutes to run! ###
 
 library(XOMultinom)
 
