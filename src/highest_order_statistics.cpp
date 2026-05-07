@@ -2,6 +2,7 @@
 
 // Note: RcppExport is an alias for extern "C"
 
+/*
 //' CDF of the sum of the first \eqn{J} largest order statistics
 //'
 //' Computes the cumulative distribution function of the sum of the first
@@ -25,7 +26,9 @@
 //' @examples
 //' highest_order_statistics(6, 10, 5, 2)
 //'
-//' @export
+//' @keywords internal
+//'
+*/
 // [[Rcpp::export]]
 double highest_order_statistics(const double & td, int n, int m, int J) {
   int t = (int)floor(td);

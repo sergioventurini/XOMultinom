@@ -1,9 +1,8 @@
 #include "XOMultinom.h"
 
-// [[Rcpp::depends("RcppArmadillo")]]
-
 // Note: RcppExport is an alias for extern "C"
 
+/*
 //' Range probability for multinomial distribution
 //'
 //' Computes the probability that the range of a multinomial sample
@@ -17,7 +16,9 @@
 //'
 //' @return Numeric vector of probabilities (or log-probabilities if \code{logd = TRUE}).
 //'
-//' @export
+//' @keywords internal
+//'
+*/
 // [[Rcpp::export]]
 Rcpp::NumericVector drangemultinom_corrado(const Rcpp::NumericVector& x,
   const int& size, const Rcpp::NumericVector& prob,
@@ -30,7 +31,7 @@ Rcpp::NumericVector drangemultinom_corrado(const Rcpp::NumericVector& x,
   Rcpp::NumericVector r(xlen);
   for (int k = 0; k < xlen; k++) {
     // if (verbose) std::printf("computing P(range(X1,..., Xk) = %.4g)...\n", x(k));
-    if (Progress::check_abort()) return Rcpp::NumericVector(0); // Ctrl+C
+    if (Progress::check_abort()) return Rcpp::NumericVector(0);
     prog.increment();
     r(k) = prob_range_eq(size, pi, x(k));
 

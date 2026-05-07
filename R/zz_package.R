@@ -7,10 +7,6 @@
 #'
 #' Main functions include:
 #' \itemize{
-#'   \item \code{\link{highest_order_statistics}()}
-#'   \item \code{\link{max_order_statistic}()}
-#'   \item \code{\link{range_probability}()}
-#'   \item \code{\link{smallest_order_value}()}
 #'   \item \code{\link{dmaxmultinom}()}
 #'   \item \code{\link{dminmultinom}()}
 #'   \item \code{\link{drangemultinom}()}

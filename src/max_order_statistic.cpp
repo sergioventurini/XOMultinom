@@ -2,6 +2,7 @@
 
 // Note: RcppExport is an alias for extern "C"
 
+/*
 //' CDF of the maximum multinomial cell count
 //'
 //' Computes the cumulative distribution function of the largest order
@@ -25,7 +26,9 @@
 //' @examples
 //' max_order_statistic(3, 10, 5) # P(N_(m) <= 3; n = 10, m = 5)
 //'
-//' @export
+//' @keywords internal
+//'
+*/
 // [[Rcpp::export]]
 double max_order_statistic(const double & td, int n, int m) {
   int t = (int)floor(td);

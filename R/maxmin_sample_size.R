@@ -227,7 +227,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 #' tests based on the maximum or minimum of a multinomial random vector under
 #' deviations from equiprobability.
 #'
-#' @param k_seq Integer vector of numbers of categories.
+#' @param m_seq Integer vector of numbers of categories.
 #' @param change_seq Numeric vector of probability perturbations from the
 #'   equiprobable case.
 #' @param power Desired power level in (0, 1).
@@ -239,7 +239,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 #'   \code{"uniroot"} or \code{"optimize"}.
 #' @param extendInt Passed to \code{uniroot()} when used.
 #'
-#' @return A list where each element corresponds to a value of \code{k_seq}
+#' @return A list where each element corresponds to a value of \code{m_seq}
 #'   and contains the required sample sizes for each value in \code{change_seq}.
 #'
 #' @details
@@ -251,9 +251,9 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 #' \dontrun{
 #' pow <- 0.8
 #' alpha <- 0.05
-#' k_seq <- 3:8
+#' m_seq <- 3:8
 #' incr_seq <- seq(0.1, 0.9, 0.1)
-#' res <- maxmin_multinom_size(k_seq, incr_seq, power = pow, alpha = alpha,
+#' res <- maxmin_multinom_size(m_seq, incr_seq, power = pow, alpha = alpha,
 #'                             n_max = 200, type = "max",
 #'                             verbose = TRUE, optmethod = "uniroot")
 #' summary(res)
@@ -261,7 +261,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 #' }
 #'
 #' @export
-maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
+maxmin_multinom_size <- function(m_seq, change_seq, power = 0.8, alpha = 0.05,
                                  n_max = 500, type, verbose = TRUE,
                                  optmethod = "uniroot", extendInt = "upX") {
   if (power <= 0 | power >= 1)
@@ -273,9 +273,9 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
 
   n_seq <- numeric(length(change_seq))
   n_all <- list()
-  for (k in k_seq) {
+  for (m in m_seq) {
     if (verbose)
-      cat("  Number of classes = ", k, "\n", sep = "")
+      cat("  Number of classes = ", m, "\n", sep = "")
 
     i <- 1
     for (change in change_seq) {
@@ -283,7 +283,7 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
         cat("  * probability % change = ", ifelse(type == "min", -change, change)*100, "%\n", sep = "")
 
       if (optmethod == "optimize") {
-        res <- power_optimize(k, n_max = n_max, change = change, power = power, alpha = alpha,
+        res <- power_optimize(m, n_max = n_max, change = change, power = power, alpha = alpha,
                               type = type, verbose = verbose)
         n_max_new <- n_max
         if (type == "max") {
@@ -293,7 +293,7 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
             n_max_new <- ceiling(n_max_new*.9)
             if (n_max_new < 2)
               stop("the minimization algorithm did not converge --> try increasing the maximum n value")
-            res <- power_optimize(k, n_max = n_max_new, change = change, power = power, alpha = alpha,
+            res <- power_optimize(m, n_max = n_max_new, change = change, power = power, alpha = alpha,
                                   type = type, verbose = verbose)
           }
         }
@@ -304,7 +304,7 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
             n_max_new <- ceiling(n_max_new*1.1)
             if (n_max_new > 2500)
               stop("the minimization algorithm did not converge --> try increasing the maximum n value")
-            res <- power_optimize(k, n_max = n_max_new, change = change, power = power, alpha = alpha,
+            res <- power_optimize(m, n_max = n_max_new, change = change, power = power, alpha = alpha,
                                   type = type, verbose = verbose)
           }
         }
@@ -312,7 +312,7 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
         n_seq[i] <- ceiling(res$minimum)
       }
       else if (optmethod == "uniroot") {
-        res <- power_uniroot(k, n_max = n_max, change = change, power = power, alpha = alpha,
+        res <- power_uniroot(m, n_max = n_max, change = change, power = power, alpha = alpha,
                             type = type, extendInt = extendInt, verbose = verbose)
         
         n_seq[i] <- ceiling(res$root)
@@ -321,11 +321,11 @@ maxmin_multinom_size <- function(k_seq, change_seq, power = 0.8, alpha = 0.05,
       i <- i + 1
     }
     names(n_seq) <- change_seq
-    n_all[[paste0("k = ", k)]] <- n_seq
+    n_all[[paste0("m = ", m)]] <- n_seq
   }
 
   return(new_xomultinom_size(sizes      = n_all,
-                             k_seq      = k_seq,
+                             m_seq      = m_seq,
                              change_seq = change_seq,
                              power      = power,
                              alpha      = alpha,

@@ -5,14 +5,14 @@ library(ggplot2)
 
 pow_seq <- c(0.8, 0.9)
 alpha_seq <- c(0.05, 0.01, 0.001)
-k_seq <- c(3:10, 15, 20, 30)
+m_seq <- c(3:10, 15, 20, 30)
 incr_seq <- seq(0.1, 0.9, 0.1)
 n_master <- list()
 system.time(
   for (pow in pow_seq) {
     for (alpha in alpha_seq) {
       cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
-      res <- maxmin_multinom_size(k_seq, incr_seq, power = pow, alpha = alpha,
+      res <- maxmin_multinom_size(m_seq, incr_seq, power = pow, alpha = alpha,
                                   n_max = 200, type = "max",
                                   verbose = TRUE, optmethod = "uniroot")
       n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- res$sizes
@@ -24,17 +24,17 @@ system.time(
 
 # df <- data.frame(power = numeric(0),
 #                  alpha = numeric(0),
-#                  k = numeric(0),
+#                  m = numeric(0),
 #                  n = numeric(0),
 #                  incr = numeric(0))
 # i <- 1
 # for (p in 1:length(pow_seq)) {
 #   for (a in 1:length(alpha_seq)) {
-#     for (k in 1:length(k_seq)) {
+#     for (m in 1:length(m_seq)) {
 #       df_tmp <- data.frame(power = pow_seq[p],
 #                            alpha = alpha_seq[a],
-#                            k = k_seq[k],
-#                            n = n_master[[i]][[k]],
+#                            m = m_seq[m],
+#                            n = n_master[[i]][[m]],
 #                            incr = incr_seq*100)
 #       df <- rbind(df, df_tmp)
 #     }
@@ -44,15 +44,15 @@ system.time(
 # df$alpha <- factor(df$alpha, 
 #                    levels = sort(unique(df$alpha), decreasing = TRUE))
 
-# ggplot(df, aes(x = incr, y = n, color = factor(k), group = k)) +
+# ggplot(df, aes(x = incr, y = n, color = factor(m), group = m)) +
 #   geom_line(linewidth = 1.1) +
 #   geom_point(size = 2) +
 #   facet_grid(alpha ~ power, labeller = label_both, scales = "free_y") +
 #   # scale_color_grey(
 #   #   start = 0.1, end = 0.9,  # control how dark/light the grays are
-#   #   name = "k"
+#   #   name = "m"
 #   # ) +
-#   scale_color_viridis_d(option = "turbo", name = "k") +
+#   scale_color_viridis_d(option = "turbo", name = "m") +
 #   scale_x_continuous(breaks = seq(10, 90, 10)) +
 #   labs(
 #     x = "% increase in one probability",
@@ -76,14 +76,14 @@ system.time(
 
 pow_seq <- c(0.8, 0.9)
 alpha_seq <- c(0.05, 0.01, 0.001)
-k_seq <- c(3:10)
+m_seq <- c(3:10)
 decr_seq <- seq(0.2, 0.9, 0.1)
 n_master <- list()
 system.time(
   for (pow in pow_seq) {
     for (alpha in alpha_seq) {
       cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
-      res <- maxmin_multinom_size(k_seq, decr_seq, power = pow, alpha = alpha,
+      res <- maxmin_multinom_size(m_seq, decr_seq, power = pow, alpha = alpha,
                                   n_max = 1000, type = "min",
                                   verbose = TRUE, optmethod = "uniroot")
       n_master[[paste0("power = ", pow, " - alpha = ", alpha)]] <- res$sizes
@@ -95,17 +95,17 @@ system.time(
 
 # df <- data.frame(power = numeric(0),
 #                  alpha = numeric(0),
-#                  k = numeric(0),
+#                  m = numeric(0),
 #                  n = numeric(0),
 #                  decr = numeric(0))
 # i <- 1
 # for (p in 1:length(pow_seq)) {
 #   for (a in 1:length(alpha_seq)) {
-#     for (k in 1:length(k_seq)) {
+#     for (m in 1:length(m_seq)) {
 #       df_tmp <- data.frame(power = pow_seq[p],
 #                            alpha = alpha_seq[a],
-#                            k = k_seq[k],
-#                            n = n_master[[i]][[k]],
+#                            m = m_seq[m],
+#                            n = n_master[[i]][[m]],
 #                            decr = decr_seq*100)
 #       df <- rbind(df, df_tmp)
 #     }
@@ -115,15 +115,15 @@ system.time(
 # df$alpha <- factor(df$alpha, 
 #                    levels = sort(unique(df$alpha), decreasing = TRUE))
 
-# ggplot(df, aes(x = decr, y = n, color = factor(k), group = k)) +
+# ggplot(df, aes(x = decr, y = n, color = factor(m), group = m)) +
 #   geom_line(linewidth = 1.1) +
 #   geom_point(size = 2) +
 #   facet_grid(alpha ~ power, labeller = label_both, scales = "free_y") +
 #   # scale_color_grey(
 #   #   start = 0.1, end = 0.9,  # control how dark/light the grays are
-#   #   name = "k"
+#   #   name = "m"
 #   # ) +
-#   scale_color_viridis_d(option = "turbo", name = "k") +
+#   scale_color_viridis_d(option = "turbo", name = "m") +
 #   scale_x_continuous(breaks = seq(10, 90, 10)) +
 #   labs(
 #     x = "% decrease in one probability",

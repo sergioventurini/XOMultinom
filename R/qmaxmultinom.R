@@ -1,0 +1,72 @@
+#' Quantile function of the maximum for a multinomial distribution
+#'
+#' Computes exact quantiles of the distribution of the maximum cell count of a
+#' multinomial random vector with arbitrary cell probabilities, by inverting
+#' the exact CDF obtained from \code{\link{dmaxmultinom}}.
+#'
+#' @param p Numeric vector of probabilities (or log-probabilities if
+#'   \code{log.p = TRUE}) at which to evaluate the quantile function.
+#' @param size Integer number of trials.
+#' @param prob Numeric vector of non-negative cell probabilities. Values are
+#'   internally normalized to sum to 1. Categories with zero probability are
+#'   removed before computation.
+#' @param lower.tail Logical; if \code{TRUE} (default),
+#'   \eqn{Q(p) = \min\{x : F(x) \ge p\}}; if \code{FALSE},
+#'   \eqn{Q(p) = \min\{x : F(x) \ge 1 - p\}}.
+#' @param log.p Logical; if \code{TRUE}, \code{p} is taken to be on the log
+#'   scale. Defaults to \code{FALSE}.
+#'
+#' @return Integer vector of the same length as \code{p} containing the
+#'   corresponding exact quantiles of the multinomial maximum.
+#'
+#' @details
+#'   The function computes the exact PMF over the full support
+#'   \eqn{\{0, 1, \ldots, n\}} using \code{\link{dmaxmultinom}}, forms the
+#'   CDF by cumulative summation, and returns the smallest support point
+#'   whose CDF value meets or exceeds each element of \code{p}.  This is
+#'   the standard definition of the quantile function for discrete
+#'   distributions.
+#'
+#' @examples
+#' m <- 4; n <- 60
+#' probs <- rep(1 / m, m)
+#'
+#' # Median and 95th percentile
+#' qmaxmultinom(c(0.5, 0.95), size = n, prob = probs)
+#'
+#' # Upper tail
+#' qmaxmultinom(0.05, size = n, prob = probs, lower.tail = FALSE)
+#'
+#' @references
+#' Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
+#' distributions of some functions of the ordered multinomial counts:
+#' maximum, minimum, range and sums of order statistics. Royal Society
+#' Open Science, 6, 190198. \doi{10.1098/rsos.190198}
+#'
+#' Corrado, C.J. (2011). The exact distribution of the maximum, minimum and
+#' the range of Multinomial/Dirichlet and Multivariate Hypergeometric
+#' frequencies. Statistical Computing, 21, 349--359.
+#' \doi{10.1007/s11222-010-9174-3}
+#'
+#' @seealso
+#' \code{\link{pmaxmultinom}} for the CDF,
+#' \code{\link{dmaxmultinom}} for the PMF,
+#' \code{\link{rmaxmultinom}} for random generation.
+#'
+#' @export
+qmaxmultinom <- function(p, size, prob, lower.tail = TRUE, log.p = FALSE) {
+  if (log.p)
+    p <- exp(p)
+  if (any(p < 0 | p > 1, na.rm = TRUE))
+    stop("'p' must contain values in [0, 1].")
+  if (!lower.tail)
+    p <- 1 - p
+
+  supp <- 0L:size
+  pmf  <- dmaxmultinom(x = supp, size = size, prob = prob,
+                       log = FALSE, verbose = FALSE)$values
+  pmf  <- pmax(pmf, 0)
+  pmf  <- pmf / sum(pmf)
+
+  discrete_quantile(p, pmf, supp)
+}

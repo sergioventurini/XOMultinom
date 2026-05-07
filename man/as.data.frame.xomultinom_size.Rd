@@ -13,19 +13,19 @@
 unused).}
 }
 \value{
-A \code{data.frame} with columns \code{k} (integer number of
+A \code{data.frame} with columns \code{m} (integer number of
 categories), \code{change} (probability perturbation), and
 \code{n_required} (required sample size).
 }
 \description{
 Converts the sample size results stored in an \code{xomultinom_size} object
-into a single tidy \code{data.frame} with columns for \eqn{k}, the
+into a single tidy \code{data.frame} with columns for \eqn{m}, the
 probability perturbation, and the required sample size.
 }
 \examples{
 \dontrun{
 sz <- maxmin_multinom_size(
-  k_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+  m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
   power = 0.80, alpha = 0.05, type = "max"
 )
 as.data.frame(sz)

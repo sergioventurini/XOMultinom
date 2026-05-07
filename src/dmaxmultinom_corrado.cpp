@@ -1,9 +1,8 @@
 #include "XOMultinom.h"
 
-// [[Rcpp::depends("RcppArmadillo")]]
-
 // Note: RcppExport is an alias for extern "C"
 
+/*
 //' Probability mass function of the maximum of a multinomial random vector
 //'
 //' Computes the probability mass function for the maximum component of a
@@ -20,7 +19,9 @@
 //' @return A numeric vector containing the probabilities, or log-probabilities
 //'   when `logd = TRUE`.
 //'
-//' @export
+//' @keywords internal
+//'
+*/
 // [[Rcpp::export]]
 Rcpp::NumericVector dmaxmultinom_corrado(const Rcpp::NumericVector& x,
   const int& size, const Rcpp::NumericVector& prob,
@@ -33,7 +34,7 @@ Rcpp::NumericVector dmaxmultinom_corrado(const Rcpp::NumericVector& x,
   Rcpp::NumericVector r(xlen);
   for (int k = 0; k < xlen; k++) {
     // if (verbose) std::printf("computing P(max(X1,..., Xk) = %.4g)...\n", x(k));
-    if (Progress::check_abort()) return Rcpp::NumericVector(0); // Ctrl+C
+    if (Progress::check_abort()) return Rcpp::NumericVector(0);
     prog.increment();
     r(k) = prob_max_eq(size, pi, x(k));
 

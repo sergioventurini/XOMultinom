@@ -2,6 +2,7 @@
 
 // Note: RcppExport is an alias for extern "C"
 
+/*
 //' Internal recursive summation helper
 //'
 //' Wrapper around the internal recursive summation implementation used by
@@ -19,6 +20,9 @@
 //' @return Numeric value giving the recursive summation result.
 //'
 //' @keywords internal
+//'
+*/
+// [[Rcpp::export]]
 double smallest_order_value(const double & td, int n, int m) {
   int t = (int)floor(td);
 

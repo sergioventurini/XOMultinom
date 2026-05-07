@@ -2,6 +2,7 @@
 
 // Note: RcppExport is an alias for extern "C"
 
+/*
 //' Internal utility for smallest order statistic computation
 //'
 //' Recursive helper used to compute probabilities related to the
@@ -15,6 +16,9 @@
 //' @return Numeric value.
 //'
 //' @keywords internal
+//'
+*/
+// [[Rcpp::export]]
 double max_for_min(const double & t_max_d, int n, int m, int t) {
   int t_max = (int)t_max_d;
 

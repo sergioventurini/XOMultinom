@@ -24,7 +24,7 @@ Invisibly returns the \code{ggplot} object.
 \description{
 Produces a \code{ggplot2} line chart of the required sample size as a
 function of the probability perturbation, with one line per value of
-\eqn{k} (number of categories).
+\eqn{m} (number of categories).
 }
 \details{
 For multi-panel layouts use \code{patchwork} or \code{gridExtra} to combine
@@ -34,7 +34,7 @@ compatibility use \code{\link{plot.xomultinom_size}} instead.
 \examples{
 \dontrun{
 sz <- maxmin_multinom_size(
-  k_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
+  m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
   power = 0.80, alpha = 0.05, type = "max"
 )
 autoplot(sz)

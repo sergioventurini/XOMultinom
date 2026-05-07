@@ -4,7 +4,7 @@ library(XOMultinom)
 
 # Table 3 - Distribution of the multinomial maximum.
 t_min <- 2
-t_max <- 8 # the original t_max value was 16
+t_max <- 16
 t <- t_min:t_max
 m <- c(5, 10, 15, 20, 25, 30, 40, 50)
 n_5 <- seq(5, 30, 5)
@@ -30,16 +30,9 @@ dimnames(probs)[[3]] <- m
 for (m_idx in 1:length(m)) {
   for (n_idx in 1:length(n_list[[m_idx]])) {
     cat(paste0("--> m = ", m[m_idx], " - n = ", n_list[[m_idx]][n_idx], "\n"))
-    cat("    t = ")
-    for (t_idx in 1:length(t)) {
-      if (t_idx < length(t)) {
-        cat(paste0(t[t_idx], "..."))
-      } else {
-        cat(t[t_idx])
-      }
-      probs[n_idx, t_idx, m_idx] <- max_order_statistic(t[t_idx], n_list[[m_idx]][n_idx], m[m_idx])
-    }
-    cat("\n")
+    cellp <- rep(1/m[m_idx], m[m_idx])
+    probs[n_idx, , m_idx] <- pmaxmultinom(t, n_list[[m_idx]][n_idx],
+                                          cellp, FALSE, FALSE)$values
   }
 }
 

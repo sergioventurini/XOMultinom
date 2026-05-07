@@ -4,13 +4,13 @@
 \alias{new_xomultinom_size}
 \title{Constructor for the \code{xomultinom_size} class}
 \usage{
-new_xomultinom_size(sizes, k_seq, change_seq, power, alpha, type)
+new_xomultinom_size(sizes, m_seq, change_seq, power, alpha, type)
 }
 \arguments{
 \item{sizes}{Named list of sample sizes as returned by
 \code{\link{maxmin_multinom_size}}.}
 
-\item{k_seq}{Integer vector of numbers of categories used in the search.}
+\item{m_seq}{Integer vector of numbers of categories used in the search.}
 
 \item{change_seq}{Numeric vector of probability perturbations from
 equiprobability used in the search.}

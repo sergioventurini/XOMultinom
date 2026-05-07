@@ -1,13 +1,12 @@
 #include "XOMultinom.h"
 
-// [[Rcpp::depends("RcppArmadillo")]]
-
 // Note: RcppExport is an alias for extern "C"
 
+/*
 //' CDF of the range for a multinomial distribution
 //'
 //' Computes the cumulative distribution function of the range
-//' \eqn{R = \max(X_1, \ldots, X_k) - \min(X_1, \ldots, X_k)}
+//' \eqn{R = \max(N_1, \ldots, N_k) - \min(N_1, \ldots, N_k)}
 //' for a multinomial distribution with arbitrary cell probabilities.
 //'
 //' @param x Numeric vector of values at which to evaluate the CDF.
@@ -19,16 +18,13 @@
 //' @return Numeric vector of the same length as \code{x} containing
 //'   \eqn{P(R \le x)} (or log-probabilities if \code{logd = TRUE}).
 //'
-//' @details
-//' The function evaluates the probability that the range of multinomial
-//' cell counts does not exceed the specified values. Computation is
-//' performed element-wise over \code{x}.
-//'
 //' @examples
 //' prangemultinom_corrado(0:3, size = 10, prob = rep(1/5, 5),
 //'                        logd = FALSE, verbose = FALSE)
 //'
-//' @export
+//' @keywords internal
+//'
+*/
 // [[Rcpp::export]]
 Rcpp::NumericVector prangemultinom_corrado(const Rcpp::NumericVector& x,
   const int& size, const Rcpp::NumericVector& prob,
@@ -41,7 +37,7 @@ Rcpp::NumericVector prangemultinom_corrado(const Rcpp::NumericVector& x,
   Rcpp::NumericVector r(xlen);
   for (int k = 0; k < xlen; k++) {
     // if (verbose) std::printf("computing P(range(X1,..., Xk) <= %.4g)...\n", x(k));
-    if (Progress::check_abort()) return Rcpp::NumericVector(0); // Ctrl+C
+    if (Progress::check_abort()) return Rcpp::NumericVector(0);
     prog.increment();
     r(k) = prob_range_leq(size, pi, x(k));
 

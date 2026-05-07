@@ -20,12 +20,12 @@ Invisibly returns \code{x}.
 }
 \description{
 Displays the required sample sizes as a formatted table, one block per
-number of categories \eqn{k}.
+number of categories \eqn{m}.
 }
 \examples{
 \dontrun{
 sz <- maxmin_multinom_size(
-  k_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+  m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
   power = 0.80, alpha = 0.05, type = "max"
 )
 print(sz)

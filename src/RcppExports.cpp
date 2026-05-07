@@ -2,7 +2,6 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include "../inst/include/XOMultinom.h"
-#include <RcppArmadillo.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -12,6 +11,72 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// equi_prob_max_eq
+double equi_prob_max_eq(int n, int m, double c);
+RcppExport SEXP _XOMultinom_equi_prob_max_eq(SEXP nSEXP, SEXP mSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(equi_prob_max_eq(n, m, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// equi_prob_min_leq
+double equi_prob_min_leq(int n, int m, double c);
+RcppExport SEXP _XOMultinom_equi_prob_min_leq(SEXP nSEXP, SEXP mSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(equi_prob_min_leq(n, m, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// equi_prob_min_eq
+double equi_prob_min_eq(int n, int m, double c);
+RcppExport SEXP _XOMultinom_equi_prob_min_eq(SEXP nSEXP, SEXP mSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(equi_prob_min_eq(n, m, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// equi_prob_range_eq
+double equi_prob_range_eq(int n, int m, double r);
+RcppExport SEXP _XOMultinom_equi_prob_range_eq(SEXP nSEXP, SEXP mSEXP, SEXP rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    rcpp_result_gen = Rcpp::wrap(equi_prob_range_eq(n, m, r));
+    return rcpp_result_gen;
+END_RCPP
+}
+// equi_prob_highest_eq
+double equi_prob_highest_eq(int n, int m, double r, int J);
+RcppExport SEXP _XOMultinom_equi_prob_highest_eq(SEXP nSEXP, SEXP mSEXP, SEXP rSEXP, SEXP JSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    rcpp_result_gen = Rcpp::wrap(equi_prob_highest_eq(n, m, r, J));
+    return rcpp_result_gen;
+END_RCPP
+}
 // prob_max_leq
 double prob_max_leq(int n, const std::vector<double>& pi, double c);
 RcppExport SEXP _XOMultinom_prob_max_leq(SEXP nSEXP, SEXP piSEXP, SEXP cSEXP) {
@@ -224,6 +289,37 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dJlargemultinom_bonetti
+Rcpp::NumericVector dJlargemultinom_bonetti(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const int& J, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_dJlargemultinom_bonetti(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP JSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const int& >::type J(JSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(dJlargemultinom_bonetti(x, size, prob, J, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dmaxmultinom_bonetti
+Rcpp::NumericVector dmaxmultinom_bonetti(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_dmaxmultinom_bonetti(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(dmaxmultinom_bonetti(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dmaxmultinom_corrado
 Rcpp::NumericVector dmaxmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
 RcppExport SEXP _XOMultinom_dmaxmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
@@ -239,6 +335,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dminmultinom_bonetti
+Rcpp::NumericVector dminmultinom_bonetti(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_dminmultinom_bonetti(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(dminmultinom_bonetti(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dminmultinom_corrado
 Rcpp::NumericVector dminmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
 RcppExport SEXP _XOMultinom_dminmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
@@ -251,6 +362,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
     Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
     rcpp_result_gen = Rcpp::wrap(dminmultinom_corrado(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// drangemultinom_bonetti
+Rcpp::NumericVector drangemultinom_bonetti(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_drangemultinom_bonetti(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(drangemultinom_bonetti(x, size, prob, logd, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -283,6 +409,35 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// max_for_min
+double max_for_min(const double& t_max_d, int n, int m, int t);
+RcppExport SEXP _XOMultinom_max_for_min(SEXP t_max_dSEXP, SEXP nSEXP, SEXP mSEXP, SEXP tSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double& >::type t_max_d(t_max_dSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    rcpp_result_gen = Rcpp::wrap(max_for_min(t_max_d, n, m, t));
+    return rcpp_result_gen;
+END_RCPP
+}
+// max_for_range
+double max_for_range(const double& t_max, int n, int m, Rcpp::NumericVector prev, int t);
+RcppExport SEXP _XOMultinom_max_for_range(SEXP t_maxSEXP, SEXP nSEXP, SEXP mSEXP, SEXP prevSEXP, SEXP tSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double& >::type t_max(t_maxSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type prev(prevSEXP);
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    rcpp_result_gen = Rcpp::wrap(max_for_range(t_max, n, m, prev, t));
+    return rcpp_result_gen;
+END_RCPP
+}
 // max_order_statistic
 double max_order_statistic(const double& td, int n, int m);
 RcppExport SEXP _XOMultinom_max_order_statistic(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
@@ -293,6 +448,37 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     rcpp_result_gen = Rcpp::wrap(max_order_statistic(td, n, m));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pJlargemultinom_bonetti
+Rcpp::NumericVector pJlargemultinom_bonetti(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const int& J, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_pJlargemultinom_bonetti(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP JSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const int& >::type J(JSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(pJlargemultinom_bonetti(x, size, prob, J, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pmaxmultinom_bonetti
+Rcpp::NumericVector pmaxmultinom_bonetti(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_pmaxmultinom_bonetti(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(pmaxmultinom_bonetti(x, size, prob, logd, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -311,6 +497,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pminmultinom_bonetti
+Rcpp::NumericVector pminmultinom_bonetti(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_pminmultinom_bonetti(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(pminmultinom_bonetti(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pminmultinom_corrado
 Rcpp::NumericVector pminmultinom_corrado(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
 RcppExport SEXP _XOMultinom_pminmultinom_corrado(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
@@ -323,6 +524,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
     Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
     rcpp_result_gen = Rcpp::wrap(pminmultinom_corrado(x, size, prob, logd, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prangemultinom_bonetti
+Rcpp::NumericVector prangemultinom_bonetti(const Rcpp::NumericVector& x, const int& size, const Rcpp::NumericVector& prob, const bool& logd, const bool& verbose);
+RcppExport SEXP _XOMultinom_prangemultinom_bonetti(SEXP xSEXP, SEXP sizeSEXP, SEXP probSEXP, SEXP logdSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type logd(logdSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(prangemultinom_bonetti(x, size, prob, logd, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -354,8 +570,43 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// recursive_sum
+double recursive_sum(const double& td, int n, int m, int J, int sum_depth, int cur_depth, Rcpp::NumericVector rangeArg);
+RcppExport SEXP _XOMultinom_recursive_sum(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP, SEXP JSEXP, SEXP sum_depthSEXP, SEXP cur_depthSEXP, SEXP rangeArgSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double& >::type td(tdSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< int >::type sum_depth(sum_depthSEXP);
+    Rcpp::traits::input_parameter< int >::type cur_depth(cur_depthSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type rangeArg(rangeArgSEXP);
+    rcpp_result_gen = Rcpp::wrap(recursive_sum(td, n, m, J, sum_depth, cur_depth, rangeArg));
+    return rcpp_result_gen;
+END_RCPP
+}
+// smallest_order_value
+double smallest_order_value(const double& td, int n, int m);
+RcppExport SEXP _XOMultinom_smallest_order_value(SEXP tdSEXP, SEXP nSEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double& >::type td(tdSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(smallest_order_value(td, n, m));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_XOMultinom_equi_prob_max_eq", (DL_FUNC) &_XOMultinom_equi_prob_max_eq, 3},
+    {"_XOMultinom_equi_prob_min_leq", (DL_FUNC) &_XOMultinom_equi_prob_min_leq, 3},
+    {"_XOMultinom_equi_prob_min_eq", (DL_FUNC) &_XOMultinom_equi_prob_min_eq, 3},
+    {"_XOMultinom_equi_prob_range_eq", (DL_FUNC) &_XOMultinom_equi_prob_range_eq, 3},
+    {"_XOMultinom_equi_prob_highest_eq", (DL_FUNC) &_XOMultinom_equi_prob_highest_eq, 4},
     {"_XOMultinom_prob_max_leq", (DL_FUNC) &_XOMultinom_prob_max_leq, 3},
     {"_XOMultinom_prob_min_geq", (DL_FUNC) &_XOMultinom_prob_min_geq, 3},
     {"_XOMultinom_prob_max_gt", (DL_FUNC) &_XOMultinom_prob_max_gt, 3},
@@ -372,15 +623,27 @@ static const R_CallMethodDef CallEntries[] = {
     {"_XOMultinom_prob_range_gt", (DL_FUNC) &_XOMultinom_prob_range_gt, 3},
     {"_XOMultinom_prob_range_eq", (DL_FUNC) &_XOMultinom_prob_range_eq, 3},
     {"_XOMultinom_pmf_range_range", (DL_FUNC) &_XOMultinom_pmf_range_range, 4},
+    {"_XOMultinom_dJlargemultinom_bonetti", (DL_FUNC) &_XOMultinom_dJlargemultinom_bonetti, 6},
+    {"_XOMultinom_dmaxmultinom_bonetti", (DL_FUNC) &_XOMultinom_dmaxmultinom_bonetti, 5},
     {"_XOMultinom_dmaxmultinom_corrado", (DL_FUNC) &_XOMultinom_dmaxmultinom_corrado, 5},
+    {"_XOMultinom_dminmultinom_bonetti", (DL_FUNC) &_XOMultinom_dminmultinom_bonetti, 5},
     {"_XOMultinom_dminmultinom_corrado", (DL_FUNC) &_XOMultinom_dminmultinom_corrado, 5},
+    {"_XOMultinom_drangemultinom_bonetti", (DL_FUNC) &_XOMultinom_drangemultinom_bonetti, 5},
     {"_XOMultinom_drangemultinom_corrado", (DL_FUNC) &_XOMultinom_drangemultinom_corrado, 5},
     {"_XOMultinom_highest_order_statistics", (DL_FUNC) &_XOMultinom_highest_order_statistics, 4},
+    {"_XOMultinom_max_for_min", (DL_FUNC) &_XOMultinom_max_for_min, 4},
+    {"_XOMultinom_max_for_range", (DL_FUNC) &_XOMultinom_max_for_range, 5},
     {"_XOMultinom_max_order_statistic", (DL_FUNC) &_XOMultinom_max_order_statistic, 3},
+    {"_XOMultinom_pJlargemultinom_bonetti", (DL_FUNC) &_XOMultinom_pJlargemultinom_bonetti, 6},
+    {"_XOMultinom_pmaxmultinom_bonetti", (DL_FUNC) &_XOMultinom_pmaxmultinom_bonetti, 5},
     {"_XOMultinom_pmaxmultinom_corrado", (DL_FUNC) &_XOMultinom_pmaxmultinom_corrado, 5},
+    {"_XOMultinom_pminmultinom_bonetti", (DL_FUNC) &_XOMultinom_pminmultinom_bonetti, 5},
     {"_XOMultinom_pminmultinom_corrado", (DL_FUNC) &_XOMultinom_pminmultinom_corrado, 5},
+    {"_XOMultinom_prangemultinom_bonetti", (DL_FUNC) &_XOMultinom_prangemultinom_bonetti, 5},
     {"_XOMultinom_prangemultinom_corrado", (DL_FUNC) &_XOMultinom_prangemultinom_corrado, 5},
     {"_XOMultinom_range_probability", (DL_FUNC) &_XOMultinom_range_probability, 3},
+    {"_XOMultinom_recursive_sum", (DL_FUNC) &_XOMultinom_recursive_sum, 7},
+    {"_XOMultinom_smallest_order_value", (DL_FUNC) &_XOMultinom_smallest_order_value, 3},
     {NULL, NULL, 0}
 };
 

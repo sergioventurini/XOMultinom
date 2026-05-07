@@ -1,7 +1,7 @@
 #' CDF of the range for a multinomial distribution
 #'
 #' Computes the cumulative distribution function of the range
-#' \eqn{R = \max(X_1, \ldots, X_K) - \min(X_1, \ldots, X_K)}
+#' \eqn{R = \max(N_1, \ldots, N_m) - \min(N_1, \ldots, N_m)}
 #' for a multinomial random vector with arbitrary cell probabilities.
 #'
 #' @param x Numeric vector of values at which to evaluate the CDF.
@@ -13,13 +13,17 @@
 #' @param verbose Logical; if \code{TRUE}, displays progress information during
 #'   the computation.
 #'
+#' @details The function first checks whether `prob` corresponds to the
+#'   equiprobable case and then applies either the Bonetti et al. (2019)
+#'   algorithm or the Corrado (2011) algorithm accordingly.
+#'
 #' @return Numeric vector of the same length as \code{x} containing
 #'   \eqn{P(R \le x)} values, or log-probabilities if \code{log = TRUE}.
 #'
 #' @examples
-#' k <- 4
+#' m <- 4
 #' n <- 60
-#' probs <- rep(1 / k, k)
+#' probs <- rep(1 / m, m)
 #' xseq <- 0:n
 #'
 #' cdfrange <- prangemultinom(x = xseq, size = n, prob = probs)
@@ -31,13 +35,18 @@
 #' maximum, minimum, range and sums of order statistics. Royal Society
 #' Open Science, 6, 190198. \doi{10.1098/rsos.190198}
 #'
+#' Corrado, C.J. (2011). The exact distribution of the maximum,
+#' minimum and the range of Multinomial/Dirichlet and Multivariate
+#' Hypergeometric frequencies. Statistical Computing, 21, 349--359.
+#' \doi{10.1007/s11222-010-9174-3}
+#'
 #' @seealso
 #' \code{\link{drangemultinom}} for the PMF of the range,
 #' \code{\link{pmaxmultinom}} for the CDF of the maximum, and
 #' \code{\link{pminmultinom}} for the CDF of the minimum.
 #'
 #' @export
-prangemultinom <- function(x, size, prob, log = FALSE, verbose = FALSE) {
+prangemultinom <- function(x, size, prob, log = FALSE, verbose = TRUE) {
   k <- length(prob)
   xlen <- length(x)
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0)
@@ -50,7 +59,11 @@ prangemultinom <- function(x, size, prob, log = FALSE, verbose = FALSE) {
     k <- length(prob)
   }
 
-  res <- prangemultinom_corrado(x, size, prob, log, verbose)
+  if (length(prob) > 0 && length(unique(prob)) == 1) {
+    res <- prangemultinom_bonetti(x, size, prob, log, verbose)
+  } else {
+    res <- prangemultinom_corrado(x, size, prob, log, verbose)
+  }
 
   if (any(res < 0))
     res[res < 0] <- 0

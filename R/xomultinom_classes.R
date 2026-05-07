@@ -7,12 +7,6 @@
 #                       dminmultinom, prangemultinom, drangemultinom.
 #
 #   xomultinom_size  -- returned by maxmin_multinom_size.
-#
-# NOTE: the existing p/d functions and maxmin_multinom_size must be updated
-# to wrap their numeric return value with new_xomultinom_dist() /
-# new_xomultinom_size() respectively before returning.  All downstream numeric
-# arithmetic still works because the values are stored in $values and can be
-# extracted with as.numeric() or the $ accessor.
 # =============================================================================
 
 
@@ -30,8 +24,8 @@
 #' @param x Numeric vector of evaluation points.
 #' @param values Numeric vector of probability (or log-probability) values of
 #'   the same length as \code{x}.
-#' @param stat Character string; one of \code{"max"}, \code{"min"}, or
-#'   \code{"range"} indicating the order statistic.
+#' @param stat Character string; one of \code{"max"}, \code{"min"},
+#'   \code{"range"}, or \code{"J_largest"} indicating the order statistic.
 #' @param type Character string; either \code{"pmf"} or \code{"cdf"}.
 #' @param size Integer number of trials.
 #' @param prob Numeric vector of (normalised) cell probabilities.
@@ -48,7 +42,7 @@
 #'
 #' @keywords internal
 new_xomultinom_dist <- function(x, values, stat, type, size, prob, log = FALSE) {
-  stat <- match.arg(stat, c("max", "min", "range"))
+  stat <- match.arg(stat, c("max", "min", "range", "J_largest"))
   type <- match.arg(type, c("pmf", "cdf"))
   structure(
     list(
@@ -91,9 +85,10 @@ new_xomultinom_dist <- function(x, values, stat, type, size, prob, log = FALSE) 
 #' @export
 print.xomultinom_dist <- function(x, digits = 4, max_rows = 20, ...) {
   stat_label <- switch(x$stat,
-    max   = "Maximum",
-    min   = "Minimum",
-    range = "Range"
+    max       = "Maximum",
+    min       = "Minimum",
+    range     = "Range",
+    J_largest = "J largest order stats"
   )
   type_label <- if (x$type == "pmf") "PMF" else "CDF"
   log_note   <- if (x$log) " [log scale]" else ""
@@ -192,14 +187,15 @@ summary.xomultinom_dist <- function(object, digits = 4, ...) {
   supp       <- range(xval[pmf > .Machine$double.eps])
 
   stat_label <- switch(object$stat,
-    max   = "Maximum",
-    min   = "Minimum",
-    range = "Range"
+    max       = "Maximum",
+    min       = "Minimum",
+    range     = "Range",
+    J_largest = "J largest order stats"
   )
 
   cat(sprintf("Exact distribution of the Multinomial %s\n", stat_label))
   cat(sprintf(
-    "  n = %d    k = %d    %s\n\n",
+    "  n = %d    m = %d    %s\n\n",
     object$size, length(object$prob),
     if (length(unique(round(object$prob, 10))) == 1L) "equiprobable"
     else "non-equiprobable"
@@ -279,15 +275,16 @@ plot.xomultinom_dist <- function(x,
                                  ylab       = NULL,
                                  ...) {
   stat_label <- switch(x$stat,
-    max   = "Maximum",
-    min   = "Minimum",
-    range = "Range"
+    max       = "Maximum",
+    min       = "Minimum",
+    range     = "Range",
+    J_largest = "J largest order stats"
   )
   type_label <- if (x$type == "pmf") "PMF" else "CDF"
 
   if (is.null(main)) {
     main <- sprintf(
-      "Multinomial %s \u2014 Exact %s  (n = %d, k = %d)",
+      "Multinomial %s \u2014 Exact %s  (n = %d, m = %d)",
       stat_label, type_label, x$size, length(x$prob)
     )
   }
@@ -396,15 +393,16 @@ autoplot.xomultinom_dist <- function(object,
                                      title         = NULL,
                                      ...) {
   stat_label <- switch(object$stat,
-    max   = "Maximum",
-    min   = "Minimum",
-    range = "Range"
+    max       = "Maximum",
+    min       = "Minimum",
+    range     = "Range",
+    J_largest = "J largest order stats"
   )
   type_label <- if (object$type == "pmf") "PMF" else "CDF"
 
   if (is.null(title)) {
     title <- sprintf(
-      "Multinomial %s \u2014 Exact %s  (n = %d, k = %d)",
+      "Multinomial %s \u2014 Exact %s  (n = %d, m = %d)",
       stat_label, type_label, object$size, length(object$prob)
     )
   }
@@ -510,7 +508,7 @@ as.data.frame.xomultinom_dist <- function(x, ...) {
 #'
 #' @param sizes Named list of sample sizes as returned by
 #'   \code{\link{maxmin_multinom_size}}.
-#' @param k_seq Integer vector of numbers of categories used in the search.
+#' @param m_seq Integer vector of numbers of categories used in the search.
 #' @param change_seq Numeric vector of probability perturbations from
 #'   equiprobability used in the search.
 #' @param power Target power level.
@@ -525,12 +523,12 @@ as.data.frame.xomultinom_dist <- function(x, ...) {
 #'   \code{\link{autoplot.xomultinom_size}}
 #'
 #' @keywords internal
-new_xomultinom_size <- function(sizes, k_seq, change_seq, power, alpha, type) {
+new_xomultinom_size <- function(sizes, m_seq, change_seq, power, alpha, type) {
   type <- match.arg(type, c("max", "min"))
   structure(
     list(
       sizes      = sizes,
-      k_seq      = k_seq,
+      m_seq      = m_seq,
       change_seq = change_seq,
       power      = power,
       alpha      = alpha,
@@ -544,7 +542,7 @@ new_xomultinom_size <- function(sizes, k_seq, change_seq, power, alpha, type) {
 #' Print method for \code{xomultinom_size} objects
 #'
 #' Displays the required sample sizes as a formatted table, one block per
-#' number of categories \eqn{k}.
+#' number of categories \eqn{m}.
 #'
 #' @param x An object of class \code{xomultinom_size}.
 #' @param digits Integer number of decimal places for probability columns.
@@ -557,7 +555,7 @@ new_xomultinom_size <- function(sizes, k_seq, change_seq, power, alpha, type) {
 #' @examples
 #' \dontrun{
 #' sz <- maxmin_multinom_size(
-#'   k_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+#'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #' print(sz)
@@ -577,10 +575,10 @@ print.xomultinom_size <- function(x, digits = 4, ...) {
     x$power, x$alpha
   ))
 
-  for (k in x$k_seq) {
-    key         <- paste0("k = ", k)
+  for (m in x$m_seq) {
+    key         <- paste0("m = ", m)
     ns          <- x$sizes[[key]]
-    cat(sprintf("  %s categories:\n", key))
+    cat(sprintf(" %s categories:\n", key))
     df          <- data.frame(as.numeric(names(ns)), as.integer(ns))
     names(df)   <- c(p_col, "n_required")
     df[[p_col]] <- round(df[[p_col]], digits)
@@ -595,21 +593,21 @@ print.xomultinom_size <- function(x, digits = 4, ...) {
 #' Summary method for \code{xomultinom_size} objects
 #'
 #' Prints a condensed overview of the required sample sizes across all
-#' combinations of \eqn{k} and probability perturbations, reporting the
-#' range of \eqn{n} for each \eqn{k}.
+#' combinations of \eqn{m} and probability perturbations, reporting the
+#' range of \eqn{n} for each \eqn{m}.
 #'
 #' @param object An object of class \code{xomultinom_size}.
 #' @param ... Further arguments passed to or from other methods (currently
 #'   unused).
 #'
 #' @return Invisibly returns a named list where each element corresponds to a
-#'   value of \code{k} and contains \code{n_min}, \code{n_max}, and
+#'   value of \code{m} and contains \code{n_min}, \code{n_max}, and
 #'   \code{n_median}.
 #'
 #' @examples
 #' \dontrun{
 #' sz <- maxmin_multinom_size(
-#'   k_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+#'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #' summary(sz)
@@ -623,20 +621,20 @@ summary.xomultinom_size <- function(object, ...) {
     "Sample size summary \u2014 Multinomial %s test\n", stat_label
   ))
   cat(sprintf(
-    "  Target power : %.2f    alpha : %.2f    k values : %s\n\n",
+    "  Target power : %.2f    alpha : %.2f    m values : %s\n\n",
     object$power, object$alpha,
-    paste(object$k_seq, collapse = ", ")
+    paste(object$m_seq, collapse = ", ")
   ))
 
-  out <- lapply(object$k_seq, function(k) {
-    ns <- as.integer(object$sizes[[paste0("k = ", k)]])
+  out <- lapply(object$m_seq, function(m) {
+    ns <- as.integer(object$sizes[[paste0("m = ", m)]])
     cat(sprintf(
-      "  k = %2d :  n_min = %4d    n_max = %4d    n_median = %4d\n",
-      k, min(ns), max(ns), as.integer(median(ns))
+      "  m = %2d :  n_min = %4d    n_max = %4d    n_median = %4d\n",
+      m, min(ns), max(ns), as.integer(median(ns))
     ))
     list(n_min = min(ns), n_max = max(ns), n_median = as.integer(median(ns)))
   })
-  names(out) <- paste0("k = ", object$k_seq)
+  names(out) <- paste0("m = ", object$m_seq)
 
   invisible(out)
 }
@@ -645,7 +643,7 @@ summary.xomultinom_size <- function(object, ...) {
 #' Plot method for \code{xomultinom_size} objects
 #'
 #' Produces a base R line chart of the required sample size as a function of
-#' the probability perturbation, with one line per value of \eqn{k} (number
+#' the probability perturbation, with one line per value of \eqn{m} (number
 #' of categories), compatible with \code{par(mfrow = ...)}, \code{layout()},
 #' and all other base R multi-panel layout mechanisms.
 #'
@@ -653,7 +651,7 @@ summary.xomultinom_size <- function(object, ...) {
 #' @param log_scale Logical; if \code{TRUE}, the \eqn{y}-axis (required
 #'   \eqn{n}) is displayed on a \eqn{\log_{10}} scale. Useful when \eqn{n}
 #'   varies over several orders of magnitude. Defaults to \code{FALSE}.
-#' @param col Character vector of colours, one per value of \code{k_seq}.
+#' @param col Character vector of colours, one per value of \code{m_seq}.
 #'   If \code{NULL} (default), colours are taken from the default R palette.
 #' @param main Character string; plot title.  If \code{NULL} (default), a
 #'   descriptive title is generated automatically.
@@ -669,7 +667,7 @@ summary.xomultinom_size <- function(object, ...) {
 #' @examples
 #' \dontrun{
 #' sz <- maxmin_multinom_size(
-#'   k_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
+#'   m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #'
@@ -703,11 +701,11 @@ plot.xomultinom_size <- function(x,
     xlab <- if (x$type == "max") "Outlier probability" else "Inlier probability"
   }
   if (is.null(col)) {
-    col <- seq_along(x$k_seq)   # recycles through palette()
+    col <- seq_along(x$m_seq)   # recycles through palette()
   }
 
-  all_ns  <- unlist(lapply(x$k_seq, function(k)
-    as.integer(x$sizes[[paste0("k = ", k)]])))
+  all_ns  <- unlist(lapply(x$m_seq, function(m)
+    as.integer(x$sizes[[paste0("m = ", m)]])))
   log_arg <- if (log_scale) "y" else ""
 
   # Initialise empty plot with the correct axis ranges
@@ -716,18 +714,18 @@ plot.xomultinom_size <- function(x,
        log  = log_arg,
        main = main, xlab = xlab, ylab = ylab, ...)
 
-  for (i in seq_along(x$k_seq)) {
-    k  <- x$k_seq[i]
-    ns <- as.integer(x$sizes[[paste0("k = ", k)]])
+  for (i in seq_along(x$m_seq)) {
+    m  <- x$m_seq[i]
+    ns <- as.integer(x$sizes[[paste0("m = ", m)]])
     lines(x$change_seq, ns, col = col[i], lwd = 1.8, lty = i)
     points(x$change_seq, ns, col = col[i], pch = i, cex = 0.9)
   }
 
   legend("topright",
-         legend = paste0("k = ", x$k_seq),
+         legend = paste0("m = ", x$m_seq),
          col    = col,
-         lty    = seq_along(x$k_seq),
-         pch    = seq_along(x$k_seq),
+         lty    = seq_along(x$m_seq),
+         pch    = seq_along(x$m_seq),
          lwd    = 1.8,
          bty    = "n")
 
@@ -739,7 +737,7 @@ plot.xomultinom_size <- function(x,
 #'
 #' Produces a \code{ggplot2} line chart of the required sample size as a
 #' function of the probability perturbation, with one line per value of
-#' \eqn{k} (number of categories).
+#' \eqn{m} (number of categories).
 #'
 #' For multi-panel layouts use \code{patchwork} or \code{gridExtra} to combine
 #' multiple \code{autoplot()} outputs.  For base R \code{par(mfrow = ...)}
@@ -758,7 +756,7 @@ plot.xomultinom_size <- function(x,
 #' @examples
 #' \dontrun{
 #' sz <- maxmin_multinom_size(
-#'   k_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
+#'   m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #' autoplot(sz)
@@ -788,10 +786,10 @@ autoplot.xomultinom_size <- function(object,
     )
   }
 
-  rows <- lapply(object$k_seq, function(k) {
-    ns <- object$sizes[[paste0("k = ", k)]]
+  rows <- lapply(object$m_seq, function(m) {
+    ns <- object$sizes[[paste0("m = ", m)]]
     data.frame(
-      k                = factor(paste0("k = ", k)),
+      m                = factor(paste0("m = ", m)),
       change           = as.numeric(names(ns)),
       n                = as.integer(ns),
       stringsAsFactors = FALSE
@@ -804,8 +802,8 @@ autoplot.xomultinom_size <- function(object,
       ggplot2::aes(
         x      = .data$change,
         y      = .data$n,
-        colour = .data$k,
-        group  = .data$k
+        colour = .data$m,
+        group  = .data$m
       )
     ) +
     ggplot2::geom_line(linewidth = 0.9) +
@@ -835,21 +833,21 @@ autoplot.xomultinom_size <- function(object,
 #' Coerce an \code{xomultinom_size} object to a data frame
 #'
 #' Converts the sample size results stored in an \code{xomultinom_size} object
-#' into a single tidy \code{data.frame} with columns for \eqn{k}, the
+#' into a single tidy \code{data.frame} with columns for \eqn{m}, the
 #' probability perturbation, and the required sample size.
 #'
 #' @param x An object of class \code{xomultinom_size}.
 #' @param ... Further arguments passed to or from other methods (currently
 #'   unused).
 #'
-#' @return A \code{data.frame} with columns \code{k} (integer number of
+#' @return A \code{data.frame} with columns \code{m} (integer number of
 #'   categories), \code{change} (probability perturbation), and
 #'   \code{n_required} (required sample size).
 #'
 #' @examples
 #' \dontrun{
 #' sz <- maxmin_multinom_size(
-#'   k_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+#'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #' as.data.frame(sz)
@@ -857,10 +855,10 @@ autoplot.xomultinom_size <- function(object,
 #'
 #' @export
 as.data.frame.xomultinom_size <- function(x, ...) {
-  rows <- lapply(x$k_seq, function(k) {
-    ns <- x$sizes[[paste0("k = ", k)]]
+  rows <- lapply(x$m_seq, function(m) {
+    ns <- x$sizes[[paste0("m = ", m)]]
     data.frame(
-      k                = k,
+      m                = m,
       change           = as.numeric(names(ns)),
       n_required       = as.integer(ns),
       stringsAsFactors = FALSE

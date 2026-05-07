@@ -21,7 +21,7 @@
 \eqn{n}) is displayed on a \eqn{\log_{10}} scale. Useful when \eqn{n}
 varies over several orders of magnitude. Defaults to \code{FALSE}.}
 
-\item{col}{Character vector of colours, one per value of \code{k_seq}.
+\item{col}{Character vector of colours, one per value of \code{m_seq}.
 If \code{NULL} (default), colours are taken from the default R palette.}
 
 \item{main}{Character string; plot title.  If \code{NULL} (default), a
@@ -41,14 +41,14 @@ Invisibly returns \code{NULL}.
 }
 \description{
 Produces a base R line chart of the required sample size as a function of
-the probability perturbation, with one line per value of \eqn{k} (number
+the probability perturbation, with one line per value of \eqn{m} (number
 of categories), compatible with \code{par(mfrow = ...)}, \code{layout()},
 and all other base R multi-panel layout mechanisms.
 }
 \examples{
 \dontrun{
 sz <- maxmin_multinom_size(
-  k_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
+  m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
   power = 0.80, alpha = 0.05, type = "max"
 )
 

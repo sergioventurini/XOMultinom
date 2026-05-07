@@ -57,6 +57,7 @@ double recursive_sum_impl(int t, int n, int m, int J, int sum_depth,
   return S;
 }
 
+/*
 //' Internal recursive summation helper
 //'
 //' Wrapper around the internal recursive summation implementation used by
@@ -74,14 +75,17 @@ double recursive_sum_impl(int t, int n, int m, int J, int sum_depth,
 //' @return Numeric value giving the recursive summation result.
 //'
 //' @keywords internal
+//'
+*/
+// [[Rcpp::export]]
 double recursive_sum(const double & td, int n, int m, int J, int sum_depth,
-                     int cur_depth, arma::vec rangeArg) {
+                     int cur_depth, Rcpp::NumericVector rangeArg) {
   int t = (int)floor(td);
 
-  std::vector<int> rangeArgVec(rangeArg.n_elem);
+  std::vector<int> rangeArgVec(rangeArg.size());
   int partial_sum = 0;
-  for (arma::uword i = 0; i < rangeArg.n_elem; i++) {
-    rangeArgVec[i] = (int)rangeArg(i);
+  for (R_xlen_t i = 0; i < rangeArg.size(); i++) {
+    rangeArgVec[i] = (int)rangeArg[i];
     partial_sum   += rangeArgVec[i];
   }
 

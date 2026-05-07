@@ -14,18 +14,18 @@ unused).}
 }
 \value{
 Invisibly returns a named list where each element corresponds to a
-value of \code{k} and contains \code{n_min}, \code{n_max}, and
+value of \code{m} and contains \code{n_min}, \code{n_max}, and
 \code{n_median}.
 }
 \description{
 Prints a condensed overview of the required sample sizes across all
-combinations of \eqn{k} and probability perturbations, reporting the
-range of \eqn{n} for each \eqn{k}.
+combinations of \eqn{m} and probability perturbations, reporting the
+range of \eqn{n} for each \eqn{m}.
 }
 \examples{
 \dontrun{
 sz <- maxmin_multinom_size(
-  k_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+  m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
   power = 0.80, alpha = 0.05, type = "max"
 )
 summary(sz)

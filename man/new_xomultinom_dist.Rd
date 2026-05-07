@@ -12,8 +12,8 @@ new_xomultinom_dist(x, values, stat, type, size, prob, log = FALSE)
 \item{values}{Numeric vector of probability (or log-probability) values of
 the same length as \code{x}.}
 
-\item{stat}{Character string; one of \code{"max"}, \code{"min"}, or
-\code{"range"} indicating the order statistic.}
+\item{stat}{Character string; one of \code{"max"}, \code{"min"},
+\code{"range"}, or \code{"J_largest"} indicating the order statistic.}
 
 \item{type}{Character string; either \code{"pmf"} or \code{"cdf"}.}
 

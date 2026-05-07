@@ -1,12 +1,7 @@
 #ifndef XOMULTINOM_H
 #define XOMULTINOM_H
 
-// #define ARMA_NO_DEBUG  // disables Armadillo bounds checks for release builds;
-//                        // comment out during development to catch indexing bugs
-//                        // (see http://arma.sourceforge.net/docs.html)
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
-#include <RcppArmadillo.h>
+#include <Rcpp.h>
 #include <R_ext/Utils.h>
 #include <algorithm>
 #include <cmath>
@@ -25,8 +20,9 @@
 #include <progress.hpp>
 
 static const double machine_eps = 2.220446049250313080847e-16;
-static const double log_pi = std::log(arma::datum::pi);
-static const double log_2pi = std::log(2.0 * arma::datum::pi);
+static const double pi = 3.14159265358979323846;
+static const double log_pi  = std::log(pi);
+static const double log_2pi = std::log(2.0 * pi);
 static const double log_two = std::log(2.0);
 
 // ---------------------------------------------------------------------------
@@ -60,11 +56,12 @@ struct TupleHash4 {
 // ---------------------------------------------------------------------------
 double max_order_statistic(const double & td, int n, int m);
 double recursive_sum(const double & td, int n, int m, int J, int sum_depth,
-                     int cur_depth, arma::vec rangeArg);
+                     int cur_depth, Rcpp::NumericVector rangeArg);
 double highest_order_statistics(const double & td, int n, int m, int J);
 double max_for_min(const double & t_max, int n, int m, int t);
 double smallest_order_value(const double & td, int n, int m);
-double max_for_range(const double & t_max, int n, int m, arma::vec prev, int t);
+double max_for_range(const double & t_max, int n, int m,
+  Rcpp::NumericVector prev, int t);
 double range_probability(const double & td, int n, int m);
 
 double max_for_range_impl(double t_max, int n, int m,
@@ -72,6 +69,40 @@ double max_for_range_impl(double t_max, int n, int m,
 double recursive_sum_impl(int t, int n, int m, int J, int sum_depth,
                           int cur_depth, std::vector<int>& rangeArg,
                           int partial_sum);
+
+double equi_prob_max_eq(int n, int m, double c);
+
+double equi_prob_min_leq(int n, int m, double c);
+double equi_prob_min_eq(int n, int m, double c);
+
+double equi_prob_range_eq(int n, int m, double r);
+
+double equi_prob_highest_eq(int n, int m, double r, int J);
+
+Rcpp::NumericVector pmaxmultinom_bonetti(const Rcpp::NumericVector& x,
+  const int& size, const Rcpp::NumericVector& prob,
+  const bool& logd, const bool& verbose);
+Rcpp::NumericVector pminmultinom_bonetti(const Rcpp::NumericVector& x,
+  const int& size, const Rcpp::NumericVector& prob,
+  const bool& logd, const bool& verbose);
+Rcpp::NumericVector prangemultinom_bonetti(const Rcpp::NumericVector& x,
+  const int& size, const Rcpp::NumericVector& prob,
+  const bool& logd, const bool& verbose);
+Rcpp::NumericVector pJlargemultinom_bonetti(const Rcpp::NumericVector& x,
+  const int& size, const Rcpp::NumericVector& prob, const int& J,
+  const bool& logd, const bool& verbose);
+Rcpp::NumericVector dmaxmultinom_bonetti(const Rcpp::NumericVector& x,
+  const int& size, const Rcpp::NumericVector& prob,
+  const bool& logd, const bool& verbose);
+Rcpp::NumericVector dminmultinom_bonetti(const Rcpp::NumericVector& x,
+  const int& size, const Rcpp::NumericVector& prob,
+  const bool& logd, const bool& verbose);
+Rcpp::NumericVector drangemultinom_bonetti(const Rcpp::NumericVector& x,
+  const int& size, const Rcpp::NumericVector& prob,
+  const bool& logd, const bool& verbose);
+Rcpp::NumericVector dJlargemultinom_bonetti(const Rcpp::NumericVector& x,
+  const int& size, const Rcpp::NumericVector& prob, const int& J,
+  const bool& logd, const bool& verbose);
 
 // ---------------------------------------------------------------------------
 // FUNCTIONS FROM CORRADO (2011)

@@ -4,7 +4,7 @@
 \alias{drangemultinom}
 \title{PMF of the range for a multinomial distribution}
 \usage{
-drangemultinom(x, size, prob, log = FALSE, verbose = FALSE)
+drangemultinom(x, size, prob, log = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{Numeric vector of values at which to evaluate the PMF.}
@@ -26,13 +26,18 @@ Numeric vector of the same length as \code{x} containing
 }
 \description{
 Computes the probability mass function of the range
-\eqn{R = \max(X_1, \ldots, X_K) - \min(X_1, \ldots, X_K)}
+\eqn{R = \max(N_1, \ldots, N_m) - \min(N_1, \ldots, N_m)}
 for a multinomial random vector with arbitrary cell probabilities.
 }
+\details{
+The function first checks whether \code{prob} corresponds to the
+equiprobable case and then applies either the Bonetti et al. (2019)
+algorithm or the Corrado (2011) algorithm accordingly.
+}
 \examples{
-k <- 4
+m <- 4
 n <- 60
-probs <- rep(1 / k, k)
+probs <- rep(1 / m, m)
 xseq <- 0:n
 
 pmfrange <- drangemultinom(x = xseq, size = n, prob = probs)
@@ -44,6 +49,11 @@ Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
 distributions of some functions of the ordered multinomial counts:
 maximum, minimum, range and sums of order statistics. Royal Society
 Open Science, 6, 190198. \doi{10.1098/rsos.190198}
+
+Corrado, C.J. (2011). The exact distribution of the maximum,
+minimum and the range of Multinomial/Dirichlet and Multivariate
+Hypergeometric frequencies. Statistical Computing, 21, 349--359.
+\doi{10.1007/s11222-010-9174-3}
 }
 \seealso{
 \code{\link{prangemultinom}} for the CDF of the range,

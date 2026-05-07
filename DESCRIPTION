@@ -1,8 +1,8 @@
 Package: XOMultinom
 Type: Package
 Title: Exact Distributions of Some Functions of the Ordered Multinomial Counts
-Version: 0.8.2
-Date: 2026-05-06
+Version: 0.8.3
+Date: 2026-05-07
 Authors@R: c(
     person("Sergio", "Venturini",
            role = c("aut", "cre"),
@@ -43,7 +43,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-LinkingTo: Rcpp, RcppArmadillo, RcppProgress
+LinkingTo: Rcpp, RcppProgress
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 8.0.0

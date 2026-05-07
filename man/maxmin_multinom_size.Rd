@@ -5,7 +5,7 @@
 \title{Sample size determination for multinomial max/min tests}
 \usage{
 maxmin_multinom_size(
-  k_seq,
+  m_seq,
   change_seq,
   power = 0.8,
   alpha = 0.05,
@@ -17,7 +17,7 @@ maxmin_multinom_size(
 )
 }
 \arguments{
-\item{k_seq}{Integer vector of numbers of categories.}
+\item{m_seq}{Integer vector of numbers of categories.}
 
 \item{change_seq}{Numeric vector of probability perturbations from the
 equiprobable case.}
@@ -38,7 +38,7 @@ equiprobable case.}
 \item{extendInt}{Passed to \code{uniroot()} when used.}
 }
 \value{
-A list where each element corresponds to a value of \code{k_seq}
+A list where each element corresponds to a value of \code{m_seq}
 and contains the required sample sizes for each value in \code{change_seq}.
 }
 \description{
@@ -55,9 +55,9 @@ maximum or minimum multinomial cell count.
 \dontrun{
 pow <- 0.8
 alpha <- 0.05
-k_seq <- 3:8
+m_seq <- 3:8
 incr_seq <- seq(0.1, 0.9, 0.1)
-res <- maxmin_multinom_size(k_seq, incr_seq, power = pow, alpha = alpha,
+res <- maxmin_multinom_size(m_seq, incr_seq, power = pow, alpha = alpha,
                             n_max = 200, type = "max",
                             verbose = TRUE, optmethod = "uniroot")
 summary(res)

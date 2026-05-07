@@ -38,7 +38,7 @@ double max_for_range_impl(double t_max_d, int n, int m,
                                  : 0.0;
       const double coef = std::exp(common_term + summ_term + summ_nom);
       // Pass orig_* unchanged: `prev` is fixed throughout the entire recursion tree
-      aux += coef * max_for_range_impl((double)(t_max - 1), m - t_max * q, m - q,
+      aux += coef * max_for_range_impl((double)(t_max - 1), n - t_max * q, m - q,
                                        orig_t_max, orig_n, orig_m, t);
       R_CheckUserInterrupt();
     }
@@ -47,6 +47,7 @@ double max_for_range_impl(double t_max_d, int n, int m,
   return aux;
 }
 
+/*
 //' Internal utility for range distribution computation
 //'
 //' Wrapper around the internal recursive implementation used to compute
@@ -61,8 +62,12 @@ double max_for_range_impl(double t_max_d, int n, int m,
 //' @return Numeric probability value.
 //'
 //' @keywords internal
-double max_for_range(const double & t_max, int n, int m, arma::vec prev, int t) {
+//'
+*/
+// [[Rcpp::export]]
+double max_for_range(const double & t_max, int n, int m,
+  Rcpp::NumericVector prev, int t) {
   return max_for_range_impl(t_max, n, m,
-                            (int)prev(0), (int)prev(1), (int)prev(2),
+                            (int)prev[0], (int)prev[1], (int)prev[2],
                             t);
 }

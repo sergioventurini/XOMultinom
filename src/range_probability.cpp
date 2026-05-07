@@ -2,6 +2,7 @@
 
 // Note: RcppExport is an alias for extern "C"
 
+/*
 //' CDF of the range of multinomial cell counts
 //'
 //' Computes the cumulative distribution function of the range, that is,
@@ -25,7 +26,9 @@
 //' @examples
 //' range_probability(1, 7, 10)
 //'
-//' @export
+//' @keywords internal
+//'
+*/
 // [[Rcpp::export]]
 double range_probability(const double & td, int n, int m) {
   int t = (int)floor(td);
