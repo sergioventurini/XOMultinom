@@ -4,7 +4,8 @@
 # Two classes are defined:
 #
 #   xomultinom_dist  -- returned by pmaxmultinom, dmaxmultinom, pminmultinom,
-#                       dminmultinom, prangemultinom, drangemultinom.
+#                       dminmultinom, prangemultinom, drangemultinom,
+#                       pJlargemultinom, dJlargemultinom.
 #
 #   xomultinom_size  -- returned by maxmin_multinom_size.
 # =============================================================================

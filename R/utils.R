@@ -66,15 +66,14 @@ rdirichlet <- function (n, alpha) {
 # -----------------------------------------------------------------------------
 # Internal helper: discrete quantile lookup
 #
-# Given a vector of probabilities `p`, a PMF vector `pmf`, and the
-# corresponding integer support vector `supp` (sorted ascending), returns
+# Given a vector of probabilities `p` and the exact CDF vector `cdf` evaluated
+# over the integer support vector `supp` (sorted ascending), returns
 # Q(p) = min{ x in supp : F(x) >= p } for each element of p.
-# Handles lower.tail and log.p transformations before calling this helper.
+# lower.tail and log.p transformations are handled by the caller before
+# invoking this helper.
 # -----------------------------------------------------------------------------
-discrete_quantile <- function(p, pmf, supp) {
-  cdf <- cumsum(pmf)
-  # Clamp cdf endpoints for floating-point safety
-  cdf[length(cdf)] <- 1
+discrete_quantile <- function(p, cdf, supp) {
+  cdf[length(cdf)] <- 1   # clamp upper endpoint for floating-point safety
   vapply(p, function(pi) {
     idx <- which(cdf >= pi)
     if (length(idx) == 0L) supp[length(supp)] else supp[idx[1L]]

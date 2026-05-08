@@ -31,16 +31,20 @@ corresponding exact quantiles of the multinomial range.
 Computes exact quantiles of the distribution of the range
 \eqn{R = \max(N_1, \ldots, N_m) - \min(N_1, \ldots, N_m)} of a
 multinomial random vector with arbitrary cell probabilities, by inverting
-the exact CDF obtained from \code{\link{drangemultinom}}.
+the exact CDF obtained from \code{\link{prangemultinom}}.
 }
 \details{
-The function computes the exact PMF over the full support
-\eqn{\{0, 1, \ldots, n\}} using \code{\link{drangemultinom}}, forms the
-CDF by cumulative summation, and returns the smallest support point
-whose CDF value meets or exceeds each element of \code{p}.
+The function obtains the exact CDF over the full support
+\eqn{\{0, 1, \ldots, n\}} via a single vectorised call to
+\code{\link{prangemultinom}}, which dispatches internally to the
+Bonetti et al. (2019) algorithm for equiprobable \code{prob} and to
+the Corrado (2011) algorithm otherwise.  The quantile is then
+located as the smallest support point whose CDF value meets or exceeds
+\code{p}, an \eqn{O(n)} lookup requiring no root-finding or approximation.
 }
 \examples{
-m <- 4; n <- 60
+m <- 4
+n <- 60
 probs <- rep(1 / m, m)
 
 # Median and 95th percentile
