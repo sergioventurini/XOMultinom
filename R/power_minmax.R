@@ -1,14 +1,14 @@
-power_minmax <- function(n, k, change, power = 0.8, alpha = 0.05,
+power_minmax <- function(n, m, change, power = 0.8, alpha = 0.05,
                          type, verbose = TRUE, optmethod) {
-  probs_H0 <- rep(1/k, k)
+  probs_H0 <- rep(1/m, m)
 
   if (type == "max") {
-    pmax <- incr_2_pmax(k, change)
-    probs_H1 <- c(pmax, rep((1 - pmax)/(k - 1), k - 1))
+    pmax <- incr_2_pmax(m, change)
+    probs_H1 <- c(pmax, rep((1 - pmax)/(m - 1), m - 1))
   }
   else if (type == "min") {
-    pmin <- decr_2_pmin(k, change)
-    probs_H1 <- c(pmin, rep((1 - pmin)/(k - 1), k - 1))
+    pmin <- decr_2_pmin(m, change)
+    probs_H1 <- c(pmin, rep((1 - pmin)/(m - 1), m - 1))
   }
 
   # k_alpha <- find_k_alpha(probs_H0, n, alpha, type = type)
@@ -46,18 +46,18 @@ power_minmax <- function(n, k, change, power = 0.8, alpha = 0.05,
   }
 }
 
-power_optimize <- function(k, n_max = 3000, change, power = 0.8, alpha = 0.05,
+power_optimize <- function(m, n_max = 3000, change, power = 0.8, alpha = 0.05,
                            type, verbose = TRUE) {
   optimize(power_minmax, interval = c(1, n_max), maximum = FALSE, tol = 0.5,
-           k = k, change = change, power = power, alpha = alpha, type = type,
+           m = m, change = change, power = power, alpha = alpha, type = type,
            verbose = verbose, optmethod = "optimize")
 }
 
-power_uniroot <- function(k, n_max = 500, change, power = 0.8, alpha = 0.05,
+power_uniroot <- function(m, n_max = 500, change, power = 0.8, alpha = 0.05,
                            type, extendInt = "upX",
                            verbose = TRUE) {
   uniroot(power_minmax, lower = 1, upper = n_max, extendInt = extendInt,
           tol = 0.5, maxiter = 10000,
-          k = k, change = change, power = power, alpha = alpha, type = type,
+          m = m, change = change, power = power, alpha = alpha, type = type,
           verbose = verbose, optmethod = "uniroot")
 }

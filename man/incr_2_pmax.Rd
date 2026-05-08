@@ -4,10 +4,10 @@
 \alias{incr_2_pmax}
 \title{Utility function.}
 \usage{
-incr_2_pmax(k, incr)
+incr_2_pmax(m, incr)
 }
 \arguments{
-\item{k}{A length-one integer vector of the number of multinomial classes.}
+\item{m}{A length-one integer vector of the number of multinomial classes.}
 
 \item{incr}{A length-one numeric vector with the increment values to
 compute the probabilities for.}
@@ -20,9 +20,9 @@ This is an auxiliary function to compute the probability values from
 an increment with respect to the case of equiprobability.
 }
 \examples{
-k <- 3:50
+m <- 3:50
 incr <- seq(0, 1, 0.01)
-pmax <- incr_2_pmax(k, incr)
+pmax <- incr_2_pmax(m, incr)
 summary(as.numeric(pmax))
 
 }

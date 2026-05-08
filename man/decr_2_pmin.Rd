@@ -4,10 +4,10 @@
 \alias{decr_2_pmin}
 \title{Utility function.}
 \usage{
-decr_2_pmin(k, decr)
+decr_2_pmin(m, decr)
 }
 \arguments{
-\item{k}{A length-one integer vector of the number of multinomial classes.}
+\item{m}{A length-one integer vector of the number of multinomial classes.}
 
 \item{decr}{A length-one numeric vector with the decrement values to
 compute the probabilities for.}
@@ -20,9 +20,9 @@ This is an auxiliary function to compute the probability values from
 an decrement with respect to the case of equiprobability.
 }
 \examples{
-k <- 3:50
+m <- 3:50
 decr <- seq(0, 1, 0.01)
-pmin <- decr_2_pmin(k, decr)
+pmin <- decr_2_pmin(m, decr)
 summary(as.numeric(pmin))
 
 }
