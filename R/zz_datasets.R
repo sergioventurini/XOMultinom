@@ -30,3 +30,115 @@
 #' @source
 #'   The data set has been downloaded from <https://www.stats.ox.ac.uk/pub/datasets/csb/>.
 "leukaemia"
+
+#' MAINSAIL trial: comparator-arm data with Halabi 2014 risk scores
+#'
+#' Baseline characteristics and Halabi (2014) prognostic linear predictor for
+#' the 520 patients randomised to the comparator arm (docetaxel plus prednisone)
+#' of the MAINSAIL trial (NCT00988208), a phase III study in metastatic
+#' castration-resistant prostate cancer (mCRPC). The dataset is used in
+#' \code{\link{XOMultinom}} to illustrate the sequential recalibration-alarm
+#' procedure described in Section~5.2 of the package paper.
+#'
+#' @format A data frame with 520 rows and 21 variables:
+#' \describe{
+#'   \item{RPT}{Character. Zero-padded patient identifier (e.g.\ \code{"00468"}).}
+#'   \item{ENROLLDAY}{Numeric. Randomisation day on the study-day scale
+#'     (day 0 = study start). Ranges from \eqn{-265} to \eqn{353}; used to
+#'     derive \code{entry_order}.}
+#'   \item{entry_order}{Integer. Patient's rank by ascending \code{ENROLLDAY},
+#'     from 1 (earliest randomised) to 520 (latest). Ties in \code{ENROLLDAY}
+#'     are broken arbitrarily.}
+#'   \item{ecog}{Numeric. Eastern Cooperative Oncology Group (ECOG) performance
+#'     status at baseline: 0 (fully active), 1 (restricted in strenuous
+#'     activity), or 2 (ambulatory, capable of self-care only).}
+#'   \item{disease_site}{Character. Halabi (2014) disease-site classification:
+#'     \code{"ln_only"} (lymph-node involvement only, \eqn{n = 89}) or
+#'     \code{"visceral"} (any liver or lung metastasis, \eqn{n = 350}).
+#'     \code{NA} for 81 patients for whom disease site could not be determined
+#'     from the available tumour-assessment records; all such patients have
+#'     \code{has_bone = 0}.}
+#'   \item{has_ln}{Integer. Binary indicator: 1 if lymph-node metastases were
+#'     recorded at the screening visit, 0 otherwise.}
+#'   \item{has_bone}{Integer. Binary indicator: 1 if bone metastases were
+#'     recorded at the screening visit, 0 otherwise.}
+#'   \item{has_visceral}{Integer. Binary indicator: 1 if visceral (liver or
+#'     lung) metastases were recorded at the screening visit, 0 otherwise.}
+#'   \item{opioid}{Integer. Binary indicator: 1 if the patient was receiving
+#'     opioid analgesics (ATC code \code{N02A*}) at the time of randomisation,
+#'     0 otherwise.}
+#'   \item{ldh}{Numeric. Lactate dehydrogenase (LDH) at baseline, in U/L.
+#'     Missing for 8 patients.}
+#'   \item{ldh_uln}{Numeric. Upper limit of normal for LDH as recorded in the
+#'     trial laboratory data. Constant at 250 U/L for all patients in this
+#'     dataset.}
+#'   \item{ldh_gt_uln}{Integer. Binary indicator: 1 if \code{ldh > ldh_uln},
+#'     0 otherwise. Complete for all 520 patients (missing \code{ldh} values
+#'     were treated as not exceeding the ULN).}
+#'   \item{albumin}{Numeric. Serum albumin at baseline, in g/dL.
+#'     Missing for 5 patients.}
+#'   \item{hgb}{Numeric. Haemoglobin at baseline, in g/dL.
+#'     Missing for 16 patients.}
+#'   \item{psa}{Numeric. Prostate-specific antigen (PSA) at baseline, in ng/mL.
+#'     Missing for 6 patients.}
+#'   \item{alp}{Numeric. Alkaline phosphatase (ALP) at baseline, in U/L.
+#'     Missing for 8 patients.}
+#'   \item{ln_psa}{Numeric. Natural logarithm of \code{psa}. Missing for the
+#'     same 6 patients as \code{psa}.}
+#'   \item{ln_alp}{Numeric. Natural logarithm of \code{alp}. Missing for the
+#'     same 8 patients as \code{alp}.}
+#'   \item{halabi2014_lp}{Numeric. Halabi (2014) linear predictor computed by
+#'     strict listwise deletion: \code{NA} for any patient missing at least one
+#'     of the ten model covariates (99 patients). Identical to
+#'     \code{halabi2014_lp_raw} for the 421 complete cases.}
+#'   \item{halabi2014_lp_raw}{Numeric. Halabi (2014) linear predictor computed
+#'     under partial listwise deletion: available for the 498 patients with
+#'     complete laboratory values, regardless of \code{disease_site}
+#'     availability. For the 77 patients with missing \code{disease_site} but
+#'     complete labs, both disease-site indicators are set to zero (equivalent
+#'     to assigning the lymph-node-only reference category). \code{NA} for the
+#'     22 patients missing at least one laboratory value.}
+#'   \item{halabi2014_lp_imputed}{Numeric. Halabi (2014) linear predictor after
+#'     single imputation: complete for all 520 patients. Continuous covariates
+#'     (\code{albumin}, \code{hgb}, \code{ln_psa}, \code{ln_alp}) are imputed
+#'     at their sample median; \code{disease_site} is imputed at its sample
+#'     mode (\code{"visceral"}). Used as the risk score in the sequential
+#'     recalibration-alarm illustration of Section~5.2.}
+#' }
+#'
+#' @details
+#' The MAINSAIL trial randomised 1059 patients with chemotherapy-naive mCRPC to
+#' docetaxel/prednisone with or without lenalidomide. Only the 520 patients on
+#' the comparator arm are included here. Patient entry order was determined by
+#' \code{ENROLLDAY} extracted from \code{assignmt.sas7bdat} in the Project Data
+#' Sphere release; all other covariates were extracted at or closest to the
+#' baseline visit. Full details of variable construction are given in
+#' Appendix~A of the package paper.
+#'
+#' The Halabi (2014) linear predictor is defined as
+#' \deqn{\eta_i = \boldsymbol{\beta}^\top \mathbf{x}_i,}
+#' where the regression coefficients \eqn{\boldsymbol{\beta}} are the
+#' log-hazard ratios from Table~2 of Halabi et al.\ (2014); see
+#' \code{vignette("recalibration", package = "XOMultinom")} for the full
+#' specification.
+#'
+#' @source
+#' Project Data Sphere, dataset identifier
+#' \code{Prostat\_Celgene\_2009\_90} (\url{https://www.projectdatasphere.org}).
+#' Access requires registration and acceptance of the Project Data Sphere
+#' terms of use.
+#'
+#' @references
+#' Halabi, S., Lin, C.-Y., Kelly, W.K., Fizazi, K.S., Moul, J.W., Kaplan,
+#' E.B., Morris, M.J. and Small, E.J. (2014). Updated prognostic model for
+#' predicting overall survival in first-line chemotherapy for patients with
+#' metastatic castration-resistant prostate cancer.
+#' \emph{Journal of Clinical Oncology}, \strong{32}(7), 671--677.
+#' \doi{10.1200/JCO.2013.52.3696}
+#'
+#' Fizazi, K., Higano, C.S., Nelson, J.B., et al.\ (2013). Phase III,
+#' randomized, placebo-controlled study of docetaxel in combination with
+#' zibotentan in patients with metastatic castration-resistant prostate cancer.
+#' \emph{Journal of Clinical Oncology}, \strong{31}(14), 1740--1747.
+#' \doi{10.1200/JCO.2012.46.4503}
+"mainsail"
