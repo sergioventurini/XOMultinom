@@ -59,6 +59,3 @@ src/*.o
 src/*.so
 src/*.dll
 .positai
-
-# Claude files
-CLAUDE.md
