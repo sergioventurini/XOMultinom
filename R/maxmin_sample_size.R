@@ -25,7 +25,7 @@
 find_k_gamma <- function(probs, n, alpha = 0.05, type) {
   if (alpha <= 0 | alpha >= 1)
     stop("the alpha argument must be in between 0 and 1.")
-  if (any(diff(probs) > 0))
+  if (any(probs != probs[1]))
     stop("the probabilities must correspond to the equiprobability case.")
 
   if (type == "max") {
@@ -133,7 +133,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
 find_k_alpha <- function(probs, n, alpha = 0.05, type) {
   if (alpha <= 0 | alpha >= 1)
     stop("the alpha argument must be in between 0 and 1.")
-  if (any(diff(probs) > 0))
+  if (any(probs != probs[1]))
     stop("the probabilities must correspond to the equiprobability case.")
 
   if (type == "max") {
@@ -182,7 +182,7 @@ find_k_alpha <- function(probs, n, alpha = 0.05, type) {
 find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
   if (alpha <= 0 | alpha >= 1)
     stop("the alpha argument must be in between 0 and 1.")
-  if (any(diff(probs) > 0))
+  if (any(probs != probs[1]))
     stop("the probabilities must correspond to the equiprobability case.")
 
   if (type == "max") {

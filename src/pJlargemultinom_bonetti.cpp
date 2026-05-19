@@ -18,7 +18,7 @@
 //' @param verbose Logical; if \code{TRUE}, displays a progress bar.
 //'
 //' @return Numeric vector of the same length as \code{x} containing
-//'   \eqn{P(M \le x)} (or log-probabilities if \code{logd = TRUE}).
+//'   \eqn{P(S_J \le x)} (or log-probabilities if \code{logd = TRUE}).
 //'
 //' @examples
 //' pJlargemultinom_bonetti(0:3, size = 10, prob = rep(1/5, 5),
@@ -38,7 +38,6 @@ Rcpp::NumericVector pJlargemultinom_bonetti(const Rcpp::NumericVector& x,
 
   Rcpp::NumericVector r(xlen);
   for (int k = 0; k < xlen; k++) {
-    // if (verbose) std::printf("computing P(max(X1,..., Xk) <= %.4g)...\n", x(k));
     if (Progress::check_abort()) return Rcpp::NumericVector(0);
     prog.increment();
     r(k) = highest_order_statistics(x(k), size, m, J);

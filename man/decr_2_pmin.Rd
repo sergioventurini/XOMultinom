@@ -7,10 +7,10 @@
 decr_2_pmin(m, decr)
 }
 \arguments{
-\item{m}{A length-one integer vector of the number of multinomial classes.}
+\item{m}{An integer vector of numbers of multinomial classes.}
 
-\item{decr}{A length-one numeric vector with the decrement values to
-compute the probabilities for.}
+\item{decr}{A numeric vector of decrement values for which to compute
+the probabilities.}
 }
 \value{
 A numeric matrix.

@@ -19,7 +19,7 @@
 //'   \eqn{P(M \le x)} (or log-probabilities if \code{logd = TRUE}).
 //'
 //' @examples
-//' pmaxmultinom_bonetti(0:3, size = 10, prob = rep(1/5, 5),
+//' pmaxmultinom_corrado(0:3, size = 10, prob = c(0.3, 0.3, 0.2, 0.1, 0.1),
 //'                      logd = FALSE, verbose = FALSE)
 //'
 //' @keywords internal
@@ -36,7 +36,6 @@ Rcpp::NumericVector pmaxmultinom_corrado(const Rcpp::NumericVector& x,
 
   Rcpp::NumericVector r(xlen);
   for (int k = 0; k < xlen; k++) {
-    // if (verbose) std::printf("computing P(max(X1,..., Xk) <= %.4g)...\n", x(k));
     if (Progress::check_abort()) return Rcpp::NumericVector(0);
     prog.increment();
     r(k) = prob_max_leq(size, pi, x(k));

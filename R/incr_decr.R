@@ -3,9 +3,9 @@
 #' This is an auxiliary function to compute the increment as the distance
 #' from the case of equiprobability.
 #'
-#' @param m A length-one integer vector of the number of multinomial classes.
-#' @param pmax A length-one numeric vector with the probability values to
-#'   compute the increments for.
+#' @param m An integer vector of numbers of multinomial classes.
+#' @param pmax A numeric vector of probability values for which to compute
+#'   the increments.
 #' @return A numeric matrix.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{incr_2_pmax}} for the opposite calculation.
@@ -36,9 +36,9 @@ pmax_2_incr <- function(m, pmax) {
 #' This is an auxiliary function to compute the probability values from
 #' an increment with respect to the case of equiprobability.
 #'
-#' @param m A length-one integer vector of the number of multinomial classes.
-#' @param incr A length-one numeric vector with the increment values to
-#'   compute the probabilities for.
+#' @param m An integer vector of numbers of multinomial classes.
+#' @param incr A numeric vector of increment values for which to compute
+#'   the probabilities.
 #' @return A numeric matrix.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{pmax_2_incr}} for the opposite calculation.
@@ -68,9 +68,9 @@ incr_2_pmax <- function(m, incr) {
 #' This is an auxiliary function to compute the decrement as the distance
 #' from the case of equiprobability.
 #'
-#' @param m A length-one integer vector of the number of multinomial classes.
-#' @param pmin A length-one numeric vector with the probability values to
-#'   compute the decrements for.
+#' @param m An integer vector of numbers of multinomial classes.
+#' @param pmin A numeric vector of probability values for which to compute
+#'   the decrements.
 #' @return A numeric matrix.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{decr_2_pmin}} for the opposite calculation.
@@ -101,9 +101,9 @@ pmin_2_decr <- function(m, pmin) {
 #' This is an auxiliary function to compute the probability values from
 #' an decrement with respect to the case of equiprobability.
 #'
-#' @param m A length-one integer vector of the number of multinomial classes.
-#' @param decr A length-one numeric vector with the decrement values to
-#'   compute the probabilities for.
+#' @param m An integer vector of numbers of multinomial classes.
+#' @param decr A numeric vector of decrement values for which to compute
+#'   the probabilities.
 #' @return A numeric matrix.
 #' @author Sergio Venturini \email{sergio.venturini@unicatt.it}
 #' @seealso \code{\link{pmin_2_decr}} for the opposite calculation.

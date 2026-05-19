@@ -21,9 +21,10 @@ removed before computation.}
 the computation.}
 }
 \value{
-Numeric vector of the same length as \code{x} containing
-\eqn{P(\max(N_1, \ldots, N_m) \le x)} values, or log-probabilities if
-\code{log = TRUE}.
+An object of class \code{xomultinom_dist} with fields \code{x},
+\code{values} (containing \eqn{P(\max(N_1, \ldots, N_m) \le x)}, or
+log-probabilities if \code{log = TRUE}), \code{stat = "max"},
+\code{type = "cdf"}, \code{size}, \code{prob}, and \code{log}.
 }
 \description{
 Computes the cumulative distribution function of the maximum cell count of a

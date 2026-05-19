@@ -13,12 +13,14 @@ the maximum, minimum, range, and sums of order statistics.
 
 Main functions include:
 \itemize{
-\item \code{\link{dmaxmultinom}()}
-\item \code{\link{dminmultinom}()}
-\item \code{\link{drangemultinom}()}
-\item \code{\link{pmaxmultinom}()}
-\item \code{\link{pminmultinom}()}
-\item \code{\link{prangemultinom}()}
+\item \code{\link{dmaxmultinom}()}, \code{\link{pmaxmultinom}()},
+\code{\link{qmaxmultinom}()}, \code{\link{rmaxmultinom}()}
+\item \code{\link{dminmultinom}()}, \code{\link{pminmultinom}()},
+\code{\link{qminmultinom}()}, \code{\link{rminmultinom}()}
+\item \code{\link{drangemultinom}()}, \code{\link{prangemultinom}()},
+\code{\link{qrangemultinom}()}, \code{\link{rrangemultinom}()}
+\item \code{\link{dJlargemultinom}()}, \code{\link{pJlargemultinom}()},
+\code{\link{qJlargemultinom}()}, \code{\link{rJlargemultinom}()}
 }
 }
 \seealso{

@@ -32,7 +32,6 @@ Rcpp::NumericVector dminmultinom_bonetti(const Rcpp::NumericVector& x,
 
   Rcpp::NumericVector r(xlen);
   for (int k = 0; k < xlen; k++) {
-    // if (verbose) std::printf("computing P(min(X1,..., Xk) = %.4g)...\n", x(k));
     if (Progress::check_abort()) return Rcpp::NumericVector(0);
     prog.increment();
     r(k) = equi_prob_min_eq(size, m, x(k));

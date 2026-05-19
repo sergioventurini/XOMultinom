@@ -21,9 +21,10 @@ removed before computation.}
 the computation.}
 }
 \value{
-Numeric vector of the same length as \code{x} containing
-\eqn{P(\min(N_1, \ldots, N_m) = x)} values, or log-probabilities if
-\code{log = TRUE}.
+An object of class \code{xomultinom_dist} with fields \code{x},
+\code{values} (containing \eqn{P(\min(N_1, \ldots, N_m) = x)}, or
+log-probabilities if \code{log = TRUE}), \code{stat = "min"},
+\code{type = "pmf"}, \code{size}, \code{prob}, and \code{log}.
 }
 \description{
 Computes the probability mass function of the minimum cell count of a

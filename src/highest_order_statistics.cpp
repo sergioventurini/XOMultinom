@@ -35,10 +35,10 @@ double highest_order_statistics(const double & td, int n, int m, int J) {
   double P = 0.0;
 
   if (J > m) {
-    Rcpp::stop("J should be smaller or equal than m.");
+    Rcpp::stop("J must be less than or equal to m.");
   }
   if ((J == m) && (t < n)) {
-    Rcpp::stop("total sum is every time equal to n.");
+    Rcpp::stop("total sum always equals n.");
   }
   if ((t == 0) && (n != 0)) {
     return 0.0;

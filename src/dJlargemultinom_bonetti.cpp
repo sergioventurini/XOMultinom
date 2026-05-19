@@ -6,9 +6,9 @@
 //' PMF of the sum of \eqn{J} largest order statistics for a multinomial
 //' distribution (equiprobable case)
 //'
-//' Computes the probability mass function for the maximum component of a
-//' multinomial random vector with total count `size` and category probabilities
-//' `prob`, evaluated at each value in `x`.
+//' Computes the probability mass function of the sum of the \eqn{J} largest
+//' order statistics for a multinomial random vector with total count `size`
+//' and equal category probabilities `prob`, evaluated at each value in `x`.
 //'
 //' @param x Numeric vector of values at which to evaluate the probability mass
 //'   function.
@@ -35,7 +35,6 @@ Rcpp::NumericVector dJlargemultinom_bonetti(const Rcpp::NumericVector& x,
 
   Rcpp::NumericVector r(xlen);
   for (int k = 0; k < xlen; k++) {
-    // if (verbose) std::printf("computing P(max(X1,..., Xk) = %.4g)...\n", x(k));
     if (Progress::check_abort()) return Rcpp::NumericVector(0);
     prog.increment();
     r(k) = equi_prob_highest_eq(size, m, x(k), J);

@@ -3,21 +3,16 @@
 // Note: RcppExport is an alias for extern "C"
 
 /*
-//' Internal recursive summation helper
+//' Survival function of the minimum for the equiprobable multinomial case
 //'
-//' Wrapper around the internal recursive summation implementation used by
-//' \code{highest_order_statistics()}.
+//' Computes \eqn{P(\min(N_1, \ldots, N_m) \ge t)} for a multinomial random
+//' vector with equal cell probabilities.
 //'
-//' @param td Numeric value used in the recursive computation. Internally, this
-//'   is converted to \code{floor(td)}.
-//' @param n Integer number of balls/trials.
-//' @param m Integer number of urns/cells.
-//' @param J Integer number of largest order statistics.
-//' @param sum_depth Integer target summation depth.
-//' @param cur_depth Integer current recursion depth.
-//' @param rangeArg Numeric vector containing the current recursion arguments.
+//' @param td Numeric threshold value. Internally converted to \code{floor(td)}.
+//' @param n Integer number of trials.
+//' @param m Integer number of cells.
 //'
-//' @return Numeric value giving the recursive summation result.
+//' @return Numeric value giving \eqn{P(\min \ge t)}.
 //'
 //' @keywords internal
 //'

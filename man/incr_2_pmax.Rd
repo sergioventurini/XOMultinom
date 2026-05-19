@@ -7,10 +7,10 @@
 incr_2_pmax(m, incr)
 }
 \arguments{
-\item{m}{A length-one integer vector of the number of multinomial classes.}
+\item{m}{An integer vector of numbers of multinomial classes.}
 
-\item{incr}{A length-one numeric vector with the increment values to
-compute the probabilities for.}
+\item{incr}{A numeric vector of increment values for which to compute
+the probabilities.}
 }
 \value{
 A numeric matrix.

@@ -21,8 +21,10 @@ removed before computation.}
 the computation.}
 }
 \value{
-Numeric vector of the same length as \code{x} containing
-\eqn{P(R = x)} values, or log-probabilities if \code{log = TRUE}.
+An object of class \code{xomultinom_dist} with fields \code{x},
+\code{values} (containing \eqn{P(R = x)}, or log-probabilities if
+\code{log = TRUE}), \code{stat = "range"}, \code{type = "pmf"},
+\code{size}, \code{prob}, and \code{log}.
 }
 \description{
 Computes the probability mass function of the range

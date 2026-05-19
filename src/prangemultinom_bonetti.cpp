@@ -36,7 +36,6 @@ Rcpp::NumericVector prangemultinom_bonetti(const Rcpp::NumericVector& x,
 
   Rcpp::NumericVector r(xlen);
   for (int k = 0; k < xlen; k++) {
-    // if (verbose) std::printf("computing P(range(X1,..., Xk) <= %.4g)...\n", x(k));
     if (Progress::check_abort()) return Rcpp::NumericVector(0);
     prog.increment();
     r(k) = range_probability(x(k), size, m);

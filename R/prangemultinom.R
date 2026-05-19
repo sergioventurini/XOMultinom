@@ -17,8 +17,10 @@
 #'   equiprobable case and then applies either the Bonetti et al. (2019)
 #'   algorithm or the Corrado (2011) algorithm accordingly.
 #'
-#' @return Numeric vector of the same length as \code{x} containing
-#'   \eqn{P(R \le x)} values, or log-probabilities if \code{log = TRUE}.
+#' @return An object of class \code{xomultinom_dist} with fields \code{x},
+#'   \code{values} (containing \eqn{P(R \le x)}, or log-probabilities if
+#'   \code{log = TRUE}), \code{stat = "range"}, \code{type = "cdf"},
+#'   \code{size}, \code{prob}, and \code{log}.
 #'
 #' @examples
 #' m <- 4
@@ -47,17 +49,12 @@
 #'
 #' @export
 prangemultinom <- function(x, size, prob, log = FALSE, verbose = TRUE) {
-  k <- length(prob)
-  xlen <- length(x)
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0)
     stop("probabilities must be finite, non-negative and not all 0.")
   prob <- prob/s
-  # x <- as.integer(x + 0.5)
   i0 <- prob == 0
-  if (any(i0)) {
+  if (any(i0))
     prob <- prob[!i0]
-    k <- length(prob)
-  }
 
   if (length(prob) > 0 && length(unique(prob)) == 1) {
     res <- prangemultinom_bonetti(x, size, prob, log, verbose)
@@ -65,10 +62,12 @@ prangemultinom <- function(x, size, prob, log = FALSE, verbose = TRUE) {
     res <- prangemultinom_corrado(x, size, prob, log, verbose)
   }
 
-  if (any(res < 0))
-    res[res < 0] <- 0
-  if (any(res > 1))
-    res[res > 1] <- 1
+  if (!log) {
+    if (any(res < 0)) res[res < 0] <- 0
+    if (any(res > 1)) res[res > 1] <- 1
+  } else {
+    if (any(res > 0)) res[res > 0] <- 0
+  }
 
   return(new_xomultinom_dist(x      = x,
                              values = res,

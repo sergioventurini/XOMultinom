@@ -10,16 +10,19 @@
 #' @param prob Numeric vector of non-negative cell probabilities. Values are
 #'   internally normalized to sum to 1. Categories with zero probability are
 #'   removed before computation.
-#' @param J Integer number of largest order statistics to consider; default to 2.
+#' @param J Integer number of largest order statistics to consider. Defaults to
+#'   \code{2}.
 #' @param log Logical; if \code{TRUE}, returns log-probabilities.
 #' @param verbose Logical; if \code{TRUE}, displays progress information during
 #'   the computation.
 #'
-#' @details The function works implements the equiprobable case only.
+#' @details The function only implements the equiprobable case.
 #'
-#' @return Numeric vector of the same length as \code{x} containing
-#'   \eqn{P(S_J = x)}, \eqn{S_J = \sum_{j=1}^J N_{\langle j\rangle}}, values, or log-probabilities if
-#'   \code{log = TRUE}.
+#' @return An object of class \code{xomultinom_dist} with fields \code{x},
+#'   \code{values} (containing \eqn{P(S_J = x)},
+#'   \eqn{S_J = \sum_{j=1}^J N_{\langle j\rangle}}, or log-probabilities if
+#'   \code{log = TRUE}), \code{stat = "J_largest"}, \code{type = "pmf"},
+#'   \code{size}, \code{prob}, and \code{log}.
 #'
 #' @examples
 #' m <- 4
@@ -44,17 +47,12 @@
 #'
 #' @export
 dJlargemultinom <- function(x, size, prob, J = 2, log = FALSE, verbose = TRUE) {
-  k <- length(prob)
-  xlen <- length(x)
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0)
     stop("probabilities must be finite, non-negative and not all 0.")
   prob <- prob/s
-  # x <- as.integer(x + 0.5)
   i0 <- prob == 0
-  if (any(i0)) {
+  if (any(i0))
     prob <- prob[!i0]
-    k <- length(prob)
-  }
   
   if (length(prob) > 0 && length(unique(prob)) == 1) {
     res <- dJlargemultinom_bonetti(x, size, prob, J, log, verbose)
@@ -62,10 +60,12 @@ dJlargemultinom <- function(x, size, prob, J = 2, log = FALSE, verbose = TRUE) {
     stop("not available for the non-equiprobable case.")
   }
 
-  if (any(res < 0))
-    res[res < 0] <- 0
-  if (any(res > 1))
-    res[res > 1] <- 1
+  if (!log) {
+    if (any(res < 0)) res[res < 0] <- 0
+    if (any(res > 1)) res[res > 1] <- 1
+  } else {
+    if (any(res > 0)) res[res > 0] <- 0
+  }
 
   return(new_xomultinom_dist(x      = x,
                              values = res,

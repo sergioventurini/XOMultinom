@@ -21,8 +21,10 @@ removed before computation.}
 the computation.}
 }
 \value{
-Numeric vector of the same length as \code{x} containing
-\eqn{P(R \le x)} values, or log-probabilities if \code{log = TRUE}.
+An object of class \code{xomultinom_dist} with fields \code{x},
+\code{values} (containing \eqn{P(R \le x)}, or log-probabilities if
+\code{log = TRUE}), \code{stat = "range"}, \code{type = "cdf"},
+\code{size}, \code{prob}, and \code{log}.
 }
 \description{
 Computes the cumulative distribution function of the range
