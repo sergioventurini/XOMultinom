@@ -13,7 +13,7 @@
 #'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
 #'   distributions of some functions of the ordered multinomial counts:
 #'   maximum, minimum, range and sums of order statistics", Royal Society
-#'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
+#'   Open Science, 6: 190198, \doi{10.1098/rsos.190198}.
 #' @examples
 #' m <- 3:50
 #' pmax <- seq(0.05, 1, 0.05)
@@ -46,7 +46,7 @@ pmax_2_incr <- function(m, pmax) {
 #'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
 #'   distributions of some functions of the ordered multinomial counts:
 #'   maximum, minimum, range and sums of order statistics", Royal Society
-#'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
+#'   Open Science, 6: 190198, \doi{10.1098/rsos.190198}.
 #' @examples
 #' m <- 3:50
 #' incr <- seq(0, 1, 0.01)
@@ -78,7 +78,7 @@ incr_2_pmax <- function(m, incr) {
 #'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
 #'   distributions of some functions of the ordered multinomial counts:
 #'   maximum, minimum, range and sums of order statistics", Royal Society
-#'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
+#'   Open Science, 6: 190198, \doi{10.1098/rsos.190198}.
 #' @examples
 #' m <- 3:50
 #' pmin <- seq(0.05, 1, 0.05)
@@ -111,7 +111,7 @@ pmin_2_decr <- function(m, pmin) {
 #'   Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
 #'   distributions of some functions of the ordered multinomial counts:
 #'   maximum, minimum, range and sums of order statistics", Royal Society
-#'   Open Science, 6: 190198, <http://dx.doi.org/10.1098/rsos.190198>.
+#'   Open Science, 6: 190198, \doi{10.1098/rsos.190198}.
 #' @examples
 #' m <- 3:50
 #' decr <- seq(0, 1, 0.01)

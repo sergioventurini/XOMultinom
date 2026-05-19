@@ -48,10 +48,10 @@ rdirichlet <- function (n, alpha) {
     alpha <- matrix(alpha, nrow = 1)
   }
   if (prod(dim(alpha)) == 0) {
-    stop2("alpha should be non-empty.")
+    stop("alpha should be non-empty.")
   }
   if (isTRUE(any(alpha <= 0))) {
-    stop2("alpha must be positive.")
+    stop("alpha must be positive.")
   }
   if (n == 1) {
     n <- nrow(alpha)

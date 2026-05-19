@@ -22,29 +22,25 @@ Description: Implements exact algorithms for computing the distributions of
     goodness-of-fit tests based on these order statistics are also provided.
     Computationally intensive routines are implemented in C++ for efficiency.
 License: GPL-3
+Maintainer: Sergio Venturini <sergio.venturini@unicatt.it>
 URL: https://github.com/sergioventurini/XOMultinom
 BugReports: https://github.com/sergioventurini/XOMultinom/issues
 Encoding: UTF-8
 LazyData: true
 Depends:
-    methods,
     R (>= 3.6.0),
-    stats,
     utils
 Imports:
     ggplot2 (>= 3.5.1),
-    ggrepel (>= 0.9.6),
     graphics,
-    parallel,
+    methods,
     Rcpp (>= 1.0.14),
-    stats4,
+    rlang,
+    stats,
     tools
 Suggests:
-    knitr,
-    rmarkdown,
     testthat (>= 3.0.0)
 LinkingTo: Rcpp, RcppProgress
-VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 8.0.0
 Config/testthat/edition: 3

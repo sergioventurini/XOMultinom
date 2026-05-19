@@ -73,7 +73,7 @@ recalibration-alarm illustration of Section~5.2.}
 }
 \source{
 Project Data Sphere, dataset identifier
-\code{Prostat\_Celgene\_2009\_90} (\url{https://www.projectdatasphere.org}).
+\code{Prostat\_Celgene\_2009\_90} (\url{https://data.projectdatasphere.org/}).
 Access requires registration and acceptance of the Project Data Sphere
 terms of use.
 }
@@ -116,6 +116,6 @@ Fizazi, K., Higano, C.S., Nelson, J.B., et al.\ (2013). Phase III,
 randomized, placebo-controlled study of docetaxel in combination with
 zibotentan in patients with metastatic castration-resistant prostate cancer.
 \emph{Journal of Clinical Oncology}, \strong{31}(14), 1740--1747.
-\doi{10.1200/JCO.2012.46.4503}
+\doi{10.1200/JCO.2012.46.4149}
 }
 \keyword{datasets}

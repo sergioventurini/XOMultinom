@@ -30,7 +30,7 @@ summary(as.numeric(pmax))
 Bonetti, M., Cirillo, P., Ogay, A. (2019), "Computing the exact
 distributions of some functions of the ordered multinomial counts:
 maximum, minimum, range and sums of order statistics", Royal Society
-Open Science, 6: 190198, \url{http://dx.doi.org/10.1098/rsos.190198}.
+Open Science, 6: 190198, \doi{10.1098/rsos.190198}.
 }
 \seealso{
 \code{\link{pmax_2_incr}} for the opposite calculation.
