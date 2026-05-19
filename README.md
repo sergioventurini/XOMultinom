@@ -28,8 +28,8 @@ compiler. To get it:
 Then, the easiest way to get the package is to install it from GitHub:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("sergioventurini/XOMultinom")
+# install.packages("remotes")
+remotes::install_github("sergioventurini/XOMultinom")
 ```
 
 See the main help page of the package by executing `?XOMultinom` or run any of
