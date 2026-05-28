@@ -1,32 +1,29 @@
-Package: XOMultinom
 Type: Package
-Title: Exact Distributions of Some Functions of the Ordered Multinomial Counts
+Package: XOMultinom
+Title: Exact Distributions of Some Functions of the Ordered Multinomial
+    Counts
 Version: 0.8.7
 Date: 2026-05-28
 Authors@R: c(
-    person("Sergio", "Venturini",
-           role = c("aut", "cre"),
-           email = "sergio.venturini@unicatt.it"),
-    person("Marco", "Bonetti",
-           role = "ctb",
-           email = "marco.bonetti@unibocconi.it"))
-Description: Implements exact algorithms for computing the distributions of
-    the maximum, the minimum, the range, and the sum of the J largest order
-    statistics of a multinomial random vector. Two complementary algorithm
-    families are provided: the recursive tree-traversal method of Bonetti,
-    Cirillo, and Ogay (2019) <doi:10.1098/rsos.190198>, which covers
-    all four statistics under the equiprobable hypothesis; and the stochastic
-    matrix method of Corrado (2011) <doi:10.1007/s11222-010-9174-3>, which
-    handles the maximum, minimum, and range for arbitrary probability vectors.
-    Functions for power evaluation and sample size determination for
-    goodness-of-fit tests based on these order statistics are also provided.
-    Computationally intensive routines are implemented in 'C++' for efficiency.
-License: GPL-3
+    person("Sergio", "Venturini", , "sergio.venturini@unicatt.it", role = c("aut", "cre")),
+    person("Marco", "Bonetti", , "marco.bonetti@unibocconi.it", role = "ctb")
+  )
 Maintainer: Sergio Venturini <sergio.venturini@unicatt.it>
+Description: Implements exact algorithms for computing the distributions
+    of the maximum, the minimum, the range, and the sum of the J largest
+    order statistics of a multinomial random vector. Two complementary
+    algorithm families are provided: the recursive tree-traversal method
+    of Bonetti, Cirillo, and Ogay (2019) <doi:10.1098/rsos.190198>, which
+    covers all four statistics under the equiprobable hypothesis; and the
+    stochastic matrix method of Corrado (2011)
+    <doi:10.1007/s11222-010-9174-3>, which handles the maximum, minimum,
+    and range for arbitrary probability vectors.  Functions for power
+    evaluation and sample size determination for goodness-of-fit tests
+    based on these order statistics are also provided.  Computationally
+    intensive routines are implemented in 'C++' for efficiency.
+License: GPL-3
 URL: https://github.com/sergioventurini/XOMultinom
 BugReports: https://github.com/sergioventurini/XOMultinom/issues
-Encoding: UTF-8
-LazyData: true
 Depends:
     R (>= 3.6.0),
     utils
@@ -34,13 +31,15 @@ Imports:
     ggplot2 (>= 3.5.1),
     graphics,
     methods,
-    Rcpp (>= 1.0.14),
+    Rcpp,
     rlang,
     stats,
     tools
-Suggests:
-    testthat (>= 3.0.0)
-LinkingTo: Rcpp, RcppProgress
+LinkingTo: 
+    Rcpp,
+    RcppProgress
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 8.0.0
-Config/testthat/edition: 3

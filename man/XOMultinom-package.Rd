@@ -45,3 +45,7 @@ Other contributors:
 }
 
 }
+\keyword{max}
+\keyword{min}
+\keyword{multinomial}
+\keyword{range}

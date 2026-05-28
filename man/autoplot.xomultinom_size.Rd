@@ -34,7 +34,7 @@ compatibility use \code{\link{plot.xomultinom_size}} instead.
 \examples{
 \donttest{
 sz_max <- maxmin_multinom_size(
-  m_seq = c(5, 10, 20), change_seq = seq(0.10, 0.50, by = 0.05),
+  m_seq = c(5, 10, 20), change_seq = seq(0.10, 0.30, by = 0.05),
   power = 0.80, alpha = 0.05, type = "max"
 )
 autoplot(sz_max)

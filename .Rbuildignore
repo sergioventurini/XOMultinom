@@ -6,3 +6,5 @@
 ^\tmp
 ^\.positai$
 ^\.claude$
+^dev$
+^cran-comments\.md$

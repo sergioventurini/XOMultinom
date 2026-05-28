@@ -30,7 +30,7 @@ data(leukaemia)
 This is a well-known epidemiological dataset of diagnosed leukaemia cases
 over eight counties in upstate New York. These data originated from the
 New York State Cancer Registry, and were gathered during the 5-year period
-1978–1982, with a total of 584 individuals diagnosed with leukaemia over a
+1978-1982, with a total of 584 individuals diagnosed with leukaemia over a
 population of approximately 1 million people. The original data contain
 spatial information about registered events split into 790 census tracts.
 }

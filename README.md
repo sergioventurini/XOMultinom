@@ -36,7 +36,7 @@ the demos available in the package by executing the code
 `demo(demo_name, package = "XOMultinom")`.
 
 ## Authors
-Sergio Venturini, Department of Economic and Social Sciences, Università Cattolica del Sacro Cuore, Cremona, Italy
+Sergio Venturini, Department of Economic and Social Sciences, Universita' Cattolica del Sacro Cuore, Cremona, Italy
 
 E-mail: sergio.venturini@unicatt.it
 

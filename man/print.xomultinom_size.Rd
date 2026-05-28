@@ -25,7 +25,7 @@ number of categories \eqn{m}.
 \examples{
 \donttest{
 sz <- maxmin_multinom_size(
-  m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+  m_seq = c(5, 10), change_seq = c(0.10, 0.15, 0.20),
   power = 0.80, alpha = 0.05, type = "max"
 )
 print(sz)

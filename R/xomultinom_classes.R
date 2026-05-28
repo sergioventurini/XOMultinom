@@ -41,6 +41,8 @@
 #'   \code{\link{plot.xomultinom_dist}},
 #'   \code{\link{autoplot.xomultinom_dist}}
 #'
+#' @noRd
+#'
 #' @keywords internal
 new_xomultinom_dist <- function(x, values, stat, type, size, prob, log = FALSE) {
   stat <- match.arg(stat, c("max", "min", "range", "J_largest"))
@@ -285,7 +287,7 @@ plot.xomultinom_dist <- function(x,
 
   if (is.null(main)) {
     main <- sprintf(
-      "Multinomial %s \u2014 Exact %s  (n = %d, m = %d)",
+      "Multinomial %s - Exact %s  (n = %d, m = %d)",
       stat_label, type_label, x$size, length(x$prob)
     )
   }
@@ -294,7 +296,7 @@ plot.xomultinom_dist <- function(x,
     ylab <- if (x$type == "pmf") {
       if (x$log) "log P(X = x)" else "P(X = x)"
     } else {
-      if (x$log) "log P(X \u2264 x)" else "P(X \u2264 x)"
+      if (x$log) "log P(X <= x)" else "P(X <= x)"
     }
   }
 
@@ -399,7 +401,7 @@ autoplot.xomultinom_dist <- function(object,
 
   if (is.null(title)) {
     title <- sprintf(
-      "Multinomial %s \u2014 Exact %s  (n = %d, m = %d)",
+      "Multinomial %s - Exact %s  (n = %d, m = %d)",
       stat_label, type_label, object$size, length(object$prob)
     )
   }
@@ -407,7 +409,7 @@ autoplot.xomultinom_dist <- function(object,
   y_label <- if (object$type == "pmf") {
     if (object$log) "log P(X = x)" else "P(X = x)"
   } else {
-    if (object$log) "log P(X \u2264 x)" else "P(X \u2264 x)"
+    if (object$log) "log P(X <= x)" else "P(X <= x)"
   }
 
   df <- data.frame(x = object$x, y = object$values)
@@ -519,6 +521,8 @@ as.data.frame.xomultinom_dist <- function(x, ...) {
 #'   \code{\link{plot.xomultinom_size}},
 #'   \code{\link{autoplot.xomultinom_size}}
 #'
+#' @noRd
+#'
 #' @keywords internal
 new_xomultinom_size <- function(sizes, m_seq, change_seq, power, alpha, type) {
   type <- match.arg(type, c("max", "min"))
@@ -552,7 +556,7 @@ new_xomultinom_size <- function(sizes, m_seq, change_seq, power, alpha, type) {
 #' @examples
 #' \donttest{
 #' sz <- maxmin_multinom_size(
-#'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+#'   m_seq = c(5, 10), change_seq = c(0.10, 0.15, 0.20),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #' print(sz)
@@ -564,7 +568,7 @@ print.xomultinom_size <- function(x, digits = 4, ...) {
   p_col      <- if (x$type == "max") "p_outlier" else "p_inlier"
 
   cat(sprintf(
-    "Sample size requirements \u2014 Multinomial %s test\n",
+    "Sample size requirements - Multinomial %s test\n",
     stat_label
   ))
   cat(sprintf(
@@ -604,7 +608,7 @@ print.xomultinom_size <- function(x, digits = 4, ...) {
 #' @examples
 #' \donttest{
 #' sz <- maxmin_multinom_size(
-#'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+#'   m_seq = c(5, 10), change_seq = c(0.10, 0.15, 0.20),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #' summary(sz)
@@ -615,7 +619,7 @@ summary.xomultinom_size <- function(object, ...) {
   stat_label <- if (object$type == "max") "Maximum" else "Minimum"
 
   cat(sprintf(
-    "Sample size summary \u2014 Multinomial %s test\n", stat_label
+    "Sample size summary - Multinomial %s test\n", stat_label
   ))
   cat(sprintf(
     "  Target power : %.2f    alpha : %.2f    m values : %s\n\n",
@@ -664,7 +668,7 @@ summary.xomultinom_size <- function(object, ...) {
 #' @examples
 #' \donttest{
 #' sz <- maxmin_multinom_size(
-#'   m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
+#'   m_seq = c(5, 10, 20), change_seq = seq(0.10, 0.30, by = 0.05),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #'
@@ -690,7 +694,7 @@ plot.xomultinom_size <- function(x,
 
   if (is.null(main)) {
     main <- sprintf(
-      "Multinomial %s test  (power = %.2f, \u03b1 = %.2f)",
+      "Multinomial %s test  (power = %.2f, alpha = %.2f)",
       stat_label, x$power, x$alpha
     )
   }
@@ -706,6 +710,8 @@ plot.xomultinom_size <- function(x,
   log_arg <- if (log_scale) "y" else ""
 
   # Initialise empty plot with the correct axis ranges
+  if (log_scale)
+    ylab <- paste0(ylab, " (log-scale)")
   plot(range(x$change_seq), range(all_ns),
        type = "n",
        log  = log_arg,
@@ -753,7 +759,7 @@ plot.xomultinom_size <- function(x,
 #' @examples
 #' \donttest{
 #' sz_max <- maxmin_multinom_size(
-#'   m_seq = c(5, 10, 20), change_seq = seq(0.10, 0.50, by = 0.05),
+#'   m_seq = c(5, 10, 20), change_seq = seq(0.10, 0.30, by = 0.05),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #' autoplot(sz_max)
@@ -774,7 +780,7 @@ autoplot.xomultinom_size <- function(object,
 
   if (is.null(title)) {
     title <- sprintf(
-      "Required sample size \u2014 Multinomial %s test  (power = %.2f, \u03b1 = %.2f)",
+      "Required sample size - Multinomial %s test  (power = %.2f, alpha = %.2f)",
       stat_label, object$power, object$alpha
     )
   }
@@ -803,7 +809,7 @@ autoplot.xomultinom_size <- function(object,
     ggplot2::geom_point(size = 2.5) +
     ggplot2::labs(
       x      = x_label,
-      y      = "Required n",
+      y      = ifelse(log_scale, "Required n (log-scale)", "Required n"),
       colour = "Categories",
       title  = title
     ) +
@@ -840,7 +846,7 @@ autoplot.xomultinom_size <- function(object,
 #' @examples
 #' \donttest{
 #' sz <- maxmin_multinom_size(
-#'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
+#'   m_seq = c(5, 10), change_seq = c(0.10, 0.15, 0.20),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
 #' as.data.frame(sz)

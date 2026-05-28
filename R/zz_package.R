@@ -21,6 +21,8 @@
 #' @aliases XOMultinom-package XOMultinom-pkg XOMultinom
 #' @docType package
 #'
+#' @keywords multinomial min max range
+#'
 #' @useDynLib XOMultinom, .registration = TRUE
 #' @importFrom methods setClass setGeneric setMethod new is
 #' @importFrom Rcpp evalCpp

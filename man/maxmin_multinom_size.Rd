@@ -56,7 +56,7 @@ maximum or minimum multinomial cell count.
 pow <- 0.8
 alpha <- 0.05
 m_seq <- 3:8
-incr_seq <- seq(0.1, 0.9, 0.1)
+incr_seq <- seq(0.2, 0.8, 0.1)
 res <- maxmin_multinom_size(m_seq, incr_seq, power = pow, alpha = alpha,
                             n_max = 200, type = "max",
                             verbose = TRUE, optmethod = "uniroot")

@@ -51,7 +51,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
     # binary search
     k <- length(probs)
 
-    # Step 1 ── does the test have any rejection region at all?
+    # Step 1 - does the test have any rejection region at all?
     # P(min <= 0 | H0) should be > 0 for any finite n, but check defensively.
     F0 <- pminmultinom(x = 0L, size = n, prob = probs,
                        log = FALSE, verbose = FALSE)$values
@@ -59,7 +59,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
       return(list(k_alpha = NA, gamma_prob = NA))
     }
 
-    # Step 2 ── find an upper bound hi such that F(hi) > alpha
+    # Step 2 - find an upper bound hi such that F(hi) > alpha
     # Start at floor(n/k) (the mean of each cell) and double if needed
     hi <- max(1L, floor(n / k))
     Fhi <- pminmultinom(x = hi, size = n, prob = probs,
@@ -73,7 +73,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
       return(list(k_alpha = NA, gamma_prob = NA))
     }
 
-    # Step 3 ── binary search in [lo=0, hi]
+    # Step 3 - binary search in [lo=0, hi]
     lo <- 0L
     while (hi - lo > 1L) {
       mid  <- (lo + hi) %/% 2L
@@ -91,7 +91,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
       return(list(k_alpha = k_alpha, gamma_prob = 0))
     }
 
-    # Step 4 ── compute gamma from the two flanking CDF values
+    # Step 4 - compute gamma from the two flanking CDF values
     Flo <- pminmultinom(x = k_alpha,       size = n, prob = probs,
                         log = FALSE, verbose = FALSE)$values
     Fup <- pminmultinom(x = k_alpha + 1L,  size = n, prob = probs,
@@ -252,7 +252,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 #' pow <- 0.8
 #' alpha <- 0.05
 #' m_seq <- 3:8
-#' incr_seq <- seq(0.1, 0.9, 0.1)
+#' incr_seq <- seq(0.2, 0.8, 0.1)
 #' res <- maxmin_multinom_size(m_seq, incr_seq, power = pow, alpha = alpha,
 #'                             n_max = 200, type = "max",
 #'                             verbose = TRUE, optmethod = "uniroot")
