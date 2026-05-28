@@ -53,10 +53,6 @@ obj <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
 autoplot(obj)
 autoplot(obj, add_approx = TRUE)
 
-# Multi-panel layout via patchwork
-# library(patchwork)
-# autoplot(obj_pmf) + autoplot(obj_cdf)
-
 }
 \seealso{
 \code{\link{plot.xomultinom_dist}} for a base R alternative

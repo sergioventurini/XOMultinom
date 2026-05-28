@@ -1,8 +1,8 @@
 Package: XOMultinom
 Type: Package
 Title: Exact Distributions of Some Functions of the Ordered Multinomial Counts
-Version: 0.8.6
-Date: 2026-05-19
+Version: 0.8.7
+Date: 2026-05-28
 Authors@R: c(
     person("Sergio", "Venturini",
            role = c("aut", "cre"),
@@ -14,13 +14,13 @@ Description: Implements exact algorithms for computing the distributions of
     the maximum, the minimum, the range, and the sum of the J largest order
     statistics of a multinomial random vector. Two complementary algorithm
     families are provided: the recursive tree-traversal method of Bonetti,
-    Cirillo, and Venturini (2019) <doi:10.1098/rsos.190198>, which covers
+    Cirillo, and Ogay (2019) <doi:10.1098/rsos.190198>, which covers
     all four statistics under the equiprobable hypothesis; and the stochastic
     matrix method of Corrado (2011) <doi:10.1007/s11222-010-9174-3>, which
     handles the maximum, minimum, and range for arbitrary probability vectors.
     Functions for power evaluation and sample size determination for
     goodness-of-fit tests based on these order statistics are also provided.
-    Computationally intensive routines are implemented in C++ for efficiency.
+    Computationally intensive routines are implemented in 'C++' for efficiency.
 License: GPL-3
 Maintainer: Sergio Venturini <sergio.venturini@unicatt.it>
 URL: https://github.com/sergioventurini/XOMultinom

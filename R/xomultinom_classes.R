@@ -378,10 +378,6 @@ plot.xomultinom_dist <- function(x,
 #' autoplot(obj)
 #' autoplot(obj, add_approx = TRUE)
 #'
-#' # Multi-panel layout via patchwork
-#' # library(patchwork)
-#' # autoplot(obj_pmf) + autoplot(obj_cdf)
-#'
 #' @seealso \code{\link{plot.xomultinom_dist}} for a base R alternative
 #'   compatible with \code{par(mfrow = ...)}.
 #'
@@ -554,7 +550,7 @@ new_xomultinom_size <- function(sizes, m_seq, change_seq, power, alpha, type) {
 #' @return Invisibly returns \code{x}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' sz <- maxmin_multinom_size(
 #'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
 #'   power = 0.80, alpha = 0.05, type = "max"
@@ -606,7 +602,7 @@ print.xomultinom_size <- function(x, digits = 4, ...) {
 #'   \code{n_median}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' sz <- maxmin_multinom_size(
 #'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
 #'   power = 0.80, alpha = 0.05, type = "max"
@@ -666,7 +662,7 @@ summary.xomultinom_size <- function(object, ...) {
 #' @return Invisibly returns \code{NULL}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' sz <- maxmin_multinom_size(
 #'   m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
 #'   power = 0.80, alpha = 0.05, type = "max"
@@ -755,17 +751,13 @@ plot.xomultinom_size <- function(x,
 #' @return Invisibly returns the \code{ggplot} object.
 #'
 #' @examples
-#' \dontrun{
-#' sz <- maxmin_multinom_size(
-#'   m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
+#' \donttest{
+#' sz_max <- maxmin_multinom_size(
+#'   m_seq = c(5, 10, 20), change_seq = seq(0.10, 0.50, by = 0.05),
 #'   power = 0.80, alpha = 0.05, type = "max"
 #' )
-#' autoplot(sz)
-#' autoplot(sz, log_scale = TRUE)
-#'
-#' # Multi-panel layout via patchwork
-#' # library(patchwork)
-#' # autoplot(sz_max) + autoplot(sz_min)
+#' autoplot(sz_max)
+#' autoplot(sz_max, log_scale = TRUE)
 #' }
 #'
 #' @seealso \code{\link{plot.xomultinom_size}} for a base R alternative
@@ -846,7 +838,7 @@ autoplot.xomultinom_size <- function(object,
 #'   \code{n_required} (required sample size).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' sz <- maxmin_multinom_size(
 #'   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
 #'   power = 0.80, alpha = 0.05, type = "max"

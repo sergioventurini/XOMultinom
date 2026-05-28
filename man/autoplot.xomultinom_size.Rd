@@ -32,17 +32,13 @@ multiple \code{autoplot()} outputs.  For base R \code{par(mfrow = ...)}
 compatibility use \code{\link{plot.xomultinom_size}} instead.
 }
 \examples{
-\dontrun{
-sz <- maxmin_multinom_size(
-  m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
+\donttest{
+sz_max <- maxmin_multinom_size(
+  m_seq = c(5, 10, 20), change_seq = seq(0.10, 0.50, by = 0.05),
   power = 0.80, alpha = 0.05, type = "max"
 )
-autoplot(sz)
-autoplot(sz, log_scale = TRUE)
-
-# Multi-panel layout via patchwork
-# library(patchwork)
-# autoplot(sz_max) + autoplot(sz_min)
+autoplot(sz_max)
+autoplot(sz_max, log_scale = TRUE)
 }
 
 }

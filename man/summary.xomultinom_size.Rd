@@ -23,7 +23,7 @@ combinations of \eqn{m} and probability perturbations, reporting the
 range of \eqn{n} for each \eqn{m}.
 }
 \examples{
-\dontrun{
+\donttest{
 sz <- maxmin_multinom_size(
   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
   power = 0.80, alpha = 0.05, type = "max"

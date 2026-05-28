@@ -52,7 +52,7 @@ equiprobability with a given power, using tests based on either the
 maximum or minimum multinomial cell count.
 }
 \examples{
-\dontrun{
+\donttest{
 pow <- 0.8
 alpha <- 0.05
 m_seq <- 3:8

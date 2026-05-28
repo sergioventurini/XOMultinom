@@ -46,7 +46,7 @@ of categories), compatible with \code{par(mfrow = ...)}, \code{layout()},
 and all other base R multi-panel layout mechanisms.
 }
 \examples{
-\dontrun{
+\donttest{
 sz <- maxmin_multinom_size(
   m_seq = c(5, 10, 20), change_seq = seq(0.02, 0.20, by = 0.02),
   power = 0.80, alpha = 0.05, type = "max"

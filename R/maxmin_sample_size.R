@@ -248,7 +248,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 #' maximum or minimum multinomial cell count.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' pow <- 0.8
 #' alpha <- 0.05
 #' m_seq <- 3:8

@@ -23,7 +23,7 @@ into a single tidy \code{data.frame} with columns for \eqn{m}, the
 probability perturbation, and the required sample size.
 }
 \examples{
-\dontrun{
+\donttest{
 sz <- maxmin_multinom_size(
   m_seq = c(5, 10), change_seq = c(0.05, 0.10, 0.15),
   power = 0.80, alpha = 0.05, type = "max"
