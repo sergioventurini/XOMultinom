@@ -2,47 +2,60 @@
 % Please edit documentation in R/dmaxmultinom.R
 \name{dmaxmultinom}
 \alias{dmaxmultinom}
-\title{PMF of the maximum for a multinomial distribution}
+\title{PMF of the multinomial maximum at specified points}
 \usage{
-dmaxmultinom(x, size, prob, log = FALSE, verbose = TRUE)
+dmaxmultinom(x, size, prob, log.p = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{x}{Numeric vector of values at which to evaluate the PMF.}
+\item{x}{Integer vector of values at which to evaluate the PMF.}
 
-\item{size}{Integer number of trials.}
+\item{size}{Integer number of trials \eqn{n}.}
 
 \item{prob}{Numeric vector of non-negative cell probabilities. Values are
-internally normalized to sum to 1. Categories with zero probability are
+internally normalised to sum to 1. Categories with zero probability are
 removed before computation.}
 
-\item{log}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Logical; if \code{TRUE}, log-probabilities are returned.
+Defaults to \code{FALSE}.}
 
 \item{verbose}{Logical; if \code{TRUE}, displays progress information during
-the computation.}
+the computation. Defaults to \code{TRUE}.}
 }
 \value{
-An object of class \code{xomultinom_dist} with fields \code{x},
-\code{values} (containing \eqn{P(\max(N_1, \ldots, N_m) = x)}, or
-log-probabilities if \code{log = TRUE}), \code{stat = "max"},
-\code{type = "pmf"}, \code{size}, \code{prob}, and \code{log}.
+A numeric vector of the same length as \code{x}, containing
+\eqn{P(\max(N_1, \ldots, N_m) = x)} (or log-probabilities if
+\code{log.p = TRUE}).  Points outside the support \eqn{\{0, \ldots, n\}}
+return 0 (or \code{-Inf} on the log scale).
 }
 \description{
-Computes the probability mass function of the maximum cell count of a
-multinomial random vector with arbitrary cell probabilities.
+Computes \eqn{P(\max(N_1, \ldots, N_m) = x)} at each element of \code{x}
+for a multinomial random vector with \code{size} trials and cell
+probabilities \code{prob}.  Returns a plain numeric vector, following the
+same conventions as \code{\link[stats]{dbinom}} and
+\code{\link[stats]{dnorm}}.
 }
 \details{
 The function first checks whether \code{prob} corresponds to the
-equiprobable case and then applies either the Bonetti et al. (2019)
+equiprobable case and then applies either the Bonetti et al.\ (2019)
 algorithm or the Corrado (2011) algorithm accordingly.
+
+For the full distribution object (suitable for plotting, summaries, or
+repeated evaluation), use \code{\link{maxmultinom}} directly.
 }
 \examples{
 m <- 4
 n <- 60
 probs <- rep(1 / m, m)
-xseq <- 0:n
 
-pmfmax <- dmaxmultinom(x = xseq, size = n, prob = probs)
-plot(pmfmax)
+# Evaluate at specific points -- plain numeric output, like dbinom()
+dmaxmultinom(x = c(18, 20, 22), size = n, prob = probs)
+
+# Log scale
+dmaxmultinom(x = c(18, 20, 22), size = n, prob = probs, log.p = TRUE)
+
+# For the full distribution object use maxmultinom():
+Fmax <- maxmultinom(size = n, prob = probs)
+plot(Fmax)
 
 }
 \references{
@@ -57,7 +70,8 @@ Hypergeometric frequencies. Statistical Computing, 21, 349--359.
 \doi{10.1007/s11222-010-9174-3}
 }
 \seealso{
-\code{\link{pmaxmultinom}} for the CDF of the maximum,
+\code{\link{maxmultinom}} for the full distribution object,
+\code{\link{pmaxmultinom}} for the CDF at specific points,
 \code{\link{dminmultinom}} for the PMF of the minimum, and
 \code{\link{drangemultinom}} for the PMF of the range.
 }

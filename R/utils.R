@@ -16,9 +16,25 @@
 #' round_exact(0.145, 2)
 #' round_exact(c(1.005, -1.005), 2)
 #'
-#' @export
+#' @noRd
+#' @keywords internal
 round_exact <- function(x, digits = 0) {
-  round(x + sign(x) * 1e-10, digits)
+  # Scale factor for the target decimal place
+  scale <- 10^digits
+  x_scaled <- x * scale
+
+  # Check whether x is within floating-point noise of a half-integer
+  # (i.e., the fractional part is very close to 0.5)
+  frac <- abs(x_scaled) - floor(abs(x_scaled))
+  near_half <- abs(frac - 0.5) < 1e-9 * abs(x_scaled + (x_scaled == 0))
+
+  if (near_half) {
+    # Nudge by a relative epsilon so the half-integer case rounds away from zero
+    nudge <- sign(x) * abs(x) * 1e-10
+    round(x + nudge, digits)
+  } else {
+    round(x, digits)
+  }
 }
 
 #' Random generation from a Dirichlet distribution

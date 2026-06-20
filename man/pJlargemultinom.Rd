@@ -3,38 +3,50 @@
 \name{pJlargemultinom}
 \alias{pJlargemultinom}
 \title{CDF of the sum of \eqn{J} largest order statistics for a multinomial
-distribution}
+distribution evaluated at specified points}
 \usage{
-pJlargemultinom(x, size, prob, J = 2, log = FALSE, verbose = TRUE)
+pJlargemultinom(
+  x,
+  size,
+  prob,
+  J = 2,
+  lower.tail = TRUE,
+  log.p = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{Numeric vector of values at which to evaluate the CDF.}
 
-\item{size}{Integer number of trials.}
+\item{size}{Integer number of trials \eqn{n}.}
 
 \item{prob}{Numeric vector of non-negative cell probabilities. Values are
-internally normalized to sum to 1. Categories with zero probability are
+internally normalised to sum to 1. Categories with zero probability are
 removed before computation.}
 
-\item{J}{Integer number of largest order statistics to consider. Defaults to
+\item{J}{Integer; number of largest order statistics to sum. Defaults to
 \code{2}.}
 
-\item{log}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{lower.tail}{Logical; if \code{TRUE} (default),
+\eqn{P(S_J \le x)} is returned; otherwise \eqn{P(S_J > x)}.}
+
+\item{log.p}{Logical; if \code{TRUE}, probabilities are returned on the log
+scale. Defaults to \code{FALSE}.}
 
 \item{verbose}{Logical; if \code{TRUE}, displays progress information during
-the computation.}
+the computation. Defaults to \code{TRUE}.}
 }
 \value{
-An object of class \code{xomultinom_dist} with fields \code{x},
-\code{values} (containing \eqn{P(S_J \le x)},
-\eqn{S_J = \sum_{j=1}^J N_{\langle j\rangle}}, or log-probabilities if
-\code{log = TRUE}), \code{stat = "J_largest"}, \code{type = "cdf"},
-\code{size}, \code{prob}, and \code{log}.
+A numeric vector of the same length as \code{x}, containing
+\eqn{P(S_J \le x)} (or its complement or log, according to
+\code{lower.tail} and \code{log.p}). Values outside the support are
+handled consistently with base R: \code{x < 0} gives 0 and \code{x > n}
+gives 1 (before \code{lower.tail}/\code{log.p} transformations).
 }
 \description{
 Computes the cumulative distribution function of the sum of \eqn{J}
-largest order statistics for a multinomial random vector with
-equal cell probabilities.
+largest order statistics, \eqn{S_J = \sum_{j=1}^J N_{\langle j\rangle}},
+for a multinomial random vector with equal cell probabilities.
 }
 \details{
 The function only implements the equiprobable case.
@@ -47,7 +59,7 @@ J <- 3
 xseq <- 0:n
 
 cdflarge <- pJlargemultinom(x = xseq, size = n, prob = probs, J = J)
-plot(cdflarge)
+cdflarge
 
 }
 \references{
@@ -57,6 +69,7 @@ maximum, minimum, range and sums of order statistics. Royal Society
 Open Science, 6, 190198. \doi{10.1098/rsos.190198}
 }
 \seealso{
+\code{\link{Jlargemultinom}} for the full distribution object,
 \code{\link{dJlargemultinom}} for the PMF,
 \code{\link{qJlargemultinom}} for quantiles, and
 \code{\link{rJlargemultinom}} for random generation.

@@ -331,3 +331,100 @@ maxmin_multinom_size <- function(m_seq, change_seq, power = 0.8, alpha = 0.05,
                              alpha      = alpha,
                              type       = type))
 }
+
+#' Create Quantile-Based Break Points
+#'
+#' Computes `m` quantile-based intervals from a numeric vector of scores and
+#' replaces the outer boundaries with `-Inf` and `Inf` so that all possible
+#' values are included in the resulting intervals.
+#'
+#' Quantiles are computed using `stats::quantile()` with `type = 1`.
+#'
+#' @param scores A numeric vector of scores from which quantile break points
+#'   are computed.
+#' @param m An integer specifying the number of intervals (e.g., `m = 10`
+#'   for deciles).
+#'
+#' @return A numeric vector of length `m + 1` containing the break points.
+#'   The first and last elements are `-Inf` and `Inf`, respectively.
+#'
+#' @examples
+#' scores <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+#' make_breaks(scores, m = 5)
+#'
+#' @noRd
+#' @keywords internal
+make_breaks <- function(scores, m) {
+  brks        <- quantile(scores, probs = seq(0, 1, by = 1/m), type = 1)
+  brks[1]     <- -Inf
+  brks[m + 1] <-  Inf
+  unname(brks)
+}
+
+#' Compute the Largest Bin Count
+#'
+#' Assigns a sample of scores to intervals defined by a set of break points and
+#' returns the size of the largest resulting bin.
+#'
+#' The function uses `cut()` to classify observations into bins and
+#' `tabulate()` to count the number of observations in each bin.
+#'
+#' @param brks A numeric vector of break points defining the intervals.
+#' @param samp_scores A numeric vector of sample scores to be assigned to bins.
+#' @param m An integer specifying the expected number of bins.
+#'
+#' @return A single integer giving the maximum number of observations contained
+#'   in any bin.
+#'
+#' @examples
+#' scores <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+#' brks <- make_breaks(scores, m = 5)
+#' max_count(brks, scores, m = 5)
+#'
+#' @noRd
+#' @keywords internal
+max_count <- function(brks, samp_scores, m) {
+  bins <- cut(samp_scores, breaks = brks, include.lowest = TRUE)
+  max(tabulate(bins, nbins = m))
+}
+
+#' Apply a Randomized Test Decision Rule
+#'
+#' Implements a randomized decision rule based on an observed maximum bin count.
+#' The test rejects with probability 1 when the observed count is at least
+#' `kappa`, rejects with probability `gamma` when the observed count equals
+#' `kappa - 1`, and does not reject otherwise.
+#'
+#' Randomization at the boundary is performed using `stats::rbinom()`.
+#'
+#' @param obs_max An integer giving the observed maximum bin count.
+#' @param kappa An integer threshold defining the rejection region.
+#' @param gamma A numeric value in `[0, 1]` giving the rejection probability
+#'   when `obs_max == kappa - 1`.
+#'
+#' @return A logical or integer indicator of rejection:
+#' \describe{
+#'   \item{`1L`}{the test rejects deterministically (`obs_max >= kappa`).}
+#'   \item{`0L` or `1L`}{a randomized decision when `obs_max == kappa - 1`.}
+#'   \item{`FALSE`}{the test does not reject (`obs_max < kappa - 1`).}
+#' }
+#'
+#' @examples
+#' set.seed(123)
+#'
+#' # Deterministic rejection
+#' rand_test(obs_max = 10, kappa = 10, gamma = 0.5)
+#'
+#' # Randomized boundary decision
+#' rand_test(obs_max = 9, kappa = 10, gamma = 0.5)
+#'
+#' # No rejection
+#' rand_test(obs_max = 8, kappa = 10, gamma = 0.5)
+#'
+#' @noRd
+#' @keywords internal
+rand_test <- function(obs_max, kappa, gamma) {
+  if (obs_max >= kappa)      return(1L)
+  if (obs_max == kappa - 1L) return(rbinom(1L, 1L, gamma))
+  return(FALSE)
+}

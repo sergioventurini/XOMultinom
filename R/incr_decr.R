@@ -20,7 +20,8 @@
 #' incr <- pmax_2_incr(m, pmax)
 #' summary(as.numeric(incr))
 #'
-#' @export
+#' @noRd
+#' @keywords internal
 pmax_2_incr <- function(m, pmax) {
   tmpfnc <- function(mm, pp) (mm*pp - 1)/(mm - 1)
   res <- outer(m, pmax, tmpfnc)
@@ -53,7 +54,8 @@ pmax_2_incr <- function(m, pmax) {
 #' pmax <- incr_2_pmax(m, incr)
 #' summary(as.numeric(pmax))
 #'
-#' @export
+#' @noRd
+#' @keywords internal
 incr_2_pmax <- function(m, incr) {
   tmpfnc <- function(mm, ii) (ii + 1/(mm - 1))*(mm - 1)/mm
   res <- outer(m, incr, tmpfnc)
@@ -85,7 +87,8 @@ incr_2_pmax <- function(m, incr) {
 #' decr <- pmin_2_decr(m, pmin)
 #' summary(as.numeric(decr))
 #'
-#' @export
+#' @noRd
+#' @keywords internal
 pmin_2_decr <- function(m, pmin) {
   tmpfnc <- function(mm, pp) (1 - mm*pp)
   res <- outer(m, pmin, tmpfnc)
@@ -118,7 +121,8 @@ pmin_2_decr <- function(m, pmin) {
 #' pmin <- decr_2_pmin(m, decr)
 #' summary(as.numeric(pmin))
 #'
-#' @export
+#' @noRd
+#' @keywords internal
 decr_2_pmin <- function(m, decr) {
   tmpfnc <- function(mm, dd) (1 - dd)/mm
   res <- outer(m, decr, tmpfnc)

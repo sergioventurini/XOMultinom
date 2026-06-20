@@ -2,47 +2,60 @@
 % Please edit documentation in R/dminmultinom.R
 \name{dminmultinom}
 \alias{dminmultinom}
-\title{PMF of the minimum for a multinomial distribution}
+\title{PMF of the multinomial minimum at specified points}
 \usage{
-dminmultinom(x, size, prob, log = FALSE, verbose = TRUE)
+dminmultinom(x, size, prob, log.p = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{x}{Numeric vector of values at which to evaluate the PMF.}
+\item{x}{Integer vector of values at which to evaluate the PMF.}
 
-\item{size}{Integer number of trials.}
+\item{size}{Integer number of trials \eqn{n}.}
 
 \item{prob}{Numeric vector of non-negative cell probabilities. Values are
-internally normalized to sum to 1. Categories with zero probability are
+internally normalised to sum to 1. Categories with zero probability are
 removed before computation.}
 
-\item{log}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Logical; if \code{TRUE}, log-probabilities are returned.
+Defaults to \code{FALSE}.}
 
 \item{verbose}{Logical; if \code{TRUE}, displays progress information during
-the computation.}
+the computation. Defaults to \code{TRUE}.}
 }
 \value{
-An object of class \code{xomultinom_dist} with fields \code{x},
-\code{values} (containing \eqn{P(\min(N_1, \ldots, N_m) = x)}, or
-log-probabilities if \code{log = TRUE}), \code{stat = "min"},
-\code{type = "pmf"}, \code{size}, \code{prob}, and \code{log}.
+A numeric vector of the same length as \code{x}, containing
+\eqn{P(\min(N_1, \ldots, N_m) = x)} (or log-probabilities if
+\code{log.p = TRUE}).  Points outside the support \eqn{\{0, \ldots, n\}}
+return 0 (or \code{-Inf} on the log scale).
 }
 \description{
-Computes the probability mass function of the minimum cell count of a
-multinomial random vector with arbitrary cell probabilities.
+Computes \eqn{P(\min(N_1, \ldots, N_m) = x)} at each element of \code{x}
+for a multinomial random vector with \code{size} trials and cell
+probabilities \code{prob}.  Returns a plain numeric vector, following the
+same conventions as \code{\link[stats]{dbinom}} and
+\code{\link[stats]{dnorm}}.
 }
 \details{
 The function first checks whether \code{prob} corresponds to the
-equiprobable case and then applies either the Bonetti et al. (2019)
+equiprobable case and then applies either the Bonetti et al.\ (2019)
 algorithm or the Corrado (2011) algorithm accordingly.
+
+For the full distribution object (suitable for plotting, summaries, or
+repeated evaluation), use \code{\link{minmultinom}} directly.
 }
 \examples{
 m <- 4
 n <- 60
 probs <- rep(1 / m, m)
-xseq <- 0:n
 
-pmfmin <- dminmultinom(x = xseq, size = n, prob = probs)
-plot(pmfmin)
+# Evaluate at specific points -- plain numeric output, like dbinom()
+dminmultinom(x = c(10, 12, 15), size = n, prob = probs)
+
+# Log scale
+dminmultinom(x = c(10, 12, 15), size = n, prob = probs, log.p = TRUE)
+
+# For the full distribution object use minmultinom():
+Fmin <- minmultinom(size = n, prob = probs)
+plot(Fmin)
 
 }
 \references{
@@ -57,7 +70,8 @@ Hypergeometric frequencies. Statistical Computing, 21, 349--359.
 \doi{10.1007/s11222-010-9174-3}
 }
 \seealso{
-\code{\link{pminmultinom}} for the CDF of the minimum,
+\code{\link{minmultinom}} for the full distribution object,
+\code{\link{pminmultinom}} for the CDF at specific points,
 \code{\link{dmaxmultinom}} for the PMF of the maximum, and
 \code{\link{drangemultinom}} for the PMF of the range.
 }

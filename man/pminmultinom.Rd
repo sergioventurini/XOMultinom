@@ -2,29 +2,35 @@
 % Please edit documentation in R/pminmultinom.R
 \name{pminmultinom}
 \alias{pminmultinom}
-\title{CDF of the minimum for a multinomial distribution}
+\title{CDF of the multinomial minimum at specified points}
 \usage{
-pminmultinom(x, size, prob, log = FALSE, verbose = TRUE)
+pminmultinom(x, size, prob, lower.tail = TRUE, log.p = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{Numeric vector of values at which to evaluate the CDF.}
 
-\item{size}{Integer number of trials.}
+\item{size}{Integer number of trials \eqn{n}.}
 
 \item{prob}{Numeric vector of non-negative cell probabilities. Values are
-internally normalized to sum to 1. Categories with zero probability are
+internally normalised to sum to 1. Categories with zero probability are
 removed before computation.}
 
-\item{log}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{lower.tail}{Logical; if \code{TRUE} (default),
+\eqn{P(\min(N_1, \ldots, N_m) \le x)} is returned; otherwise
+\eqn{P(\min(N_1, \ldots, N_m) > x)}.}
+
+\item{log.p}{Logical; if \code{TRUE}, probabilities are returned on the log
+scale. Defaults to \code{FALSE}.}
 
 \item{verbose}{Logical; if \code{TRUE}, displays progress information during
-the computation.}
+the computation. Defaults to \code{TRUE}.}
 }
 \value{
-An object of class \code{xomultinom_dist} with fields \code{x},
-\code{values} (containing \eqn{P(\min(N_1, \ldots, N_m) \le x)}, or
-log-probabilities if \code{log = TRUE}), \code{stat = "min"},
-\code{type = "cdf"}, \code{size}, \code{prob}, and \code{log}.
+A numeric vector of the same length as \code{x}, containing
+\eqn{P(\min(N_1, \ldots, N_m) \le x)} (or its complement or log, according
+to \code{lower.tail} and \code{log.p}). Values outside the support are
+handled consistently with base R: \code{x < 0} gives 0 and \code{x > n}
+gives 1 (before \code{lower.tail}/\code{log.p} transformations).
 }
 \description{
 Computes the cumulative distribution function of the minimum cell count of a
@@ -42,7 +48,7 @@ probs <- rep(1 / m, m)
 xseq <- 0:n
 
 cdfmin <- pminmultinom(x = xseq, size = n, prob = probs)
-plot(cdfmin)
+cdfmin
 
 }
 \references{
@@ -57,6 +63,7 @@ Hypergeometric frequencies. Statistical Computing, 21, 349--359.
 \doi{10.1007/s11222-010-9174-3}
 }
 \seealso{
+\code{\link{minmultinom}} for the full distribution object,
 \code{\link{pmaxmultinom}} for the CDF of the maximum,
 \code{\link{dminmultinom}} for the PMF of the minimum, and
 \code{\link{drangemultinom}} for the PMF of the range.

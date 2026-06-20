@@ -2,29 +2,34 @@
 % Please edit documentation in R/prangemultinom.R
 \name{prangemultinom}
 \alias{prangemultinom}
-\title{CDF of the range for a multinomial distribution}
+\title{CDF of the multinomial range at specified points}
 \usage{
-prangemultinom(x, size, prob, log = FALSE, verbose = TRUE)
+prangemultinom(x, size, prob, lower.tail = TRUE, log.p = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{Numeric vector of values at which to evaluate the CDF.}
 
-\item{size}{Integer number of trials.}
+\item{size}{Integer number of trials \eqn{n}.}
 
 \item{prob}{Numeric vector of non-negative cell probabilities. Values are
-internally normalized to sum to 1. Categories with zero probability are
+internally normalised to sum to 1. Categories with zero probability are
 removed before computation.}
 
-\item{log}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{lower.tail}{Logical; if \code{TRUE} (default),
+\eqn{P(R \le x)} is returned; otherwise \eqn{P(R > x)}.}
+
+\item{log.p}{Logical; if \code{TRUE}, probabilities are returned on the log
+scale. Defaults to \code{FALSE}.}
 
 \item{verbose}{Logical; if \code{TRUE}, displays progress information during
-the computation.}
+the computation. Defaults to \code{TRUE}.}
 }
 \value{
-An object of class \code{xomultinom_dist} with fields \code{x},
-\code{values} (containing \eqn{P(R \le x)}, or log-probabilities if
-\code{log = TRUE}), \code{stat = "range"}, \code{type = "cdf"},
-\code{size}, \code{prob}, and \code{log}.
+A numeric vector of the same length as \code{x}, containing
+\eqn{P(R \le x)} (or its complement or log, according to
+\code{lower.tail} and \code{log.p}). Values outside the support are
+handled consistently with base R: \code{x < 0} gives 0 and \code{x > n}
+gives 1 (before \code{lower.tail}/\code{log.p} transformations).
 }
 \description{
 Computes the cumulative distribution function of the range
@@ -43,7 +48,7 @@ probs <- rep(1 / m, m)
 xseq <- 0:n
 
 cdfrange <- prangemultinom(x = xseq, size = n, prob = probs)
-plot(cdfrange)
+cdfrange
 
 }
 \references{
@@ -58,7 +63,8 @@ Hypergeometric frequencies. Statistical Computing, 21, 349--359.
 \doi{10.1007/s11222-010-9174-3}
 }
 \seealso{
-\code{\link{drangemultinom}} for the PMF of the range,
-\code{\link{pmaxmultinom}} for the CDF of the maximum, and
-\code{\link{pminmultinom}} for the CDF of the minimum.
+\code{\link{prangemultinom}} for the CDF at specific points (numeric output),
+\code{\link{drangemultinom}} for the PMF at specific points (numeric output),
+\code{\link{maxmultinom}} and \code{\link{minmultinom}} for the analogous
+constructors for the maximum and the minimum.
 }

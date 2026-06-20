@@ -3,9 +3,8 @@
 #
 # Two classes are defined:
 #
-#   xomultinom_dist  -- returned by pmaxmultinom, dmaxmultinom, pminmultinom,
-#                       dminmultinom, prangemultinom, drangemultinom,
-#                       pJlargemultinom, dJlargemultinom.
+#   xomultinom_dist  -- returned by maxmultinom, minmultinom, rangemultinom
+#                       and Jlargemultinom.
 #
 #   xomultinom_size  -- returned by maxmin_multinom_size.
 # =============================================================================
@@ -47,19 +46,40 @@
 new_xomultinom_dist <- function(x, values, stat, type, size, prob, log = FALSE) {
   stat <- match.arg(stat, c("max", "min", "range", "J_largest"))
   type <- match.arg(type, c("pmf", "cdf"))
-  structure(
-    list(
-      x      = x,
-      values = values,
-      stat   = stat,
-      type   = type,
-      size   = size,
-      prob   = prob,
-      log    = log
-    ),
-    class = "xomultinom_dist"
-  )
+
+  # The object IS a function, mirroring the design of stats::ecdf().
+  # Calling it evaluates the stored CDF (or PMF) at new points and returns a
+  # plain numeric vector, exactly like the p*/d* wrappers do.
+  self <- function(x_new, lower.tail = TRUE, log.p = FALSE) {
+    x_cl <- pmin(pmax(as.integer(x_new), 0L), size)
+    res  <- values[x_cl + 1L]
+    if (type == "pmf") {
+      # For PMF objects, lower.tail / log.p are not meaningful; ignore silently.
+      if (log.p) res <- log(res)
+    } else {
+      if (!lower.tail) res <- 1 - res
+      if (log.p)       res <- log(res)
+    }
+    res
+  }
+
+  attr(self, "x")      <- x
+  attr(self, "values") <- values
+  attr(self, "stat")   <- stat
+  attr(self, "type")   <- type
+  attr(self, "size")   <- size
+  attr(self, "prob")   <- prob
+  attr(self, "log")    <- log
+
+  class(self) <- c("xomultinom_dist", "function")
+  self
 }
+
+
+# Private field accessor.  Because xomultinom_dist objects are closures (not
+# lists), their fields are stored as attributes.  This helper keeps method code
+# readable by replacing verbose attr() calls with a short idiom.
+.xom <- function(obj, field) attr(obj, field, exact = TRUE)
 
 
 #' Print method for \code{xomultinom_dist} objects
@@ -87,14 +107,14 @@ new_xomultinom_dist <- function(x, values, stat, type, size, prob, log = FALSE) 
 #'
 #' @export
 print.xomultinom_dist <- function(x, digits = 4, max_rows = 20, ...) {
-  stat_label <- switch(x$stat,
+  stat_label <- switch(.xom(x, "stat"),
     max       = "Maximum",
     min       = "Minimum",
     range     = "Range",
     J_largest = "J largest order stats"
   )
-  type_label <- if (x$type == "pmf") "PMF" else "CDF"
-  log_note   <- if (x$log) " [log scale]" else ""
+  type_label <- if (.xom(x, "type") == "pmf") "PMF" else "CDF"
+  log_note   <- if (.xom(x, "log")) " [log scale]" else ""
 
   cat(sprintf(
     "Exact %s of the Multinomial %s%s\n",
@@ -102,32 +122,32 @@ print.xomultinom_dist <- function(x, digits = 4, max_rows = 20, ...) {
   ))
   cat(sprintf(
     "  Trials (n) : %d    Categories (k) : %d\n",
-    x$size, length(x$prob)
+    .xom(x, "size"), length(.xom(x, "prob"))
   ))
 
-  if (length(unique(round(x$prob, 10))) == 1L) {
+  if (length(unique(round(.xom(x, "prob"), 10))) == 1L) {
     cat(sprintf("  Probabilities  : equiprobable (p = %s)\n",
-                format(x$prob[1], digits = digits)))
+                format(.xom(x, "prob")[1], digits = digits)))
   } else {
-    cat("  Probabilities  :", paste(round(x$prob, digits), collapse = ", "), "\n")
+    cat("  Probabilities  :", paste(round(.xom(x, "prob"), digits), collapse = ", "), "\n")
   }
   cat("\n")
 
-  n_pts <- length(x$x)
+  n_pts <- length(.xom(x, "x"))
   half  <- max_rows %/% 2L
 
   if (n_pts > max_rows) {
     idx_show <- c(seq_len(half), seq.int(n_pts - half + 1L, n_pts))
-    x_show   <- x$x[idx_show]
-    v_show   <- x$values[idx_show]
+    x_show   <- .xom(x, "x")[idx_show]
+    v_show   <- .xom(x, "values")[idx_show]
     cat(sprintf("  [displaying %d of %d evaluation points]\n\n", max_rows, n_pts))
   } else {
-    x_show <- x$x
-    v_show <- x$values
+    x_show <- .xom(x, "x")
+    v_show <- .xom(x, "values")
   }
 
-  col_name <- if (x$type == "pmf") "P(X = x)" else "P(X <= x)"
-  if (x$log) col_name <- paste0("log ", col_name)
+  col_name <- if (.xom(x, "type") == "pmf") "P(X = x)" else "P(X <= x)"
+  if (.xom(x, "log")) col_name <- paste0("log ", col_name)
 
   df <- data.frame(x = x_show, p = round(v_show, digits))
   names(df) <- c("x", col_name)
@@ -169,14 +189,14 @@ print.xomultinom_dist <- function(x, digits = 4, max_rows = 20, ...) {
 #' @export
 summary.xomultinom_dist <- function(object, digits = 4, ...) {
   # Recover the PMF regardless of whether the object stores PMF or CDF
-  if (object$type == "cdf") {
-    vals <- if (object$log) exp(object$values) else object$values
+  if (.xom(object, "type") == "cdf") {
+    vals <- if (.xom(object, "log")) exp(.xom(object, "values")) else .xom(object, "values")
     pmf  <- pmax(c(vals[1L], diff(vals)), 0)
   } else {
-    pmf  <- if (object$log) exp(object$values) else object$values
+    pmf  <- if (.xom(object, "log")) exp(.xom(object, "values")) else .xom(object, "values")
   }
   pmf  <- pmf / sum(pmf)   # re-normalise to guard against floating-point drift
-  xval <- object$x
+  xval <- .xom(object, "x")
 
   mean_val   <- sum(xval * pmf)
   var_val    <- sum((xval - mean_val)^2 * pmf)
@@ -189,18 +209,18 @@ summary.xomultinom_dist <- function(object, digits = 4, ...) {
   q975       <- xval[which(cdf_vals >= 0.975)[1L]]
   supp       <- range(xval[pmf > .Machine$double.eps])
 
-  stat_label <- switch(object$stat,
+  stat_label <- switch(.xom(object, "stat"),
     max       = "Maximum",
     min       = "Minimum",
     range     = "Range",
     J_largest = "J largest order stats"
   )
 
-  cat(sprintf("Exact distribution of the Multinomial %s\n", stat_label))
+  cat(sprintf("Exact Distribution of the Multinomial %s\n", stat_label))
   cat(sprintf(
     "  n = %d    m = %d    %s\n\n",
-    object$size, length(object$prob),
-    if (length(unique(round(object$prob, 10))) == 1L) "equiprobable"
+    .xom(object, "size"), length(.xom(object, "prob")),
+    if (length(unique(round(.xom(object, "prob"), 10))) == 1L) "equiprobable"
     else "non-equiprobable"
   ))
   cat(sprintf("  Mean              : %s\n", format(mean_val,   digits = digits)))
@@ -277,59 +297,59 @@ plot.xomultinom_dist <- function(x,
                                  xlab       = "x",
                                  ylab       = NULL,
                                  ...) {
-  stat_label <- switch(x$stat,
+  stat_label <- switch(.xom(x, "stat"),
     max       = "Maximum",
     min       = "Minimum",
     range     = "Range",
     J_largest = "J largest order stats"
   )
-  type_label <- if (x$type == "pmf") "PMF" else "CDF"
+  type_label <- if (.xom(x, "type") == "pmf") "PMF" else "CDF"
 
   if (is.null(main)) {
     main <- sprintf(
       "Multinomial %s - Exact %s  (n = %d, m = %d)",
-      stat_label, type_label, x$size, length(x$prob)
+      stat_label, type_label, .xom(x, "size"), length(.xom(x, "prob"))
     )
   }
 
   if (is.null(ylab)) {
-    ylab <- if (x$type == "pmf") {
-      if (x$log) "log P(X = x)" else "P(X = x)"
+    ylab <- if (.xom(x, "type") == "pmf") {
+      if (.xom(x, "log")) "log P(X = x)" else "P(X = x)"
     } else {
-      if (x$log) "log P(X <= x)" else "P(X <= x)"
+      if (.xom(x, "log")) "log P(X <= x)" else "P(X <= x)"
     }
   }
 
-  if (x$type == "pmf") {
+  if (.xom(x, "type") == "pmf") {
     # Spike chart: plot empty frame first, then add segments and points
-    plot(x$x, x$values,
+    plot(.xom(x, "x"), .xom(x, "values"),
          type = "n",
          main = main, xlab = xlab, ylab = ylab, ...)
-    segments(x0  = x$x, y0 = 0,
-             x1  = x$x, y1 = x$values,
+    segments(x0  = .xom(x, "x"), y0 = 0,
+             x1  = .xom(x, "x"), y1 = .xom(x, "values"),
              col = col, lwd = 1.5)
-    points(x$x, x$values, pch = 19, cex = 0.8, col = col)
+    points(.xom(x, "x"), .xom(x, "values"), pch = 19, cex = 0.8, col = col)
   } else {
     # Step function for the CDF
-    plot(x$x, x$values,
+    plot(.xom(x, "x"), .xom(x, "values"),
          type = "s",
          col  = col, lwd = 1.5,
          main = main, xlab = xlab, ylab = ylab, ...)
   }
 
   # Optional normal approximation overlay
-  if (add_approx && !x$log) {
-    if (x$type == "cdf") {
-      pmf_vals <- pmax(c(x$values[1L], diff(x$values)), 0)
+  if (add_approx && !.xom(x, "log")) {
+    if (.xom(x, "type") == "cdf") {
+      pmf_vals <- pmax(c(.xom(x, "values")[1L], diff(.xom(x, "values"))), 0)
     } else {
-      pmf_vals <- x$values
+      pmf_vals <- .xom(x, "values")
     }
     pmf_vals <- pmf_vals / sum(pmf_vals)
-    mu  <- sum(x$x * pmf_vals)
-    sig <- sqrt(sum((x$x - mu)^2 * pmf_vals))
+    mu  <- sum(.xom(x, "x") * pmf_vals)
+    sig <- sqrt(sum((.xom(x, "x") - mu)^2 * pmf_vals))
 
-    x_seq    <- seq(min(x$x), max(x$x), length.out = 300)
-    y_approx <- if (x$type == "pmf") {
+    x_seq    <- seq(min(.xom(x, "x")), max(.xom(x, "x")), length.out = 300)
+    y_approx <- if (.xom(x, "type") == "pmf") {
       dnorm(x_seq, mean = mu, sd = sig)
     } else {
       pnorm(x_seq, mean = mu, sd = sig)
@@ -391,30 +411,30 @@ autoplot.xomultinom_dist <- function(object,
                                      approx_colour = "#d6604d",
                                      title         = NULL,
                                      ...) {
-  stat_label <- switch(object$stat,
+  stat_label <- switch(.xom(object, "stat"),
     max       = "Maximum",
     min       = "Minimum",
     range     = "Range",
     J_largest = "J largest order stats"
   )
-  type_label <- if (object$type == "pmf") "PMF" else "CDF"
+  type_label <- if (.xom(object, "type") == "pmf") "PMF" else "CDF"
 
   if (is.null(title)) {
     title <- sprintf(
       "Multinomial %s - Exact %s  (n = %d, m = %d)",
-      stat_label, type_label, object$size, length(object$prob)
+      stat_label, type_label, .xom(object, "size"), length(.xom(object, "prob"))
     )
   }
 
-  y_label <- if (object$type == "pmf") {
-    if (object$log) "log P(X = x)" else "P(X = x)"
+  y_label <- if (.xom(object, "type") == "pmf") {
+    if (.xom(object, "log")) "log P(X = x)" else "P(X = x)"
   } else {
-    if (object$log) "log P(X <= x)" else "P(X <= x)"
+    if (.xom(object, "log")) "log P(X <= x)" else "P(X <= x)"
   }
 
-  df <- data.frame(x = object$x, y = object$values)
+  df <- data.frame(x = .xom(object, "x"), y = .xom(object, "values"))
 
-  if (object$type == "pmf") {
+  if (.xom(object, "type") == "pmf") {
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$x, y = .data$y)) +
       ggplot2::geom_segment(
         ggplot2::aes(xend = .data$x, yend = 0),
@@ -427,18 +447,18 @@ autoplot.xomultinom_dist <- function(object,
   }
 
   # Optional normal approximation overlay
-  if (add_approx && !object$log) {
-    if (object$type == "cdf") {
+  if (add_approx && !.xom(object, "log")) {
+    if (.xom(object, "type") == "cdf") {
       pmf_vals <- pmax(c(df$y[1L], diff(df$y)), 0)
     } else {
       pmf_vals <- df$y
     }
     pmf_vals <- pmf_vals / sum(pmf_vals)
-    mu  <- sum(object$x * pmf_vals)
-    sig <- sqrt(sum((object$x - mu)^2 * pmf_vals))
+    mu  <- sum(.xom(object, "x") * pmf_vals)
+    sig <- sqrt(sum((.xom(object, "x") - mu)^2 * pmf_vals))
 
-    x_seq    <- seq(min(object$x), max(object$x), length.out = 300)
-    y_approx <- if (object$type == "pmf") {
+    x_seq    <- seq(min(.xom(object, "x")), max(.xom(object, "x")), length.out = 300)
+    y_approx <- if (.xom(object, "type") == "pmf") {
       dnorm(x_seq, mean = mu, sd = sig)
     } else {
       pnorm(x_seq, mean = mu, sd = sig)
@@ -489,8 +509,8 @@ autoplot.xomultinom_dist <- function(object,
 #'
 #' @export
 as.data.frame.xomultinom_dist <- function(x, ...) {
-  col_name      <- paste0(if (x$log) "log_" else "", x$type)
-  df            <- data.frame(x = x$x, v = x$values)
+  col_name      <- paste0(if (.xom(x, "log")) "log_" else "", .xom(x, "type"))
+  df            <- data.frame(x = .xom(x, "x"), v = .xom(x, "values"))
   names(df)[2L] <- col_name
   df
 }

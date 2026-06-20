@@ -1,35 +1,49 @@
-#' PMF of the range for a multinomial distribution
+#' PMF of the multinomial range at specified points
 #'
-#' Computes the probability mass function of the range
-#' \eqn{R = \max(N_1, \ldots, N_m) - \min(N_1, \ldots, N_m)}
-#' for a multinomial random vector with arbitrary cell probabilities.
+#' Computes \eqn{P(R = x)}, where
+#' \eqn{R = \max(N_1, \ldots, N_m) - \min(N_1, \ldots, N_m)}, at each element
+#' of \code{x} for a multinomial random vector with \code{size} trials and cell
+#' probabilities \code{prob}.  Returns a plain numeric vector, following the
+#' same conventions as \code{\link[stats]{dbinom}} and
+#' \code{\link[stats]{dnorm}}.
 #'
-#' @param x Numeric vector of values at which to evaluate the PMF.
-#' @param size Integer number of trials.
+#' @param x Integer vector of values at which to evaluate the PMF.
+#' @param size Integer number of trials \eqn{n}.
 #' @param prob Numeric vector of non-negative cell probabilities. Values are
-#'   internally normalized to sum to 1. Categories with zero probability are
+#'   internally normalised to sum to 1. Categories with zero probability are
 #'   removed before computation.
-#' @param log Logical; if \code{TRUE}, returns log-probabilities.
+#' @param log.p Logical; if \code{TRUE}, log-probabilities are returned.
+#'   Defaults to \code{FALSE}.
 #' @param verbose Logical; if \code{TRUE}, displays progress information during
-#'   the computation.
+#'   the computation. Defaults to \code{TRUE}.
 #'
-#' @details The function first checks whether `prob` corresponds to the
-#'   equiprobable case and then applies either the Bonetti et al. (2019)
-#'   algorithm or the Corrado (2011) algorithm accordingly.
+#' @details
+#' The function first checks whether \code{prob} corresponds to the
+#' equiprobable case and then applies either the Bonetti et al.\ (2019)
+#' algorithm or the Corrado (2011) algorithm accordingly.
 #'
-#' @return An object of class \code{xomultinom_dist} with fields \code{x},
-#'   \code{values} (containing \eqn{P(R = x)}, or log-probabilities if
-#'   \code{log = TRUE}), \code{stat = "range"}, \code{type = "pmf"},
-#'   \code{size}, \code{prob}, and \code{log}.
+#' For the full distribution object (suitable for plotting, summaries, or
+#' repeated evaluation), use \code{\link{rangemultinom}} directly.
+#'
+#' @return A numeric vector of the same length as \code{x}, containing
+#'   \eqn{P(R = x)} (or log-probabilities if \code{log.p = TRUE}).  Points
+#'   outside the support \eqn{\{0, \ldots, n\}} return 0 (or \code{-Inf} on
+#'   the log scale).
 #'
 #' @examples
 #' m <- 4
 #' n <- 60
 #' probs <- rep(1 / m, m)
-#' xseq <- 0:n
 #'
-#' pmfrange <- drangemultinom(x = xseq, size = n, prob = probs)
-#' plot(pmfrange)
+#' # Evaluate at specific points -- plain numeric output, like dbinom()
+#' drangemultinom(x = c(5, 10, 15), size = n, prob = probs)
+#'
+#' # Log scale
+#' drangemultinom(x = c(5, 10, 15), size = n, prob = probs, log.p = TRUE)
+#'
+#' # For the full distribution object use rangemultinom():
+#' Frange <- rangemultinom(size = n, prob = probs)
+#' plot(Frange)
 #'
 #' @references
 #' Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
@@ -43,37 +57,30 @@
 #' \doi{10.1007/s11222-010-9174-3}
 #'
 #' @seealso
-#' \code{\link{prangemultinom}} for the CDF of the range,
+#' \code{\link{rangemultinom}} for the full distribution object,
+#' \code{\link{prangemultinom}} for the CDF at specific points,
 #' \code{\link{dmaxmultinom}} for the PMF of the maximum, and
 #' \code{\link{dminmultinom}} for the PMF of the minimum.
 #'
 #' @export
-drangemultinom <- function(x, size, prob, log = FALSE, verbose = TRUE) {
+drangemultinom <- function(x, size, prob, log.p = FALSE, verbose = TRUE) {
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0)
     stop("probabilities must be finite, non-negative and not all 0.")
-  prob <- prob/s
-  i0 <- prob == 0
+  prob <- prob / s
+  i0   <- prob == 0
   if (any(i0))
     prob <- prob[!i0]
-  
+
   if (length(prob) > 0 && length(unique(prob)) == 1) {
-    res <- drangemultinom_bonetti(x, size, prob, log, verbose)
+    res <- drangemultinom_bonetti(x, size, prob, FALSE, verbose)
   } else {
-    res <- drangemultinom_corrado(x, size, prob, log, verbose)
+    res <- drangemultinom_corrado(x, size, prob, FALSE, verbose)
   }
 
-  if (!log) {
-    if (any(res < 0)) res[res < 0] <- 0
-    if (any(res > 1)) res[res > 1] <- 1
-  } else {
-    if (any(res > 0)) res[res > 0] <- 0
-  }
+  if (any(res < 0)) res[res < 0] <- 0
+  if (any(res > 1)) res[res > 1] <- 1
 
-  return(new_xomultinom_dist(x      = x,
-                             values = res,
-                             stat   = "range",
-                             type   = "pmf",
-                             size   = size,
-                             prob   = prob,
-                             log    = log))
+  if (log.p) res <- log(res)
+
+  res
 }
