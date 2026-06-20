@@ -63,7 +63,7 @@ Hypergeometric frequencies. Statistical Computing, 21, 349--359.
 \doi{10.1007/s11222-010-9174-3}
 }
 \seealso{
-\code{\link{maxmultinom}} for the full distribution object,
+\code{\link{maxmultinomcdf}} for the full distribution object,
 \code{\link{pminmultinom}} for the CDF of the minimum,
 \code{\link{dmaxmultinom}} for the PMF of the maximum, and
 \code{\link{dminmultinom}} for the PMF of the minimum.

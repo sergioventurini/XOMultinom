@@ -33,7 +33,7 @@ for (m_idx in 1:length(m)) {
     cat(paste0("--> m = ", m[m_idx], " - n = ", n_list[[m_idx]][n_idx], "\n"))
     cellp <- rep(1/m[m_idx], m[m_idx])
     probs[n_idx, , m_idx] <- pJlargemultinom(t, n_list[[m_idx]][n_idx],
-                                             cellp, J = 2, FALSE, FALSE)$values
+                                             cellp, J = 2, FALSE, FALSE)
   }
 }
 

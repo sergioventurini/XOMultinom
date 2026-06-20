@@ -47,7 +47,7 @@
 rminmultinom <- function(n, size, prob) {
   supp <- 0L:size
   pmf  <- dminmultinom(x = supp, size = size, prob = prob,
-                       log = FALSE, verbose = FALSE)$values
+                       log = FALSE, verbose = FALSE)
   pmf  <- pmax(pmf, 0)
   pmf  <- pmf / sum(pmf)
   sample(supp, size = n, replace = TRUE, prob = pmf)

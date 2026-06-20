@@ -69,7 +69,7 @@ maximum, minimum, range and sums of order statistics. Royal Society
 Open Science, 6, 190198. \doi{10.1098/rsos.190198}
 }
 \seealso{
-\code{\link{Jlargemultinom}} for the full distribution object,
+\code{\link{Jlargemultinomcdf}} for the full distribution object,
 \code{\link{dJlargemultinom}} for the PMF,
 \code{\link{qJlargemultinom}} for quantiles, and
 \code{\link{rJlargemultinom}} for random generation.

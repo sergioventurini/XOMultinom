@@ -65,7 +65,7 @@ qJlargemultinom <- function(p, size, prob, J = 2,
  
   supp <- 0L:size
   cdf  <- pJlargemultinom(x = supp, size = size, prob = prob, J = J,
-                          log = FALSE, verbose = FALSE)$values
+                          log = FALSE, verbose = FALSE)
  
   discrete_quantile(p, cdf, supp)
 }

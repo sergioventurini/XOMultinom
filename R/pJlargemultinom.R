@@ -44,7 +44,7 @@
 #' Open Science, 6, 190198. \doi{10.1098/rsos.190198}
 #'
 #' @seealso
-#' \code{\link{Jlargemultinom}} for the full distribution object,
+#' \code{\link{Jlargemultinomcdf}} for the full distribution object,
 #' \code{\link{dJlargemultinom}} for the PMF,
 #' \code{\link{qJlargemultinom}} for quantiles, and
 #' \code{\link{rJlargemultinom}} for random generation.
@@ -95,12 +95,12 @@ pJlargemultinom <- function(x, size, prob, J = 2, lower.tail = TRUE, log.p = FAL
 #'   the computation. Defaults to \code{TRUE}.
 #'
 #' @details
-#' \code{Jlargemultinom()} is the \emph{distribution constructor}: it fixes
+#' \code{Jlargemultinomcdf()} is the \emph{distribution constructor}: it fixes
 #' \code{size}, \code{prob}, and \code{J}, performs the exact computation once
 #' over the full support, and returns a self-contained \code{xomultinom_dist}
 #' object.  The companion functions \code{\link{pJlargemultinom}} and
 #' \code{\link{dJlargemultinom}} are lightweight wrappers that call
-#' \code{Jlargemultinom()} internally and extract the CDF or PMF values at the
+#' \code{Jlargemultinomcdf()} internally and extract the CDF or PMF values at the
 #' requested points \code{x}, returning a plain numeric vector in the same
 #' style as \code{\link[stats]{pnorm}} and \code{\link[stats]{dnorm}}.
 #'
@@ -117,7 +117,7 @@ pJlargemultinom <- function(x, size, prob, J = 2, lower.tail = TRUE, log.p = FAL
 #' probs <- rep(1 / m, m)
 #'
 #' # Distribution constructor: compute once, reuse freely
-#' FJ <- Jlargemultinom(size = n, prob = probs, J = J)
+#' FJ <- Jlargemultinomcdf(size = n, prob = probs, J = J)
 #' plot(FJ)
 #' summary(FJ)
 #'
@@ -134,11 +134,11 @@ pJlargemultinom <- function(x, size, prob, J = 2, lower.tail = TRUE, log.p = FAL
 #' @seealso
 #' \code{\link{pJlargemultinom}} for the CDF at specific points (numeric
 #' output), \code{\link{dJlargemultinom}} for the PMF at specific points,
-#' \code{\link{maxmultinom}}, \code{\link{minmultinom}}, and
-#' \code{\link{rangemultinom}} for the analogous constructors.
+#' \code{\link{maxmultinomcdf}}, \code{\link{minmultinomcdf}}, and
+#' \code{\link{rangemultinomcdf}} for the analogous constructors.
 #'
 #' @export
-Jlargemultinom <- function(size, prob, J = 2, verbose = TRUE) {
+Jlargemultinomcdf <- function(size, prob, J = 2, verbose = TRUE) {
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0)
     stop("probabilities must be finite, non-negative and not all 0.")
   prob <- prob / s

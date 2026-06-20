@@ -49,7 +49,7 @@
 #' @seealso
 #' \code{\link{prangemultinom}} for the CDF at specific points (numeric output),
 #' \code{\link{drangemultinom}} for the PMF at specific points (numeric output),
-#' \code{\link{maxmultinom}} and \code{\link{minmultinom}} for the analogous
+#' \code{\link{maxmultinomcdf}} and \code{\link{minmultinomcdf}} for the analogous
 #' constructors for the maximum and the minimum.
 #'
 #' @export
@@ -95,16 +95,16 @@ prangemultinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE,
 #'   the computation. Defaults to \code{TRUE}.
 #'
 #' @details
-#' \code{rangemultinom()} is the \emph{distribution constructor}: it fixes
+#' \code{rangemultinomcdf()} is the \emph{distribution constructor}: it fixes
 #' \code{size} and \code{prob}, performs the exact computation once over the
 #' full support, and returns a self-contained \code{xomultinom_dist} object.
 #' The companion functions \code{\link{prangemultinom}} and
 #' \code{\link{drangemultinom}} are lightweight wrappers that call
-#' \code{rangemultinom()} internally and extract the CDF or PMF values at the
+#' \code{rangemultinomcdf()} internally and extract the CDF or PMF values at the
 #' requested points \code{x}, returning a plain numeric vector in the same
 #' style as \code{\link[stats]{pnorm}} and \code{\link[stats]{dnorm}}.
 #'
-#' Use \code{rangemultinom()} when you need the full distribution object (e.g.,
+#' Use \code{rangemultinomcdf()} when you need the full distribution object (e.g.,
 #' for plotting or for evaluating the CDF at many points without repeating the
 #' underlying computation).  Use \code{\link{prangemultinom}} or
 #' \code{\link{drangemultinom}} when you need a numeric vector at specific
@@ -124,7 +124,7 @@ prangemultinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE,
 #' probs <- rep(1 / m, m)
 #'
 #' # Distribution constructor: compute once, reuse freely
-#' Frange <- rangemultinom(size = n, prob = probs)
+#' Frange <- rangemultinomcdf(size = n, prob = probs)
 #' plot(Frange)
 #' summary(Frange)
 #'
@@ -146,11 +146,11 @@ prangemultinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE,
 #' @seealso
 #' \code{\link{prangemultinom}} for the CDF at specific points (numeric output),
 #' \code{\link{drangemultinom}} for the PMF at specific points (numeric output),
-#' \code{\link{maxmultinom}} and \code{\link{minmultinom}} for the analogous
+#' \code{\link{maxmultinomcdf}} and \code{\link{minmultinomcdf}} for the analogous
 #' constructors for the maximum and the minimum.
 #'
 #' @export
-rangemultinom <- function(size, prob, verbose = TRUE) {
+rangemultinomcdf <- function(size, prob, verbose = TRUE) {
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0)
     stop("probabilities must be finite, non-negative and not all 0.")
   prob <- prob / s

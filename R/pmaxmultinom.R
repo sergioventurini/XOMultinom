@@ -47,7 +47,7 @@
 #' \doi{10.1007/s11222-010-9174-3}
 #'
 #' @seealso
-#' \code{\link{maxmultinom}} for the full distribution object,
+#' \code{\link{maxmultinomcdf}} for the full distribution object,
 #' \code{\link{pminmultinom}} for the CDF of the minimum,
 #' \code{\link{dmaxmultinom}} for the PMF of the maximum, and
 #' \code{\link{dminmultinom}} for the PMF of the minimum.
@@ -94,7 +94,7 @@ pmaxmultinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE,
 #'   the computation. Defaults to \code{TRUE}.
 #'
 #' @details
-#' \code{maxmultinom()} is the \emph{distribution constructor}: it fixes
+#' \code{maxmultinomcdf()} is the \emph{distribution constructor}: it fixes
 #' \code{size} and \code{prob}, performs the (potentially expensive) exact
 #' computation once over the full support, and returns a self-contained
 #' \code{xomultinom_dist} object.  The companion functions
@@ -103,7 +103,7 @@ pmaxmultinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE,
 #' vector in the same style as \code{\link[stats]{pnorm}} and
 #' \code{\link[stats]{dnorm}}.
 #'
-#' Use \code{maxmultinom()} when you need the full distribution object (e.g.,
+#' Use \code{maxmultinomcdf()} when you need the full distribution object (e.g.,
 #' for plotting or for evaluating the CDF at many points without repeating the
 #' underlying computation).  Use \code{\link{pmaxmultinom}} or
 #' \code{\link{dmaxmultinom}} when you need a numeric vector at specific
@@ -123,7 +123,7 @@ pmaxmultinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE,
 #' probs <- rep(1 / m, m)
 #'
 #' # Distribution constructor: compute once, reuse freely
-#' Fmax <- maxmultinom(size = n, prob = probs)
+#' Fmax <- maxmultinomcdf(size = n, prob = probs)
 #' plot(Fmax)
 #' summary(Fmax)
 #'
@@ -145,11 +145,11 @@ pmaxmultinom <- function(x, size, prob, lower.tail = TRUE, log.p = FALSE,
 #' @seealso
 #' \code{\link{pmaxmultinom}} for the CDF at specific points (numeric output),
 #' \code{\link{dmaxmultinom}} for the PMF at specific points (numeric output),
-#' \code{\link{minmultinom}} and \code{\link{rangemultinom}} for the analogous
+#' \code{\link{minmultinomcdf}} and \code{\link{rangemultinomcdf}} for the analogous
 #' constructors for the minimum and the range.
 #'
 #' @export
-maxmultinom <- function(size, prob, verbose = TRUE) {
+maxmultinomcdf <- function(size, prob, verbose = TRUE) {
   if (any(!is.finite(prob)) || any(prob < 0) || (s <- sum(prob)) == 0)
     stop("probabilities must be finite, non-negative and not all 0.")
   prob <- prob / s

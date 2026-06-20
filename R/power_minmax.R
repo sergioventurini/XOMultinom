@@ -20,7 +20,7 @@ power_minmax <- function(n, m, change, power = 0.8, alpha = 0.05,
   prb <- 0
   if (type == "max") {
     px <- dmaxmultinom(x = (k_alpha - 1):n, size = n, prob = probs_H1,
-                       log = FALSE, verbose = FALSE)$values
+                       log = FALSE, verbose = FALSE)
     if (!is.na(gamma_prob)) {
       prb <- sum(px[-1]) + gamma_prob*px[1]
     }
@@ -28,7 +28,7 @@ power_minmax <- function(n, m, change, power = 0.8, alpha = 0.05,
   else if (type == "min") {
     if (!is.na(k_alpha)) {
       Fx <- pminmultinom(x = k_alpha:(k_alpha + 1), size = n, prob = probs_H1,
-                         log = FALSE, verbose = FALSE)$values
+                         log = FALSE, verbose = FALSE)
       if (!is.na(gamma_prob)) {
         prb <- Fx[1] + gamma_prob*diff(Fx)
       }

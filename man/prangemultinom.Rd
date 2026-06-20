@@ -65,6 +65,6 @@ Hypergeometric frequencies. Statistical Computing, 21, 349--359.
 \seealso{
 \code{\link{prangemultinom}} for the CDF at specific points (numeric output),
 \code{\link{drangemultinom}} for the PMF at specific points (numeric output),
-\code{\link{maxmultinom}} and \code{\link{minmultinom}} for the analogous
+\code{\link{maxmultinomcdf}} and \code{\link{minmultinomcdf}} for the analogous
 constructors for the maximum and the minimum.
 }

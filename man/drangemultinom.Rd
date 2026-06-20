@@ -41,7 +41,7 @@ equiprobable case and then applies either the Bonetti et al.\ (2019)
 algorithm or the Corrado (2011) algorithm accordingly.
 
 For the full distribution object (suitable for plotting, summaries, or
-repeated evaluation), use \code{\link{rangemultinom}} directly.
+repeated evaluation), use \code{\link{rangemultinomcdf}} directly.
 }
 \examples{
 m <- 4
@@ -54,8 +54,8 @@ drangemultinom(x = c(5, 10, 15), size = n, prob = probs)
 # Log scale
 drangemultinom(x = c(5, 10, 15), size = n, prob = probs, log.p = TRUE)
 
-# For the full distribution object use rangemultinom():
-Frange <- rangemultinom(size = n, prob = probs)
+# For the full distribution object use rangemultinomcdf():
+Frange <- rangemultinomcdf(size = n, prob = probs)
 plot(Frange)
 
 }
@@ -71,7 +71,7 @@ Hypergeometric frequencies. Statistical Computing, 21, 349--359.
 \doi{10.1007/s11222-010-9174-3}
 }
 \seealso{
-\code{\link{rangemultinom}} for the full distribution object,
+\code{\link{rangemultinomcdf}} for the full distribution object,
 \code{\link{prangemultinom}} for the CDF at specific points,
 \code{\link{dmaxmultinom}} for the PMF of the maximum, and
 \code{\link{dminmultinom}} for the PMF of the minimum.

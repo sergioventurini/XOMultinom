@@ -3,8 +3,8 @@
 #
 # Two classes are defined:
 #
-#   xomultinom_dist  -- returned by maxmultinom, minmultinom, rangemultinom
-#                       and Jlargemultinom.
+#   xomultinom_dist  -- returned by maxmultinomcdf, minmultinomcdf,
+#                       rangemultinomcdf and Jlargemultinomcdf.
 #
 #   xomultinom_size  -- returned by maxmin_multinom_size.
 # =============================================================================

@@ -23,7 +23,7 @@
 #' algorithm or the Corrado (2011) algorithm accordingly.
 #'
 #' For the full distribution object (suitable for plotting, summaries, or
-#' repeated evaluation), use \code{\link{rangemultinom}} directly.
+#' repeated evaluation), use \code{\link{rangemultinomcdf}} directly.
 #'
 #' @return A numeric vector of the same length as \code{x}, containing
 #'   \eqn{P(R = x)} (or log-probabilities if \code{log.p = TRUE}).  Points
@@ -41,8 +41,8 @@
 #' # Log scale
 #' drangemultinom(x = c(5, 10, 15), size = n, prob = probs, log.p = TRUE)
 #'
-#' # For the full distribution object use rangemultinom():
-#' Frange <- rangemultinom(size = n, prob = probs)
+#' # For the full distribution object use rangemultinomcdf():
+#' Frange <- rangemultinomcdf(size = n, prob = probs)
 #' plot(Frange)
 #'
 #' @references
@@ -57,7 +57,7 @@
 #' \doi{10.1007/s11222-010-9174-3}
 #'
 #' @seealso
-#' \code{\link{rangemultinom}} for the full distribution object,
+#' \code{\link{rangemultinomcdf}} for the full distribution object,
 #' \code{\link{prangemultinom}} for the CDF at specific points,
 #' \code{\link{dmaxmultinom}} for the PMF of the maximum, and
 #' \code{\link{dminmultinom}} for the PMF of the minimum.

@@ -25,7 +25,7 @@
 #' is currently supported.
 #'
 #' For the full distribution object (suitable for plotting, summaries, or
-#' repeated evaluation), use \code{\link{Jlargemultinom}} directly.
+#' repeated evaluation), use \code{\link{Jlargemultinomcdf}} directly.
 #'
 #' @return A numeric vector of the same length as \code{x}, containing
 #'   \eqn{P(S_J = x)} (or log-probabilities if \code{log.p = TRUE}).  Points
@@ -45,8 +45,8 @@
 #' dJlargemultinom(x = c(30, 35, 40), size = n, prob = probs, J = J,
 #'                 log.p = TRUE)
 #'
-#' # For the full distribution object use Jlargemultinom():
-#' FJ <- Jlargemultinom(size = n, prob = probs, J = J)
+#' # For the full distribution object use Jlargemultinomcdf():
+#' FJ <- Jlargemultinomcdf(size = n, prob = probs, J = J)
 #' plot(FJ)
 #'
 #' @references
@@ -56,7 +56,7 @@
 #' Open Science, 6, 190198. \doi{10.1098/rsos.190198}
 #'
 #' @seealso
-#' \code{\link{Jlargemultinom}} for the full distribution object,
+#' \code{\link{Jlargemultinomcdf}} for the full distribution object,
 #' \code{\link{pJlargemultinom}} for the CDF at specific points,
 #' \code{\link{dmaxmultinom}} for the PMF of the maximum, and
 #' \code{\link{dminmultinom}} for the PMF of the minimum.

@@ -46,7 +46,7 @@
 rJlargemultinom <- function(n, size, prob, J = 2) {
   supp <- 0L:size
   pmf  <- dJlargemultinom(x = supp, size = size, prob = prob, J = J,
-                          log = FALSE, verbose = FALSE)$values
+                          log = FALSE, verbose = FALSE)
   pmf  <- pmax(pmf, 0)
   pmf  <- pmf / sum(pmf)
   sample(supp, size = n, replace = TRUE, prob = pmf)

@@ -1,6 +1,6 @@
 library(XOMultinom)
 
-### Section 4.3
+### Section 6.3
 
 m <- 6
 n <- 200
@@ -16,18 +16,20 @@ cdf_max <- pmaxmultinom(x = 0:n, size = n, prob = prob_gen)
 qmaxmultinom(p = c(0.5, 0.95), size = n, prob = prob_equi)
 
 # Built-in plot and summary via S3 methods
-par(mfrow = c(1, 2))
-plot(pmf_max, main = "Multinomial Max - PMF - Equiprobable",
-     xlab = expression(N["<1>"]), xlim = c(30, 60), cex.main = 0.85)
-plot(cdf_max, main = "Multinomial Max - CDF - Non-equiprobable",
+maxCDF <- maxmultinomcdf(size = n, prob = prob_gen)
+
+# Figure 1
+plot(maxCDF, main = "Multinomial Max - CDF - Non-equiprobable",
      xlab = expression(N["<1>"]), xlim = c(30, 100), cex.main = 0.85)
 
-summary(pmf_max)
+summary(maxCDF)
 
 # 100,000 random draws
 set.seed(1406)
 n_sim <- 100000
 sims <- rmaxmultinom(n = n_sim, size = n, prob = prob_equi)
+
+# Figure 2
 par(mfrow = c(1, 1))
 hist(
   sims,
@@ -47,7 +49,7 @@ axis(1, at = seq(30, 55, 5), pos = 0)
 axis(2, at = seq(0, 0.15, 0.025), pos = 30, las = 1)
 
 
-### Section 5.1
+### Section 7.1
 
 library(ggplot2)
 library(patchwork)
@@ -129,7 +131,7 @@ p_max <- ggplot(df, aes(x = incr, y = n, color = factor(m), group = m)) +
   guides(color = guide_legend(nrow = 1))
 p_max <- p_max &
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 16))
-  
+
 ### Minimum test ###
 
 pow_seq   <- c(0.8, 0.9)
@@ -210,16 +212,19 @@ p_min <- ggplot(df, aes(x = decr, y = n, color = factor(m), group = m)) +
 p_min <- p_min &
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 16))
 
+# Figure 3
 p_max + p_min
 
 
-### Section 5.2
+### Section 7.2
 
 data(mainsail, package = "XOMultinom")
 
 # Order data according to entry date
 dat   <- mainsail[order(mainsail$entry_order), ]
 score <- dat$halabi2014_lp_imputed
+
+# Figure 4
 hist(
   score,
   col = "#4C78A8",
@@ -292,7 +297,23 @@ for (k in seq_len(K)) {
     pop_idx <- c(pop_idx[-(1:n)], samp_idx)
 }
 
+# Table 3
+tab3 <- do.call(rbind, lapply(seq_along(results), function(k) {
+  r <- results[[k]]
+  data.frame(
+    k          = k,
+    Population = r$pop,
+    Sample     = r$samp,
+    M          = r$M,
+    Reject     = if (r$rej) "Yes" else "No",
+    pi_hat     = round(r$pi, 3),
+    stringsAsFactors = FALSE
+  )
+}))
+colnames(tab3) <- c("k", "Population", "Sample", "M(k)", "Reject", "pi_hat")
+print(tab3, row.names = FALSE)
 
+# Figure 5
 panel_labels <- setNames(
   sapply(seq_along(results), function(k) {
     r <- results[[k]]

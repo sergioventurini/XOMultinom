@@ -40,7 +40,7 @@ equiprobable case and then applies either the Bonetti et al.\ (2019)
 algorithm or the Corrado (2011) algorithm accordingly.
 
 For the full distribution object (suitable for plotting, summaries, or
-repeated evaluation), use \code{\link{maxmultinom}} directly.
+repeated evaluation), use \code{\link{maxmultinomcdf}} directly.
 }
 \examples{
 m <- 4
@@ -53,8 +53,8 @@ dmaxmultinom(x = c(18, 20, 22), size = n, prob = probs)
 # Log scale
 dmaxmultinom(x = c(18, 20, 22), size = n, prob = probs, log.p = TRUE)
 
-# For the full distribution object use maxmultinom():
-Fmax <- maxmultinom(size = n, prob = probs)
+# For the full distribution object use maxmultinomcdf():
+Fmax <- maxmultinomcdf(size = n, prob = probs)
 plot(Fmax)
 
 }
@@ -70,7 +70,7 @@ Hypergeometric frequencies. Statistical Computing, 21, 349--359.
 \doi{10.1007/s11222-010-9174-3}
 }
 \seealso{
-\code{\link{maxmultinom}} for the full distribution object,
+\code{\link{maxmultinomcdf}} for the full distribution object,
 \code{\link{pmaxmultinom}} for the CDF at specific points,
 \code{\link{dminmultinom}} for the PMF of the minimum, and
 \code{\link{drangemultinom}} for the PMF of the range.
