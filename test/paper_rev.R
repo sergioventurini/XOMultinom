@@ -54,9 +54,9 @@ axis(2, at = seq(0, 0.15, 0.025), pos = 30, las = 1)
 library(ggplot2)
 library(patchwork)
 
-pow_seq   <- c(0.8, 0.9)
-alpha_seq <- c(0.05, 0.01)
-m_seq     <- c(3, 5, 10)
+pow_seq    <- c(0.8, 0.9)
+alpha_seq  <- c(0.05, 0.01)
+m_seq      <- c(3, 5, 10)
 delta_seq  <- seq(0.3, 0.9, 0.1)
 
 params <- expand.grid(
@@ -233,13 +233,13 @@ axis(1, at = seq(-1, 16, 0.20), pos = 0)
 axis(2, at = seq(0, 1, 0.10), pos = -1, las = 1)
 
 # Overall settings
-N     <- nrow(mainsail)  # MAINSAIL sample size
-N0    <- 320L            # reference population size
-n     <- 50L             # incoming batch size
-m     <- 10L             # number of bins (deciles)
-K     <- (N - N0)/n      # number of sequential tests
-alpha <- 0.05            # nominal level
-B     <- 1000L           # bootstrap replicates
+N     <- nrow(dat)     # MAINSAIL sample size
+N0    <- 320L          # reference population size
+n     <- 50L           # incoming batch size
+m     <- 10L           # number of bins (deciles)
+K     <- (N - N0)/n    # number of sequential tests
+alpha <- 0.05          # nominal level
+B     <- 1000L         # bootstrap replicates
 
 set.seed(1406)
 
