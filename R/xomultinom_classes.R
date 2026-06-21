@@ -102,7 +102,7 @@ new_xomultinom_dist <- function(x, values, stat, type, size, prob, log = FALSE) 
 #'
 #' @examples
 #' k <- 5; n <- 40
-#' obj <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+#' obj <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 #' print(obj)
 #'
 #' @export
@@ -183,7 +183,7 @@ print.xomultinom_dist <- function(x, digits = 4, max_rows = 20, ...) {
 #'
 #' @examples
 #' k <- 5; n <- 40
-#' obj <- pmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+#' obj <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 #' summary(obj)
 #'
 #' @export
@@ -276,14 +276,9 @@ summary.xomultinom_dist <- function(object, digits = 4, ...) {
 #'
 #' @examples
 #' k <- 5; n <- 40
-#' obj_pmf <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
-#' obj_cdf <- pmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+#' obj_cdf <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 #'
-#' # Compatible with par(mfrow = ...)
-#' op <- par(mfrow = c(1, 2))
-#' plot(obj_pmf)
 #' plot(obj_cdf)
-#' par(op)
 #'
 #' @seealso \code{\link{autoplot.xomultinom_dist}} for a \code{ggplot2}-based
 #'   alternative.
@@ -396,7 +391,7 @@ plot.xomultinom_dist <- function(x,
 #'
 #' @examples
 #' k <- 5; n <- 40
-#' obj <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+#' obj <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 #' autoplot(obj)
 #' autoplot(obj, add_approx = TRUE)
 #'
@@ -504,7 +499,7 @@ autoplot.xomultinom_dist <- function(object,
 #'
 #' @examples
 #' k <- 5; n <- 40
-#' obj <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+#' obj <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 #' head(as.data.frame(obj))
 #'
 #' @export

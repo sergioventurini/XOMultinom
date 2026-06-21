@@ -27,10 +27,6 @@
 #' sims <- rmaxmultinom(n = 1000, size = n, prob = probs)
 #' hist(sims, breaks = 20, main = "Simulated multinomial maxima")
 #'
-#' # Check against exact mean
-#' mean(sims)
-#' summary(dmaxmultinom(x = 0:n, size = n, prob = probs))$mean
-#'
 #' @references
 #' Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact
 #' distributions of some functions of the ordered multinomial counts:
@@ -51,7 +47,7 @@
 rmaxmultinom <- function(n, size, prob) {
   supp <- 0L:size
   pmf  <- dmaxmultinom(x = supp, size = size, prob = prob,
-                       log = FALSE, verbose = FALSE)
+                       log.p = FALSE, verbose = FALSE)
   pmf  <- pmax(pmf, 0)
   pmf  <- pmf / sum(pmf)
   sample(supp, size = n, replace = TRUE, prob = pmf)

@@ -32,7 +32,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
 
     xval <- 0:(n + 1)
     px   <- dmaxmultinom(x = xval, size = n, prob = probs,
-                         log = FALSE, verbose = FALSE)
+                         log.p = FALSE, verbose = FALSE)
 
     pgtk    <- rev(cumsum(rev(px)))
     k_alpha <- min(xval[which(pgtk <= alpha)])
@@ -54,7 +54,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
     # Step 1 - does the test have any rejection region at all?
     # P(min <= 0 | H0) should be > 0 for any finite n, but check defensively.
     F0 <- pminmultinom(x = 0L, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE)
+                       log.p = FALSE, verbose = FALSE)
     if (is.na(F0) || F0 > alpha) {
       return(list(k_alpha = NA, gamma_prob = NA))
     }
@@ -63,11 +63,11 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
     # Start at floor(n/k) (the mean of each cell) and double if needed
     hi <- max(1L, floor(n / k))
     Fhi <- pminmultinom(x = hi, size = n, prob = probs,
-                        log = FALSE, verbose = FALSE)
+                        log.p = FALSE, verbose = FALSE)
     while (!is.na(Fhi) && Fhi <= alpha && hi < n) {
       hi  <- min(n - 1L, hi * 2L)
       Fhi <- pminmultinom(x = hi, size = n, prob = probs,
-                          log = FALSE, verbose = FALSE)
+                          log.p = FALSE, verbose = FALSE)
     }
     if (is.na(Fhi) || Fhi <= alpha) {
       return(list(k_alpha = NA, gamma_prob = NA))
@@ -78,7 +78,7 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
     while (hi - lo > 1L) {
       mid  <- (lo + hi) %/% 2L
       Fmid <- pminmultinom(x = mid, size = n, prob = probs,
-                           log = FALSE, verbose = FALSE)
+                           log.p = FALSE, verbose = FALSE)
       if (is.na(Fmid)) {
         # Computation failed mid-search; use the last safe lower bound
         return(list(k_alpha = lo, gamma_prob = 0))
@@ -93,9 +93,9 @@ find_k_gamma <- function(probs, n, alpha = 0.05, type) {
 
     # Step 4 - compute gamma from the two flanking CDF values
     Flo <- pminmultinom(x = k_alpha,       size = n, prob = probs,
-                        log = FALSE, verbose = FALSE)
+                        log.p = FALSE, verbose = FALSE)
     Fup <- pminmultinom(x = k_alpha + 1L,  size = n, prob = probs,
-                        log = FALSE, verbose = FALSE)
+                        log.p = FALSE, verbose = FALSE)
 
     if (is.na(Flo) || is.na(Fup)) {
       return(list(k_alpha = k_alpha, gamma_prob = 0))
@@ -139,14 +139,14 @@ find_k_alpha <- function(probs, n, alpha = 0.05, type) {
   if (type == "max") {
     xval <- 0:(n + 1)
     px <- dmaxmultinom(x = xval, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE)
+                       log.p = FALSE, verbose = FALSE)
     pgtk <- rev(cumsum(rev(px)))
     k_alpha <- min(xval[which(pgtk <= alpha)])
   }
   else if (type == "min") {
     xval <- 0:n
     Fx <- pminmultinom(x = xval, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE)
+                       log.p = FALSE, verbose = FALSE)
     chk <- which(Fx <= alpha)
     if (length(chk) > 0) {
       k_alpha <- max(xval[chk])
@@ -187,7 +187,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
 
   if (type == "max") {
     px <- dmaxmultinom(x = (k_alpha - 1):n, size = n, prob = probs,
-                       log = FALSE, verbose = FALSE)
+                       log.p = FALSE, verbose = FALSE)
     p_k_alpha <- sum(px[-1])
     p_k_alpha_m_1 <- px[1]
     if (p_k_alpha_m_1 > 0) {
@@ -203,7 +203,7 @@ find_gamma_prob <- function(probs, n, alpha = 0.05, k_alpha, type) {
     }
     else {
       Fx <- pminmultinom(x = k_alpha:(k_alpha + 1), size = n, prob = probs,
-                         log = FALSE, verbose = FALSE)
+                         log.p = FALSE, verbose = FALSE)
       p_k_alpha <- Fx[1]
       p_k_alpha_p_1 <- diff(Fx)
       if (p_k_alpha_p_1 > 0) {
@@ -348,16 +348,10 @@ maxmin_multinom_size <- function(m_seq, change_seq, power = 0.8, alpha = 0.05,
 #' @return A numeric vector of length `m + 1` containing the break points.
 #'   The first and last elements are `-Inf` and `Inf`, respectively.
 #'
-#' @examples
-#' scores <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-#' make_breaks(scores, m = 5)
-#'
 #' @noRd
 #' @keywords internal
-#'
-#' @export
 make_breaks <- function(scores, m) {
-  brks        <- quantile(scores, probs = seq(0, 1, by = 1/m), type = 1)
+  brks        <- stats::quantile(scores, probs = seq(0, 1, by = 1/m), type = 1)
   brks[1]     <- -Inf
   brks[m + 1] <-  Inf
   unname(brks)
@@ -378,15 +372,8 @@ make_breaks <- function(scores, m) {
 #' @return A single integer giving the maximum number of observations contained
 #'   in any bin.
 #'
-#' @examples
-#' scores <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-#' brks <- make_breaks(scores, m = 5)
-#' max_count(brks, scores, m = 5)
-#'
 #' @noRd
 #' @keywords internal
-#'
-#' @export
 max_count <- function(brks, samp_scores, m) {
   bins <- cut(samp_scores, breaks = brks, include.lowest = TRUE)
   max(tabulate(bins, nbins = m))
@@ -413,24 +400,10 @@ max_count <- function(brks, samp_scores, m) {
 #'   \item{`FALSE`}{the test does not reject (`obs_max < kappa - 1`).}
 #' }
 #'
-#' @examples
-#' set.seed(123)
-#'
-#' # Deterministic rejection
-#' rand_test(obs_max = 10, kappa = 10, gamma = 0.5)
-#'
-#' # Randomized boundary decision
-#' rand_test(obs_max = 9, kappa = 10, gamma = 0.5)
-#'
-#' # No rejection
-#' rand_test(obs_max = 8, kappa = 10, gamma = 0.5)
-#'
 #' @noRd
 #' @keywords internal
-#'
-#' @export
 rand_test <- function(obs_max, kappa, gamma) {
   if (obs_max >= kappa)      return(1L)
-  if (obs_max == kappa - 1L) return(rbinom(1L, 1L, gamma))
+  if (obs_max == kappa - 1L) return(stats::rbinom(1L, 1L, gamma))
   return(FALSE)
 }

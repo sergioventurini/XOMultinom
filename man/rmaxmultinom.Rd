@@ -38,10 +38,6 @@ set.seed(42)
 sims <- rmaxmultinom(n = 1000, size = n, prob = probs)
 hist(sims, breaks = 20, main = "Simulated multinomial maxima")
 
-# Check against exact mean
-mean(sims)
-summary(dmaxmultinom(x = 0:n, size = n, prob = probs))$mean
-
 }
 \references{
 Bonetti, M., Cirillo, P., Ogay, A. (2019). Computing the exact

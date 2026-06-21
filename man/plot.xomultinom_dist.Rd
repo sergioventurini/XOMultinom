@@ -53,14 +53,9 @@ diagnostic comparison.
 }
 \examples{
 k <- 5; n <- 40
-obj_pmf <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
-obj_cdf <- pmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+obj_cdf <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 
-# Compatible with par(mfrow = ...)
-op <- par(mfrow = c(1, 2))
-plot(obj_pmf)
 plot(obj_cdf)
-par(op)
 
 }
 \seealso{

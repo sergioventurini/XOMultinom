@@ -27,7 +27,7 @@ interval.
 }
 \examples{
 k <- 5; n <- 40
-obj <- pmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+obj <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 summary(obj)
 
 }

@@ -49,7 +49,7 @@ compatibility use \code{\link{plot.xomultinom_dist}} instead.
 }
 \examples{
 k <- 5; n <- 40
-obj <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+obj <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 autoplot(obj)
 autoplot(obj, add_approx = TRUE)
 

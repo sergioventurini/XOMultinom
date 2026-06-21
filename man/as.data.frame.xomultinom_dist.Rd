@@ -25,7 +25,7 @@ further manipulation or export.
 }
 \examples{
 k <- 5; n <- 40
-obj <- dmaxmultinom(x = 0:n, size = n, prob = rep(1/k, k))
+obj <- maxmultinomcdf(size = n, prob = rep(1/k, k))
 head(as.data.frame(obj))
 
 }

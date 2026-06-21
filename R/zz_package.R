@@ -29,7 +29,7 @@
 #' @importFrom utils globalVariables packageDescription
 #' @importFrom tools file_path_as_absolute
 #' @importFrom graphics legend lines points segments
-#' @importFrom stats dnorm median optimize pnorm rgamma uniroot
+#' @importFrom stats dnorm median optimize pnorm rgamma uniroot quantile rbinom
 #' @importFrom rlang .data
 #'
 "_PACKAGE"

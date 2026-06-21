@@ -66,7 +66,7 @@ qmaxmultinom <- function(p, size, prob, lower.tail = TRUE, log.p = FALSE) {
  
   supp <- 0L:size
   cdf  <- pmaxmultinom(x = supp, size = size, prob = prob,
-                       log = FALSE, verbose = FALSE)
+                       log.p = FALSE, verbose = FALSE)
  
   discrete_quantile(p, cdf, supp)
 }
