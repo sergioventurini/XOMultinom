@@ -348,8 +348,7 @@ maxmin_multinom_size <- function(m_seq, change_seq, power = 0.8, alpha = 0.05,
 #' @return A numeric vector of length `m + 1` containing the break points.
 #'   The first and last elements are `-Inf` and `Inf`, respectively.
 #'
-#' @noRd
-#' @keywords internal
+#' @export
 make_breaks <- function(scores, m) {
   brks        <- stats::quantile(scores, probs = seq(0, 1, by = 1/m), type = 1)
   brks[1]     <- -Inf
@@ -372,8 +371,7 @@ make_breaks <- function(scores, m) {
 #' @return A single integer giving the maximum number of observations contained
 #'   in any bin.
 #'
-#' @noRd
-#' @keywords internal
+#' @export
 max_count <- function(brks, samp_scores, m) {
   bins <- cut(samp_scores, breaks = brks, include.lowest = TRUE)
   max(tabulate(bins, nbins = m))
@@ -400,8 +398,7 @@ max_count <- function(brks, samp_scores, m) {
 #'   \item{`FALSE`}{the test does not reject (`obs_max < kappa - 1`).}
 #' }
 #'
-#' @noRd
-#' @keywords internal
+#' @export
 rand_test <- function(obs_max, kappa, gamma) {
   if (obs_max >= kappa)      return(1L)
   if (obs_max == kappa - 1L) return(stats::rbinom(1L, 1L, gamma))

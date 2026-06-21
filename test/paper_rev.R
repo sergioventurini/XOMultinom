@@ -54,18 +54,18 @@ axis(2, at = seq(0, 0.15, 0.025), pos = 30, las = 1)
 library(ggplot2)
 library(patchwork)
 
-### Maximum test ###
-
 pow_seq   <- c(0.8, 0.9)
 alpha_seq <- c(0.05, 0.01)
 m_seq     <- c(3, 5, 10)
-incr_seq  <- seq(0.3, 0.9, 0.1)
+delta_seq  <- seq(0.3, 0.9, 0.1)
 
 params <- expand.grid(
   power = pow_seq,
   alpha = alpha_seq,
   KEEP.OUT.ATTRS = FALSE
 )
+
+### Maximum test ###
 
 n_master <- lapply(seq_len(nrow(params)), function(i) {
   pow <- params$power[i]
@@ -74,7 +74,7 @@ n_master <- lapply(seq_len(nrow(params)), function(i) {
   cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
   
   res <- maxmin_multinom_size(
-    m_seq, incr_seq,
+    m_seq, delta_seq,
     power = pow,
     alpha = alpha,
     n_max = 200,
@@ -98,7 +98,7 @@ df <- do.call(rbind, lapply(seq_along(n_master), function(i) {
       alpha = params$alpha[i],
       m     = m_seq[j],
       n     = n_master[[i]][[j]],
-      incr  = incr_seq * 100
+      incr  = delta_seq * 100
     )
   }))
 }))
@@ -134,17 +134,6 @@ p_max <- p_max &
 
 ### Minimum test ###
 
-pow_seq   <- c(0.8, 0.9)
-alpha_seq <- c(0.05, 0.01)
-m_seq     <- c(3, 5, 10)
-decr_seq  <- seq(0.3, 0.9, 0.1)
-
-params <- expand.grid(
-  power = pow_seq,
-  alpha = alpha_seq,
-  KEEP.OUT.ATTRS = FALSE
-)
-
 n_master <- lapply(seq_len(nrow(params)), function(i) {
   pow <- params$power[i]
   alpha <- params$alpha[i]
@@ -152,7 +141,7 @@ n_master <- lapply(seq_len(nrow(params)), function(i) {
   cat("Power = ", pow, " - alpha = ", alpha, "\n", sep = "")
 
   res <- maxmin_multinom_size(
-    m_seq, decr_seq,
+    m_seq, delta_seq,
     power = pow,
     alpha = alpha,
     n_max = 1000,
@@ -176,7 +165,7 @@ df <- do.call(rbind, lapply(seq_along(n_master), function(i) {
       alpha = params$alpha[i],
       m     = m_seq[j],
       n     = n_master[[i]][[j]],
-      decr  = decr_seq * 100
+      decr  = delta_seq * 100
     )
   }))
 }))
@@ -215,6 +204,7 @@ p_min <- p_min &
 # Figure 3
 p_max + p_min
 
+# rm(p_max, p_min)   # run to reduce memory requirements
 
 ### Section 7.2
 
